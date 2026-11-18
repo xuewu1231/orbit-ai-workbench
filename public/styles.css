@@ -2450,7 +2450,7 @@ html[data-theme="dark"] .want-btn { background: rgba(245, 158, 11, 0.12); border
   object-fit: cover;
   object-position: top center;
   opacity: 0;
-  transition: opacity 0.3s ease;
+  transition: opacity 0.12s ease;
 }
 .sp-shot img.is-loaded { opacity: 1; }
 .sp-fallback {

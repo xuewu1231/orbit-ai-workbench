@@ -288,26 +288,59 @@
     pop.style.top = top + 'px';
   }
 
+  const warmedShots = new Set();
+  let shotToken = 0;
+
+  function warmPreview(src) {
+    if (!src || warmedShots.has(src)) return;
+    warmedShots.add(src);
+    const img = new Image();
+    img.decoding = 'async';
+    img.src = src;
+  }
+
+  function warmPreviews() {
+    document.querySelectorAll('[data-preview-img]').forEach((card) => {
+      warmPreview(card.getAttribute('data-preview-img'));
+    });
+  }
+
+  warmPreviews();
+
   function showPop(card) {
     if (!pop) return;
     const url = card.getAttribute('data-preview-url');
     const local = card.getAttribute('data-preview-img');
     const name = card.getAttribute('data-preview-name') || '';
     const swatches = (card.getAttribute('data-preview-swatches') || '').split(',').filter(Boolean);
+    const target = local || `https://s0.wp.com/mshots/v1/${encodeURIComponent(url)}?w=800&h=500`;
+    const token = ++shotToken;
 
     spUrl.textContent = url.replace(/^https?:\/\//, '');
     spCaption.textContent = local ? '本地截图 · 点卡片右下 ↗ 打开原站' : '实时网页快照（首次加载可能需要几秒）';
     buildFallback(name, swatches);
-    spFallback.classList.add('sp-shimmer');
-    spImg.classList.remove('is-loaded');
-    spImg.onload = () => {
+
+    const reveal = () => {
+      if (token !== shotToken) return;
       if (spImg.naturalWidth > 40) {
         spImg.classList.add('is-loaded');
         spFallback.classList.remove('sp-shimmer');
       }
     };
-    spImg.onerror = () => { spFallback.classList.remove('sp-shimmer'); };
-    spImg.src = local || `https://s0.wp.com/mshots/v1/${encodeURIComponent(url)}?w=800&h=500`;
+
+    spImg.onload = reveal;
+    spImg.onerror = () => {
+      if (token !== shotToken) return;
+      spFallback.classList.remove('sp-shimmer');
+    };
+
+    if (spImg.getAttribute('src') !== target) {
+      spImg.classList.remove('is-loaded');
+      spFallback.classList.add('sp-shimmer');
+      spImg.src = target;
+    }
+    if (spImg.complete && spImg.naturalWidth > 40) reveal();
+    else if (spImg.decode) spImg.decode().then(reveal).catch(() => {});
 
     positionPop(card);
     pop.classList.add('is-on');
@@ -324,7 +357,7 @@
       card.addEventListener('mouseenter', () => {
         popCard = card;
         clearTimeout(popTimer);
-        popTimer = setTimeout(() => { if (popCard === card) showPop(card); }, 320);
+        popTimer = setTimeout(() => { if (popCard === card) showPop(card); }, 90);
       });
       card.addEventListener('mouseleave', hidePop);
     });
