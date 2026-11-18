@@ -1025,6 +1025,184 @@
   const modalPro = $('simulate-pro-unlock');
   if (modalPro) modalPro.addEventListener('click', () => { setPro(true); $('pro-modal').hidden = true; });
 
+  const labBench = $('lab-bench');
+  if (labBench) {
+    const toolFromHash = () => {
+      const id = (location.hash || '').replace('#', '');
+      const pane = document.getElementById(id);
+      return pane && pane.getAttribute('data-lab-pane');
+    };
+    const openTool = (name) => {
+      if (!labBench.querySelector(`[data-lab-pane="${name}"]`)) return;
+      labBench.querySelectorAll('[data-lab-tool]').forEach((btn) => {
+        const on = btn.getAttribute('data-lab-tool') === name;
+        btn.classList.toggle('is-on', on);
+        btn.setAttribute('aria-selected', on ? 'true' : 'false');
+      });
+      labBench.querySelectorAll('[data-lab-pane]').forEach((pane) => {
+        pane.classList.toggle('is-on', pane.getAttribute('data-lab-pane') === name);
+      });
+    };
+    labBench.querySelectorAll('[data-lab-tool]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        click(980);
+        openTool(btn.getAttribute('data-lab-tool'));
+      });
+    });
+    if (toolFromHash()) openTool(toolFromHash());
+    window.addEventListener('hashchange', () => {
+      const name = toolFromHash();
+      if (name) openTool(name);
+    });
+
+    const slipFields = ['slip-goal', 'slip-done', 'slip-out', 'slip-files', 'slip-next'];
+    const renderSlip = () => {
+      const [goal, done, out, files, next] = slipFields.map((id) => $(id).value.trim());
+      $('slip-out-view').textContent = `目标\n${goal}\n\n已验证\n${done}\n\n排除过的方向\n${out}\n\n关键文件\n${files}\n\n下一步\n${next}`;
+    };
+    slipFields.forEach((id) => $(id).addEventListener('input', renderSlip));
+    renderSlip();
+    $('slip-copy').addEventListener('click', async () => {
+      click(1200);
+      await copyText($('slip-out-view').textContent);
+      toast('✓ 交接单已复制');
+    });
+
+    const swatchPresets = {
+      paper: ['#FFFFFF', '#F6F7F9', '#0A0A0B', '#2563EB'],
+      cloth: ['#F4F1EA', '#2C3358', '#1C223D', '#8E8A7E'],
+      ink: ['#0E0E0E', '#EFEAEA', '#1E9E52', '#060607'],
+    };
+    const swatchNames = ['底', '面', '字', '强调'];
+    let swatchColors = swatchPresets.paper.slice();
+    const paintSwatches = () => {
+      $('swatch-row').innerHTML = swatchColors
+        .map((hex, i) => `<span class="swatch-chip"><i style="background:${hex}"></i>${swatchNames[i]} ${hex}</span>`)
+        .join('');
+      $('swatch-prompt').textContent = `请按这四色做界面。底 ${swatchColors[0]}，面 ${swatchColors[1]}，字 ${swatchColors[2]}，强调只用 ${swatchColors[3]}。`;
+    };
+    const pickFour = (buckets) => {
+      const ranked = [...buckets.values()].filter((p) => p.n > 2).sort((a, b) => b.n - a.n);
+      const chosen = [];
+      const dist = (a, b) => {
+        const dr = a.r - b.r;
+        const dg = a.g - b.g;
+        const db = a.b - b.b;
+        return dr * dr + dg * dg + db * db;
+      };
+      for (const p of ranked) {
+        const avg = { r: p.r / p.n, g: p.g / p.n, b: p.b / p.n };
+        if (chosen.every((c) => dist(c, avg) > 1600)) chosen.push(avg);
+        if (chosen.length === 4) break;
+      }
+      while (chosen.length < 4) chosen.push(chosen[chosen.length - 1] || { r: 10, g: 10, b: 11 });
+      return chosen.map((c) => {
+        const h = (n) => Math.max(0, Math.min(255, Math.round(n))).toString(16).padStart(2, '0');
+        return `#${h(c.r)}${h(c.g)}${h(c.b)}`.toUpperCase();
+      });
+    };
+    $('swatch-presets').addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-swatch]');
+      if (!btn) return;
+      click(900);
+      swatchColors = swatchPresets[btn.getAttribute('data-swatch')].slice();
+      paintSwatches();
+    });
+    $('swatch-file').addEventListener('change', () => {
+      const file = $('swatch-file').files && $('swatch-file').files[0];
+      if (!file) return;
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        canvas.width = 36;
+        canvas.height = 36;
+        const ctx = canvas.getContext('2d', { willReadFrequently: true });
+        ctx.drawImage(img, 0, 0, 36, 36);
+        const data = ctx.getImageData(0, 0, 36, 36).data;
+        const buckets = new Map();
+        for (let i = 0; i < data.length; i += 16) {
+          const r = data[i];
+          const g = data[i + 1];
+          const b = data[i + 2];
+          const a = data[i + 3];
+          if (a < 200) continue;
+          const key = `${r >> 4},${g >> 4},${b >> 4}`;
+          const cur = buckets.get(key) || { n: 0, r: 0, g: 0, b: 0 };
+          cur.n += 1;
+          cur.r += r;
+          cur.g += g;
+          cur.b += b;
+          buckets.set(key, cur);
+        }
+        swatchColors = pickFour(buckets);
+        paintSwatches();
+        URL.revokeObjectURL(img.src);
+      };
+      img.src = URL.createObjectURL(file);
+    });
+    paintSwatches();
+    $('swatch-copy').addEventListener('click', async () => {
+      click(1200);
+      await copyText(swatchColors.join(' ') + '\n' + $('swatch-prompt').textContent);
+      toast('✓ 四色已复制');
+    });
+
+    const renderFolio = () => {
+      const raw = $('folio-src').value.trim();
+      let paras = raw.split(/\n\s*\n/).map((s) => s.trim()).filter(Boolean);
+      if (paras.length < 2) {
+        const bits = raw.split(/。/).map((s) => s.trim()).filter(Boolean);
+        paras = [];
+        for (let i = 0; i < bits.length; i += 2) paras.push(`${bits.slice(i, i + 2).join('。')}。`);
+      }
+      const escHtml = (s) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+      const sections = paras.map((body, i) => {
+        const cut = body.split(/[。？！?]/)[0].trim();
+        return { id: `folio-s-${i + 1}`, num: String(i + 1).padStart(2, '0'), title: (cut || body).slice(0, 18), body };
+      });
+      $('folio-toc').innerHTML = sections
+        .map((s) => `<li><a href="#${s.id}">${s.num} ${escHtml(s.title)}</a></li>`)
+        .join('');
+      $('folio-prose').innerHTML = sections
+        .map((s) => `<h4 id="${s.id}">${s.num} ${escHtml(s.title)}</h4><p>${escHtml(s.body).replace(/\n/g, '<br>')}</p>`)
+        .join('');
+    };
+    $('folio-src').addEventListener('input', renderFolio);
+    renderFolio();
+
+    const plasticWords = ['智能驱动', '重新定义', '一站式', '底层逻辑', '深度融合', '全新升级', '致力于', '赋能', '打造', '闭环', '抓手', '极致', '全方位', '助力', '颠覆'];
+    const renderPlastic = () => {
+      const raw = $('plastic-src').value.trim();
+      let html = raw.replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+      let hits = 0;
+      plasticWords.forEach((word) => {
+        if (!html.includes(word)) return;
+        hits += html.split(word).length - 1;
+        html = html.split(word).join(`<mark>${word}</mark>`);
+      });
+      $('plastic-read').innerHTML = html || '贴一句进来。';
+      $('plastic-note').textContent = hits
+        ? `点出 ${hits} 处空转。收成一句具体的事：谁，在哪个界面，完成哪一步。`
+        : '这句没有碰上词表里的空话。';
+    };
+    $('plastic-src').addEventListener('input', renderPlastic);
+    renderPlastic();
+
+    const nightFields = ['night-done', 'night-stuck', 'night-next'];
+    const renderNight = () => {
+      const [done, stuck, next] = nightFields.map((id) => $(id).value.trim());
+      const day = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Shanghai', year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date());
+      $('night-out').textContent = `夜间纸条 · ${day.replace(/-/g, '.')}\n\n做成了\n${done}\n\n卡住了\n${stuck}\n\n明天第一件\n${next}`;
+    };
+    nightFields.forEach((id) => $(id).addEventListener('input', renderNight));
+    renderNight();
+    $('night-copy').addEventListener('click', async () => {
+      click(1100);
+      await copyText($('night-out').textContent);
+      toast('✓ 纸条已复制');
+    });
+  }
+
   const sourceFolio = document.querySelector('.source-folio');
   if (sourceFolio) {
     const links = [...sourceFolio.querySelectorAll('.source-toc a')];
