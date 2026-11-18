@@ -612,7 +612,7 @@
       }
       $('wb-strengths').innerHTML = item.strengths.map((s) => '<li>' + s + '</li>').join('');
       const link = $('wb-article-link');
-      link.href = '/read/' + item.relatedSlug;
+      link.href = (window.__BASE_PATH__ || '') + '/read/' + item.relatedSlug;
       link.textContent = item.relatedTitle + ' →';
       if (dossierCard) dossierCard.classList.remove('is-switching');
     }, 130);
