@@ -2,7 +2,8 @@
 slug: rethinking-claude-code-best-practices
 kind: curated
 publisher: youtube
-coverTitle: 重新思考 Claude Code
+coverFace: ticket
+coverTitle: 说明|做减法
 category: YouTube · Claude Code 演讲
 title: 重新思考 Claude Code 最佳实践：给 CLAUDE.md 做减法与自检闭环
 subtitle: 随着新一代旗舰模型推理能力跃升，早期塞满全大写警告的繁琐规则反而成了绊脚石——详解现代三层安全边界与 Hooks 自动把关。

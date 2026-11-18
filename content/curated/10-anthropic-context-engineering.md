@@ -2,6 +2,8 @@
 slug: anthropic-context-engineering
 kind: curated
 publisher: anthropic
+coverFace: poster
+coverTitle: 注意力|有预算
 category: Anthropic · Agent
 title: Anthropic 的上下文工程：注意力是有预算的
 subtitle: 提示词写得漂亮只是开始。Agent 每转一圈都会产生新信息，上下文工程要决定下一圈到底把哪些 token 留下来。

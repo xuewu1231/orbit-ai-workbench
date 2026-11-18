@@ -3,7 +3,8 @@ slug: four-layer-cognition
 layout: source
 kind: curated
 publisher: cognition
-coverTitle: 四层认知
+coverFace: index
+coverTitle: 四层|认知
 category: 认知与判断
 title: 人的一生都在为自己的认知买单
 subtitle: 那么什么是认知，如何提升它

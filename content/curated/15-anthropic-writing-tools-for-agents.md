@@ -2,7 +2,8 @@
 slug: writing-tools-for-agents
 kind: curated
 publisher: anthropic
-coverTitle: 为 Agent 编写好用的工具
+coverFace: band
+coverTitle: 工具|要好用
 category: Anthropic · 工具与 MCP 设计
 title: 如何为 AI Agent 编写好用的工具：别把传统后端 API 直接丢给大模型
 subtitle: 传统 API 是给确定性代码调用的，而 Agent 工具是给非确定性推理模型看的——详解工具合并、命名空间、高密度返回与评测驱动调优。

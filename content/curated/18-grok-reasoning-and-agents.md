@@ -2,7 +2,8 @@
 slug: grok-reasoning-and-multi-agent
 kind: curated
 publisher: xai
-coverTitle: Grok 推理与实时情报流
+coverFace: low
+coverTitle: 先深想
 category: Grok · xAI 推理与搜索
 title: Grok 推理引擎与实时搜索协同指南：思维预算控制与多智能体研究流
 subtitle: 拆解 xAI 推理模型“先深思后输出”的档位控制机制，以及如何结合实时 X 社区信号与网页工具做一手高频情报挖掘。

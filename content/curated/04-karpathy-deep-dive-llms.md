@@ -2,6 +2,8 @@
 slug: karpathy-deep-dive-llms
 kind: curated
 publisher: youtube
+coverFace: poster
+coverTitle: 模型|从哪来
 category: AI 基础与提效
 title: 深入理解大语言模型：从预训练、分词到强化学习
 subtitle: Karpathy 用一集面向普通观众的视频，把 ChatGPT 这类模型拆成可以记住的心智模型：它先学会续写互联网，再被教成会对话的助手。

@@ -2,7 +2,8 @@
 slug: x-builders-agentic-workflow
 kind: curated
 publisher: creators
-coverTitle: 从凭感觉写到严谨交付
+coverFace: band
+coverTitle: 先写|规格
 category: X · 独立开发者编程工作流
 title: 从 Vibe Coding 到严谨交付：一线工程师高产不翻车的 AI 研发工作流
 subtitle: 代码生成的成本跌到了地板，但“验证与兜底”的成本从未下降——综合 Addy Osmani 与 X 头部构建者验证有效的规格先行与防认知投降法则。

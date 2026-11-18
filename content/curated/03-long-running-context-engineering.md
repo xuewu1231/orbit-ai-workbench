@@ -2,9 +2,10 @@
 slug: long-running-context-engineering
 kind: curated
 publisher: anthropic
+coverFace: ticket
 category: Agent 与工程架构
 title: 长周期运行 Agent 的上下文工程与自检护栏设计
-coverTitle: 长任务的交接账本
+coverTitle: 交接|账本
 subtitle: 当一个复杂功能需要 Agent 连续推进数小时、跨越多个上下文窗口时，如何设计进度交接账本与防跑偏护栏？
 access: free
 date: 2026.11.03

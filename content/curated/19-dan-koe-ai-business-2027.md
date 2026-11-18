@@ -2,7 +2,8 @@
 slug: dan-koe-ai-business-2027
 kind: curated
 publisher: creators
-coverTitle: 一人创意团队指南
+coverFace: poster
+coverTitle: 一人|公司
 category: X / 超级个体商业指南
 title: 2027 年最赚钱的 AI 生意：一人创意团队指南
 subtitle: 当写代码和生成内容的边际成本双双趋近于零，真正值钱的不再是“代工执行”，而是独特品味、跨学科视野与模块化 AI 工作流的组合拳。

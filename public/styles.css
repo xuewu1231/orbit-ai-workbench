@@ -3200,15 +3200,56 @@ html[data-theme="dark"] .related-wrap { --shelf: #3a342c; }
 .book-title {
   margin-top: 14px;
   font-family: "Newsreader", "Iowan Old Style", Palatino, "Songti SC", "Noto Serif SC", serif;
-  font-size: 22px;
+  font-size: 26px;
   font-weight: 650;
-  line-height: 1.2;
+  line-height: 1.12;
   letter-spacing: -0.03em;
   display: -webkit-box;
-  -webkit-line-clamp: 5;
+  -webkit-line-clamp: 4;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
+.book.face-poster { height: 286px; rotate: -1.1deg; }
+.book.face-poster .book-title { margin-top: 28px; font-size: 34px; line-height: 1.02; letter-spacing: -0.04em; }
+.book.face-band { height: 250px; }
+.book.face-band .book-board {
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--face-ink) 18%, var(--cloth)) 0 72px, var(--cloth) 72px),
+    var(--cloth);
+}
+.book.face-band .book-title { margin-top: 36px; font-size: 24px; }
+.book.face-index { height: 272px; rotate: 0.9deg; }
+.book.face-index .book-face::before {
+  content: attr(data-glyph);
+  position: absolute;
+  right: 8px;
+  top: 28px;
+  font-family: "Newsreader", "Songti SC", Palatino, serif;
+  font-size: 108px;
+  line-height: 0.8;
+  opacity: 0.16;
+  pointer-events: none;
+}
+.book.face-index .book-title { position: relative; margin-top: auto; font-size: 24px; }
+.book.face-ticket { height: 236px; rotate: 1.3deg; }
+.book.face-ticket .book-face {
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--face-ink) 42%, transparent);
+  margin: 10px 8px 10px 10px;
+  height: calc(100% - 20px);
+  border-radius: 2px;
+}
+.book.face-ticket .book-title { margin-top: 10px; font-size: 22px; }
+.book.face-low { height: 264px; rotate: -0.5deg; }
+.book.face-low .book-title { margin-top: auto; margin-bottom: 4px; font-size: 28px; }
+.book.face-low .book-author { margin-top: 0; padding-top: 8px; }
+.book.face-poster:hover,
+.book.face-index:hover,
+.book.face-ticket:hover,
+.book.face-low:hover,
+.book.face-poster:focus-visible,
+.book.face-index:focus-visible,
+.book.face-ticket:focus-visible,
+.book.face-low:focus-visible { rotate: 0deg; }
 .book-author {
   margin-top: auto;
   padding-top: 12px;
@@ -3231,6 +3272,8 @@ html[data-theme="dark"] .related-wrap { --shelf: #3a342c; }
 .book.press-creators { --cloth: #221c18; --spine: #14100d; --face-ink: #f8f1e7; }
 .book.press-creators .book-press { color: #f59e0b; opacity: 1; }
 .book.press-cognition { --cloth: #2c3358; --spine: #1c223d; --face-ink: #f4f1ea; }
+.book.press-product { --cloth: #6e2c2a; --spine: #4a1c1b; --face-ink: #f8efe6; }
+.book.press-product .book-press { color: #f0c7a0; opacity: 1; }
 .book.press-other { --cloth: #1d3a34; --spine: #122622; --face-ink: #e7f3ee; }
 .press-swatch.press-openai { background: #16130f; }
 .press-swatch.press-youtube { background: #6d2433; }
@@ -3239,6 +3282,7 @@ html[data-theme="dark"] .related-wrap { --shelf: #3a342c; }
 .press-swatch.press-xai { background: #151b26; }
 .press-swatch.press-creators { background: #221c18; }
 .press-swatch.press-cognition { background: #2c3358; }
+.press-swatch.press-product { background: #6e2c2a; }
 .press-swatch.press-other { background: #1d3a34; }
 .book.press-anthropic .book-press { color: #ffe0d1; opacity: 1; }
 .reader-orig-meta { display: inline-flex; align-items: center; gap: 7px; }
@@ -3261,13 +3305,19 @@ html[data-theme="dark"] .related-wrap { --shelf: #3a342c; }
 .shelf-books.is-related .book { width: 158px; height: 220px; }
 .shelf-books.is-teaser .book-title,
 .shelf-books.is-related .book-title { font-size: 18px; }
+.shelf-books.is-teaser .book.face-poster .book-title,
+.shelf-books.is-related .book.face-poster .book-title { font-size: 22px; }
+.shelf-books.is-teaser .book,
+.shelf-books.is-related .book { rotate: 0deg; }
 .related-wrap .shelf-books { margin-top: 8px; }
 
 @media (max-width: 860px) {
   .library-teaser { grid-template-columns: 1fr; }
   .press-shelf-head { flex-direction: column; align-items: flex-start; }
   .shelf-books { gap: 18px 12px; }
-  .book { width: calc(50% - 8px); height: 240px; }
+  .book { width: calc(50% - 8px); height: 250px; rotate: 0deg; }
+  .book.face-poster { height: 276px; }
+  .book.face-ticket { height: 228px; }
   .shelf-books.is-teaser .book,
   .shelf-books.is-related .book { width: calc(50% - 8px); height: 230px; }
 }

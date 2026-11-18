@@ -2,7 +2,8 @@
 slug: xai-grok-agent-tools
 kind: curated
 publisher: xai
-coverTitle: Grok 服务端工具与结构化输出
+coverFace: index
+coverTitle: 服务端|的工具
 category: Grok · xAI 开发者指南
 title: Grok 服务端工具与结构化输出实战：搜索、代码执行与严格 Schema 协同
 subtitle: xAI 把网页检索、X 实时流搜索与 Python 沙箱收进统一的服务端 Agent Tools 循环——详解如何让实时情报稳稳落进严格 JSON 结构里。

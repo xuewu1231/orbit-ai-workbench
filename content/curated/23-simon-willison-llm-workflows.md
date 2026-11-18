@@ -2,7 +2,8 @@
 slug: simon-willison-llm-workflows
 kind: curated
 publisher: creators
-coverTitle: 用好大模型写代码的实战铁律
+coverFace: low
+coverTitle: 高速|实习生
 category: X / 独立开发者实战笔记
 title: Simon Willison 的 AI 辅助编程指南：把大模型当成不知疲倦的高速实习生
 subtitle: 作为开源界最高产的 AI 实践者之一，Simon Willison 拆解了他每天如何用大模型秒造小工具、写测试兜底，以及为什么“你自己的工程积累越深，AI 杠杆反而越大”。

@@ -2,7 +2,8 @@
 slug: google-agents-architecture
 kind: curated
 publisher: google
-coverTitle: Google〈Agents〉架构白皮书
+coverFace: index
+coverTitle: Agents
 category: Gemini · Google
 title: Google 官方《Agents》架构白皮书：模型、工具分类学与编排循环全解
 subtitle: 厘清生成式 AI 应用与真正自治 Agent 的本质边界——系统拆解推理核、三大工具形态（Extensions / Functions / Data Stores）与认知编排层。

@@ -2,6 +2,8 @@
 slug: high-leverage-product-teams
 kind: curated
 publisher: other
+coverFace: band
+coverTitle: 十人|打百人
 category: 产品哲学与组织杠杆
 title: 现代高人效产品团队的协作方法论：小团队如何打出十倍杠杆
 subtitle: 拒绝用臃肿流程替代判断力——为什么顶尖产品工坊坚持『小编制全栈小组 + 固定周期押注 + 公开写作驱动决策』？
