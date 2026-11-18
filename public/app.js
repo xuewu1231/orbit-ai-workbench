@@ -1025,6 +1025,25 @@
   const modalPro = $('simulate-pro-unlock');
   if (modalPro) modalPro.addEventListener('click', () => { setPro(true); $('pro-modal').hidden = true; });
 
+  const sourceFolio = document.querySelector('.source-folio');
+  if (sourceFolio) {
+    const links = [...sourceFolio.querySelectorAll('.source-toc a')];
+    const heads = links
+      .map((a) => document.getElementById((a.getAttribute('href') || '').slice(1)))
+      .filter(Boolean);
+    const mark = () => {
+      if (!heads.length) return;
+      const line = Math.min(240, window.innerHeight * 0.32);
+      let current = heads[0];
+      for (const head of heads) {
+        if (head.getBoundingClientRect().top <= line) current = head;
+      }
+      links.forEach((a) => a.classList.toggle('is-current', a.getAttribute('href') === `#${current.id}`));
+    };
+    document.addEventListener('scroll', mark, { passive: true });
+    mark();
+  }
+
   const audioBtn = $('audio-companion-btn');
   const audioBar = $('audio-player-bar');
   const audioStop = $('audio-stop-btn');
