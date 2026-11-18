@@ -206,6 +206,8 @@
       const r = heroStage.getBoundingClientRect();
       const nx = (e.clientX - r.left) / r.width - 0.5;
       const ny = (e.clientY - r.top) / r.height - 0.5;
+      heroStage.style.setProperty('--hx', ((e.clientX - r.left) / r.width * 100).toFixed(1) + '%');
+      heroStage.style.setProperty('--hy', ((e.clientY - r.top) / r.height * 100).toFixed(1) + '%');
       parallaxCards.forEach((card) => {
         if (card.matches(':hover')) return;
         const f = Number(card.getAttribute('data-parallax') || 12);
@@ -213,6 +215,42 @@
         card.style.setProperty('--py', (ny * f).toFixed(1) + 'px');
       });
     });
+  }
+
+  const productStage = $('product-stage');
+  if (productStage) {
+    const tabs = [...productStage.querySelectorAll('[data-product-tab]')];
+    const panels = [...productStage.querySelectorAll('[data-product-panel]')];
+    const bar = productStage.querySelector('.atelier-bar i');
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let idx = 0;
+    let timer = null;
+    let paused = false;
+    function showProduct(i) {
+      idx = (i + tabs.length) % tabs.length;
+      tabs.forEach((tab, n) => {
+        const on = n === idx;
+        tab.classList.toggle('is-on', on);
+        tab.setAttribute('aria-selected', on ? 'true' : 'false');
+      });
+      panels.forEach((panel, n) => panel.classList.toggle('is-on', n === idx));
+      if (bar && !reduce) {
+        bar.style.animation = 'none';
+        void bar.offsetWidth;
+        bar.style.animation = '';
+      }
+    }
+    tabs.forEach((tab, n) => {
+      tab.addEventListener('click', () => {
+        click(1040);
+        showProduct(n);
+      });
+    });
+    productStage.addEventListener('mouseenter', () => { paused = true; });
+    productStage.addEventListener('mouseleave', () => { paused = false; });
+    if (!reduce && tabs.length > 1) {
+      timer = setInterval(() => { if (!paused) showProduct(idx + 1); }, 5400);
+    }
   }
 
   document.querySelectorAll('.magnetic-btn').forEach((btn) => {
