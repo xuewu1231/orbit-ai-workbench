@@ -14,7 +14,7 @@ sourceUrl: https://www.anthropic.com/engineering
 coverAccent: pine
 coverSymbol: layers
 pairedSkill: "@folio/skill-verify-gate"
-relatedSlugs: agent-harness-and-skills,less-tools-better-agents
+relatedSlugs: anthropic-long-running-harness,anthropic-context-engineering,less-tools-better-agents
 summary: 梳理长链路自治 Agent 最核心的三个工程支柱：结构化交接文件、不可篡改的验收清单，以及沙箱环境快速重置能力。
 studioNoteTitle: 我们的实战笔记 · 我们怎么用「交接单」跑长任务？
 studioNoteBody: 很多人在让 AI 写大项目时喜欢在一个超长对话框里死磕到底，聊到后面模型开始遗忘最初约束甚至胡乱删改。这篇工程总结点破了窗户纸：要把每一次上下文窗口当成“一班岗的工程师”，换班靠的不是把十万字聊天记录硬塞给下一任，而是留下一张干净的『进度账本 + 实测快照』。我们据此封装了内部的交接模板，复杂重构稳定性大幅提升。

@@ -14,7 +14,7 @@ sourceUrl: https://vercel.com/blog
 coverAccent: slate
 coverSymbol: minimal
 pairedSkill: "@folio/skill-verify-gate"
-relatedSlugs: agent-harness-and-skills,long-running-context-engineering
+relatedSlugs: openai-harness-engineering,anthropic-building-effective-agents,long-running-context-engineering
 summary: 精编自海外经典线上 Agent 重构实录，附我们团队在内部数据分析与研发 Agent 上实测减法改造后的对比批注与重绘图解。
 studioNoteTitle: 我们的实战笔记 · 为什么这篇实录值得细看？
 studioNoteBody: 我们在今年三季度做内部自动化管线时踩过一模一样的坑——当时大家热衷于给每个内部系统封装专用工具接口，结果模型经常在相似参数间选错，维护成本极高。读完这篇案例后，我们果断砍掉了 6 个重型封装，改为『受控沙箱命令行 + 语义清晰的文件目录树 + 按需读取的 SKILL.md』。实测不仅 Token 开销立减四成，连边缘异常的自愈能力都上了一个台阶。下文由我们团队提炼重构，并重绘了配套中文架构对比图。
