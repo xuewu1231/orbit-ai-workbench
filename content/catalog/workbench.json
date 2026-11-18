@@ -1,0 +1,154 @@
+{
+  "tracks": [
+    {
+      "id": "planning",
+      "code": "01",
+      "name": "Architect Core · 总师规划台",
+      "desc": "复杂系统拆解、架构决策与跨模块重构",
+      "items": [
+        {
+          "id": "opus-architect",
+          "name": "Claude Opus 5.5 · Chief Architect",
+          "badge": "综合第一 · 核心总师",
+          "tier": "主力总师",
+          "color": "#2563EB",
+          "scores": [
+            { "label": "架构推理深度", "val": 98 },
+            { "label": "跨文件稳定性", "val": 96 },
+            { "label": "边界自检严谨度", "val": 95 }
+          ],
+          "summary": "处理复杂业务逻辑拆解、跨十几个模块改代码最稳的“技术合伙人”。懂克制、不乱改上下游无关接口，专门啃最硬的骨头。",
+          "strengths": [
+            "需求理解极准，配合 150 行以内的精简项目规则，长链路一次成功率最高",
+            "遇到真实报错能顺着堆栈定位根因，而不是盲目猜补丁"
+          ],
+          "boundaries": "单次调用成本偏高，简单数据清洗或固定格式批处理交给轻量引擎即可。",
+          "pairedSkill": "npx orbit-ai run arch-review",
+          "relatedSlug": "agent-harness-and-skills",
+          "relatedTitle": "从写提示词到建系统：我们是怎么搭团队级 Agent 工作流的"
+        },
+        {
+          "id": "gemini-carbon",
+          "name": "Gemini 4 Carbon · Deep Synthesizer",
+          "badge": "百万上下文 · 全景洞察",
+          "tier": "全局智囊",
+          "color": "#0EA5E9",
+          "scores": [
+            { "label": "超长上下文吞吐", "val": 99 },
+            { "label": "多模态视觉理解", "val": 96 },
+            { "label": "高认知结构归纳", "val": 97 }
+          ],
+          "summary": "超长窗口王牌，适合一次性吃透整座代码仓、长视频演讲或十几篇竞品网站做深度拆解与战略推演。",
+          "strengths": [
+            "全局结构化归纳与母语级长文表达极通透，毫无生硬翻译腔",
+            "看设计截图、还原交互细节、拆解视频逻辑一气呵成"
+          ],
+          "boundaries": "交代任务时重点定好“目标与评判标尺”，少用死板机械步骤限制它。",
+          "pairedSkill": "npx orbit-ai run deep-digest",
+          "relatedSlug": "compounding-byproducts",
+          "relatedTitle": "为什么我们要建这个 AI 总站：对内给自己复用，对外沉淀成资产"
+        }
+      ]
+    },
+    {
+      "id": "design",
+      "code": "02",
+      "name": "Craft Forge · 视觉与组件工坊",
+      "desc": "反塑料感界面、硬件触感控件与 3D 可视化",
+      "items": [
+        {
+          "id": "fable-ui",
+          "name": "Claude 5.2 Fable + Clean UI Kit",
+          "badge": "出版级留白 · 反塑料感",
+          "tier": "审美主力",
+          "color": "#4F46E5",
+          "scores": [
+            { "label": "版式呼吸与留白", "val": 97 },
+            { "label": "组件交互细腻度", "val": 95 },
+            { "label": "多方案盲选效率", "val": 94 }
+          ],
+          "summary": "搭配我们沉淀在百宝箱里的 Skimbly / SPEC-01 / Linear 视觉 Token 约束，直接产出克制、耐看、有触感的产品界面。",
+          "strengths": [
+            "精准把控外灰内白双层卡片、微边框对比度与紧凑几何标题节奏",
+            "新页面开工先并行出 3 版不同气质原型，团队一眼选出最优解"
+          ],
+          "boundaries": "必须提前加载禁用清单（禁廉价蓝紫发光渐变、禁杂乱图标混搭）。",
+          "pairedSkill": "npx orbit-ai add skill-clean-ui",
+          "relatedSlug": "anti-template-design-system",
+          "relatedTitle": "怎么去掉 AI 生成网页的“模板塑料味”：我们的极简界面规范"
+        },
+        {
+          "id": "motion-3d",
+          "name": "Kinetic Visual & 3D Globe Engine",
+          "badge": "60fps 代码级动效与地图",
+          "tier": "视觉王牌",
+          "color": "#10B981",
+          "scores": [
+            { "label": "信息可视化张力", "val": 98 },
+            { "label": "视网膜屏清晰度", "val": 100 },
+            { "label": "参数化复用速度", "val": 93 }
+          ],
+          "summary": "用纯代码驱动语义化 SVG 架构图、WebGL 点阵地球与 60fps 3D 科普大片，改一行参数即可重新渲染全套视觉资产。",
+          "strengths": [
+            "体积仅几 KB 却具备极强科技精致感，深浅色主题无缝自适应",
+            "把抽象复杂的系统逻辑在 30 秒内讲得连外行都一眼秒懂"
+          ],
+          "boundaries": "动效贵精不贵多，一屏只保留 1-2 处视觉焦点，避免喧宾夺主。",
+          "pairedSkill": "npx orbit-ai run visual-forge",
+          "relatedSlug": "ai-native-mental-model",
+          "relatedTitle": "一页纸高认知：AI Native 人才与普通“工具人”的 4 个本质区别"
+        }
+      ]
+    },
+    {
+      "id": "execution",
+      "code": "03",
+      "name": "Swarm Runner · 多角色并发台",
+      "desc": "7 类专职岗位分工、并行沙箱与自动验收",
+      "items": [
+        {
+          "id": "codex-sol",
+          "name": "GPT-6.1 Sol · Parallel Swarm",
+          "badge": "多分支并发 · 自动过测",
+          "tier": "并发引擎",
+          "color": "#059669",
+          "scores": [
+            { "label": "多任务并行吞吐", "val": 97 },
+            { "label": "单测自修复闭环", "val": 94 },
+            { "label": "综合投入产出比", "val": 98 }
+          ],
+          "summary": "方向和接口契约敲定后，按专职岗位切出 3-5 个独立沙箱让它并发推进，挂上 30 秒验收钩子，测试不过绝不交卷。",
+          "strengths": [
+            "人只抓首尾 20% 标准与终审，中间 80% 编码补测全自动并行跑完",
+            "严格执行可逆动作放行、不可逆动作卡人工审批的安全红线"
+          ],
+          "boundaries": "前期需求模糊时切忌直接并发，先在总师规划台对齐一页纸接口定义。",
+          "pairedSkill": "npx orbit-ai add skill-verify-gate",
+          "relatedSlug": "role-based-ai-team",
+          "relatedTitle": "按岗位组建你的 AI 团队：从“全能聊天框”到 7 类专职岗位蓝图"
+        },
+        {
+          "id": "deepseek-flash",
+          "name": "DeepSeek V4.1 · Radar Pipe",
+          "badge": "全天候情报清洗管线",
+          "tier": "高性价比管线",
+          "color": "#64748B",
+          "scores": [
+            { "label": "批量清洗性价比", "val": 99 },
+            { "label": "结构化抽取精度", "val": 93 },
+            { "label": "响应低延迟表现", "val": 96 }
+          ],
+          "summary": "24 小时在后台巡检上百个技术源、清洗元数据并提取结构化摘要，日均运行成本不到一杯咖啡的零头。",
+          "strengths": [
+            "JSON 字段提取稳、吞吐快，是团队情报筛子与收藏入库流的最佳底座",
+            "先由它完成 90% 粗筛降噪，再交由主力模型做深度批注"
+          ],
+          "boundaries": "涉及最终对外文案打磨或复杂架构判断时，交回总师台终审。",
+          "pairedSkill": "npx orbit-ai run radar-sync",
+          "relatedSlug": "less-tools-better-agents",
+          "relatedTitle": "给 Agent 工具做减法：为什么砍掉 80% 的专用工具反而更强"
+        }
+      ]
+    }
+  ]
+}

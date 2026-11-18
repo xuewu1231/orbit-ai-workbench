@@ -1,0 +1,336 @@
+{
+  "products": [
+    {
+      "id": "taste-clipper",
+      "name": "Taste Clipper · 灵感一键入库插件",
+      "tagline": "逛到好网站，点一下就变成「人能看 + AI 能用」的收藏卡",
+      "formBadge": "浏览器插件",
+      "stage": "beta",
+      "icon": "✂",
+      "summary": "在任意网页点插件按钮：自动截图、提取主色板与字体、判断它是设计参考还是学习资料，并生成一段「复制给 AI」的提示词，直接同步进 Orbit 百宝箱。",
+      "why": "收藏这件事最大的阻力是「懒得整理」。把整理成本压到 10 秒，百宝箱才会真正越攒越厚。",
+      "mvp": "Chrome 插件 + 截图 + 取色 + 调用一次模型生成「好在哪 / 可借鉴点」，POST 到本站 /api/vault-add。",
+      "metrics": "收藏整理从 10 分钟降到 10 秒",
+      "relatedArticle": "compounding-byproducts",
+      "ctaLabel": "看沉淀方法论 →"
+    },
+    {
+      "id": "orbit-mcp",
+      "name": "Orbit MCP · 让 AI 直接查百宝箱",
+      "tagline": "Claude Code / Cursor 写页面时，自己来这里找设计参考",
+      "formBadge": "MCP Server / CLI",
+      "stage": "concept",
+      "icon": "⌁",
+      "summary": "把百宝箱暴露成 MCP 工具：Agent 可以直接调用 search_vault(\"暗色数据看板\")，拿回最匹配的参考网站、配色和整理好的提示词，不用人再来回复制粘贴。",
+      "why": "这是「给 AI 看的网站」的终局形态：人负责收藏和判断品味，AI 负责在干活时主动检索。",
+      "mvp": "读取本站 /vault.json，提供 search_vault 与 get_prompt 两个工具，先在本地 Claude Code 里跑通。",
+      "metrics": "本站已提供 /llms.txt 与 /vault.json 作为数据底座",
+      "relatedArticle": "agent-harness-and-skills",
+      "ctaLabel": "看 Agent 工作流 →"
+    },
+    {
+      "id": "prompt-pocket",
+      "name": "Prompt Pocket · 随身提示词口袋",
+      "tagline": "在任何聊天框里，⌥ Space 呼出百宝箱，回车直接粘贴",
+      "formBadge": "Raycast / 菜单栏应用",
+      "stage": "concept",
+      "icon": "⌥",
+      "summary": "不用打开网站：在 Claude、Gemini、Cursor 任意输入框里按快捷键，模糊搜索「交接单」「Skimbly 风格」，选中即把整理好的纯文本提示词粘贴进去。",
+      "why": "人记不住 prompt，但记得住一个快捷键。把复用的最后一步缩短到 2 秒。",
+      "mvp": "Raycast Extension 读取 /vault.json，列表展示 + 回车复制 + 自动粘贴。",
+      "metrics": "预计每天节省 20+ 次重复描述",
+      "relatedArticle": "ai-native-mental-model",
+      "ctaLabel": "看高认知图谱 →"
+    },
+    {
+      "id": "style-dna",
+      "name": "Style DNA · 网站风格基因提取器",
+      "tagline": "输入一个网址，输出可直接用的设计 Token 与风格说明书",
+      "formBadge": "Web 工具",
+      "stage": "concept",
+      "icon": "◐",
+      "summary": "分析目标网站的配色比例、圆角层级、字体字重、阴影和间距节奏，导出 Tailwind 配置 / CSS 变量，外加一段「请按这个风格设计」的 AI 说明书。",
+      "why": "「我喜欢这个网站的感觉」很难说清楚。把感觉翻译成参数，AI 才能稳定复现。",
+      "mvp": "截图 + DOM 计算样式采样，输出 8 个颜色变量、3 档圆角、字号阶梯和一段风格描述。",
+      "metrics": "把「感觉」变成可复用参数",
+      "relatedArticle": "anti-template-design-system",
+      "ctaLabel": "看去模板味规范 →"
+    },
+    {
+      "id": "handoff-keeper",
+      "name": "Handoff Keeper · 交接单守护者",
+      "tagline": "对话快变长时，自动帮你写好下一窗口的交接单",
+      "formBadge": "Agent Skill",
+      "stage": "beta",
+      "icon": "⇆",
+      "summary": "监测上下文占用，超过阈值时自动生成「目标 / 已验证 / 排除方向 / 关键文件 / 下一步」交接单，新窗口一贴就能满血续上。",
+      "why": "长任务最容易死在换窗口这一步，信息丢一半，AI 就开始重复劳动。",
+      "mvp": "一个 SKILL.md + 交接单模板（已在本站模板区提供），先手动触发，再做自动阈值。",
+      "metrics": "长任务换窗口零信息丢失",
+      "relatedArticle": "long-running-context-engineering",
+      "ctaLabel": "看长任务上下文工程 →"
+    },
+    {
+      "id": "squad-builder",
+      "name": "Squad Builder · AI 岗位编制器",
+      "tagline": "拖拽配置 7 类专职 AI 岗位，一键导出岗位卡",
+      "formBadge": "Web 应用",
+      "stage": "concept",
+      "icon": "☷",
+      "summary": "可视化选择你需要的岗位（研究 / 工程 / 内容 / 销售…），为每个岗位勾选交付物、权限红线和验收标准，导出成 AGENTS.md 或各平台的 Bot 配置。",
+      "why": "按岗位拆分是多 Agent 落地最稳的方式，但从零写岗位卡门槛太高。",
+      "mvp": "基于本站「岗位定义卡」模板做成表单向导，导出纯文本与 Markdown 两种格式。",
+      "metrics": "新团队 10 分钟搭好 AI 编制",
+      "relatedArticle": "role-based-ai-team",
+      "ctaLabel": "看岗位组建指南 →"
+    },
+    {
+      "id": "ai-native-visualizer",
+      "name": "AI Native 动态科普引擎",
+      "tagline": "把抽象的高认知框架，编译成 60fps 结构化演示片",
+      "formBadge": "可视化系统",
+      "stage": "live",
+      "icon": "▶",
+      "summary": "按「定义 → 新旧对比 → 四大支柱 → 总结公式」的金字塔结构，用纯代码驱动镜头与排版，改文案即可重新渲染整支视频。",
+      "why": "复杂认知用文字讲要三千字，用结构化动态画面三十秒就能讲透。",
+      "mvp": "已完成《AI Native 人才全景图谱》84 秒成片。",
+      "metrics": "单支科普成片制作提速 85%",
+      "relatedArticle": "ai-native-mental-model",
+      "ctaLabel": "看背后的认知框架 →"
+    },
+    {
+      "id": "signal-radar",
+      "name": "Daily AI Radar · 情报筛子",
+      "tagline": "每天从 300+ 一手信息源里只留下值得细看的 3 篇",
+      "formBadge": "Web 应用",
+      "stage": "live",
+      "icon": "◎",
+      "summary": "自动巡检一线工程博客与产品发布，过滤软文和二手快讯，只把有真实数据和架构细节的内容推给团队，是「精选好文」的上游。",
+      "why": "信息过载时代，筛选本身就是最稀缺的能力。",
+      "mvp": "已上线：每日定时抓取 + 轻量模型初筛 + 人工精选入库。",
+      "metrics": "每天帮团队省下 2 小时刷信息流",
+      "relatedArticle": "less-tools-better-agents",
+      "ctaLabel": "看精选好文 →"
+    }
+  ],
+  "vaultItems": [
+    {
+      "id": "v-skimbly",
+      "shelf": "design",
+      "kind": "design-site",
+      "kindLabel": "设计好站",
+      "name": "Skimbly",
+      "tag": "极简 SaaS 官网标杆",
+      "url": "https://skimbly.com",
+      "preview": "/previews/skimbly.png",
+      "swatches": ["#FFFFFF", "#F6F7F9", "#2563EB", "#0A0A0B"],
+      "whyGood": "纯白大留白配外灰内白的双层卡片，大标题中间嵌入会轮播的立体小图标，两侧倾斜悬浮卡填满宽屏，再用一块高饱和蓝色展示框收住视线。",
+      "borrow": ["外灰内白的双层卡片（Card-in-Card）层次", "大标题里嵌入叠牌小图标，并自动轮播", "首屏两侧放倾斜悬浮卡，填满宽屏留白"],
+      "whenToUse": "做 AI 产品官网、工具落地页、定价页时，作为首选版式参考。"
+    },
+    {
+      "id": "v-spec-01",
+      "shelf": "design",
+      "kind": "ui-lib",
+      "kindLabel": "UI 组件库",
+      "name": "SPEC-01 / HARDWARE",
+      "tag": "拟物硬件风 · 61 个组件",
+      "url": "https://spec-01.vercel.app",
+      "swatches": ["#EBEBEB", "#FAFAFA", "#1A1A1A", "#E61E00"],
+      "whyGood": "@shuding 做的工业硬件风组件展厅：哑光铝灰底，按键有真实行程，还有旋钮、LCD 屏和咔哒音效，顶栏能用 6 色 LED 实时换主题，支持 shadcn 安装。",
+      "borrow": ["按键行程、旋钮这类有触感的控件反馈", "等宽字体加编号（01 BUTTON）的工业标签体系", "可选的 Web Audio 轻触音效"],
+      "whenToUse": "做创意工具、音频或媒体控制台、AI 硬件伴侣页，或者想让控件有强烈触感记忆点时。"
+    },
+    {
+      "id": "v-tryspherium",
+      "shelf": "design",
+      "kind": "design-site",
+      "kindLabel": "设计好站",
+      "name": "Spherium",
+      "tag": "WebGL 3D 地球 / 世界地图",
+      "url": "https://tryspherium.com",
+      "swatches": ["#0E0E0E", "#141414", "#FCD34D", "#FFFFFF"],
+      "whyGood": "浏览器里实时生成 3D 点阵地球，有 8 种点阵几何，可导出 SVG / GLB / 网页嵌入。界面几乎全是深灰，只用一种琥珀金做高亮，左侧悬浮参数面板干净克制。",
+      "borrow": ["近乎单色的暗色界面，只留一个高亮色", "复杂参数做成图标网格，而不是一排数字滑块", "窄屏时优雅提示「请用桌面端」"],
+      "whenToUse": "做全球化官网的地球动效、数据可视化大屏，或者设计桌面端专业工具的暗色参数面板时。"
+    },
+    {
+      "id": "v-linear",
+      "shelf": "design",
+      "kind": "design-site",
+      "kindLabel": "设计好站",
+      "name": "Linear",
+      "tag": "暗色精密质感标杆",
+      "url": "https://linear.app",
+      "swatches": ["#08090A", "#141517", "#5E6AD2", "#F7F8F8"],
+      "whyGood": "深色模式下 1px 微边框和字重层级做到了极致；配套的《Linear Method》也是产品公司用方法论定义行业标准的范本。",
+      "borrow": ["深色背景下 1px 微边框与层级对比", "极克制的紫蓝强调色用法", "用一篇方法论页面讲清产品理念"],
+      "whenToUse": "做深色专业生产力工具界面，或者写公司级产品方法论页面时。"
+    },
+    {
+      "id": "v-teenage",
+      "shelf": "design",
+      "kind": "style",
+      "kindLabel": "视觉风格",
+      "name": "Teenage Engineering 工业风",
+      "tag": "工业拟物 · 等宽编号",
+      "url": "https://teenage.engineering",
+      "swatches": ["#E6E6E6", "#FFFFFF", "#111111", "#FF4F00"],
+      "whyGood": "大面积浅灰留白，配等宽字体和编号标签，再加一抹橙色强调，像一台精密仪器，也是 SPEC-01 这类硬件风组件的灵感源头。",
+      "borrow": ["等宽小字配编号的产品标签体系", "大面积浅灰留白，只用一个橙色强调", "产品图像居中，像博物馆陈列"],
+      "whenToUse": "想让产品页有「精密硬件」气质，或者给开发者工具、音频工具定视觉调性时。"
+    },
+    {
+      "id": "v-shadcn",
+      "shelf": "design",
+      "kind": "ui-lib",
+      "kindLabel": "UI 组件库",
+      "name": "shadcn/ui + Radix",
+      "tag": "React / Tailwind 底座",
+      "url": "https://ui.shadcn.com",
+      "swatches": ["#FFFFFF", "#F4F4F5", "#18181B", "#3B82F6"],
+      "whyGood": "组件源码直接拷进项目，不是黑盒依赖；键盘和无障碍交互很完整，配合 AI 定制主题最顺手。",
+      "borrow": ["弹窗、下拉、⌘K 命令面板的交互细节", "用 CSS 变量统一管理主题色", "组件源码可改，方便按品牌深度定制"],
+      "whenToUse": "所有新 Web 产品的后台、表单、弹窗、命令面板都可以用它打底。"
+    },
+    {
+      "id": "v-motion-primitives",
+      "shelf": "design",
+      "kind": "ui-lib",
+      "kindLabel": "UI 组件库",
+      "name": "Motion Primitives",
+      "tag": "克制弹簧微动效",
+      "url": "https://motion-primitives.com",
+      "swatches": ["#FFFFFF", "#F8FAFC", "#0F172A", "#6366F1"],
+      "whyGood": "没有浮夸炫技，全是类似 Apple 原生的弹簧过渡、叠牌展开、平滑抽屉这类低调但加分的微动效。",
+      "borrow": ["弹簧曲线（spring）代替线性过渡", "叠牌、抽屉这类空间感展开动效", "一屏只给 1-2 个焦点加动效"],
+      "whenToUse": "页面骨架搭完后，挑 2-3 个关键交互点加动效点睛。"
+    },
+    {
+      "id": "v-usegrokbot",
+      "shelf": "learning",
+      "kind": "prompt-hub",
+      "kindLabel": "Prompt / Bot 市场",
+      "name": "UseGrokBot 发现中心",
+      "tag": "按岗位找提示词与案例",
+      "url": "https://usegrokbot.com/zh-cn",
+      "swatches": ["#FFFFFF", "#F5F6F8", "#2563EB", "#EC4899"],
+      "whyGood": "它的价值不在设计，而在内容组织：把 5,903+ 条零散社媒帖子清洗成「你是谁（工程师 / 创业者 / 销售 / 研究员）」的岗位入口，再配 14 套多 Bot 团队模板和 28 个真实案例。",
+      "borrow": ["按「用户身份」而不是「功能」组织 AI 能力入口", "把社媒帖子清洗成可复用的提示词模板库", "用真实案例和浏览量建立可信度"],
+      "whenToUse": "找某个岗位能直接用的提示词，或者以后我们做 Prompt / Skill 市场时，参考它的内容组织方式。"
+    },
+    {
+      "id": "v-fmcat-roles",
+      "shelf": "learning",
+      "kind": "guide",
+      "kindLabel": "学习指南",
+      "name": "Grok Bot 指南 · 第 24 章 按岗位组建 AI 团队",
+      "tag": "多角色分工 + 审批红线",
+      "url": "https://bot.fmcat.top/part4/24-roles",
+      "preview": "/previews/fmcat.png",
+      "swatches": ["#0F0F10", "#1C1C1E", "#7C3AED", "#10B981"],
+      "whyGood": "把多 Agent 团队讲得非常务实：拆分岗位的 5 个信号、可逆 / 不可逆动作的审批矩阵，以及每个岗位的「交付物 + 红线 + 30 秒验收标准」。",
+      "borrow": ["每个 AI 岗位只写三件事：交付物、红线、验收标准", "可逆动作放行，不可逆动作必须人工审批", "深色文档站的双目录（全书 / 本页）阅读体验"],
+      "whenToUse": "给团队配置专职 AI 岗位、写内部 SOP，或者搭暗色知识文档站时（已精编进「精选好文」）。"
+    },
+    {
+      "id": "v-skill-clean-ui",
+      "shelf": "toolkit",
+      "kind": "skill",
+      "kindLabel": "Skill",
+      "name": "skill-clean-ui · 反塑料感前端规范",
+      "tag": "自研开源",
+      "installCmd": "npx orbit-ai add skill-clean-ui",
+      "whyGood": "内置双层卡片规范、留白间距阶梯和「禁用蓝紫霓虹渐变」硬约束，喂给编程 Agent 后，产出的页面干净耐看。",
+      "whenToUse": "每次让 AI 从零写新网站或落地页之前，先加载它。"
+    },
+    {
+      "id": "v-skill-verify-gate",
+      "shelf": "toolkit",
+      "kind": "skill",
+      "kindLabel": "Skill",
+      "name": "skill-verify-gate · 提交前自检护栏",
+      "tag": "Pro",
+      "installCmd": "npx orbit-ai add skill-verify-gate --pro",
+      "whyGood": "强制 Agent 交卷前跑完构建、类型检查和核心冒烟测试，报错就自动回炉重修，省掉大量人工盯屏返工。",
+      "whenToUse": "中大型代码仓库日常迭代必挂。"
+    },
+    {
+      "id": "v-wf-deep-digest",
+      "shelf": "toolkit",
+      "kind": "workflow",
+      "kindLabel": "工作流",
+      "name": "好站 / 好文拆解入库工作流",
+      "tag": "总站沉淀",
+      "installCmd": "npx orbit-ai add workflow-deep-digest",
+      "whyGood": "丢进一批网站链接或文章，自动提取主色板、亮点和复用场景，生成「复制给 AI」提示词，一键同步进百宝箱和精选好文。",
+      "whenToUse": "攒了一批好链接，想批量整理进总站时运行。"
+    },
+    {
+      "id": "v-tool-voice",
+      "shelf": "toolkit",
+      "kind": "ai-tool",
+      "kindLabel": "AI 工具",
+      "name": "语音口述转指令（Voice-to-Prompt）",
+      "tag": "日常提速 3 倍",
+      "whyGood": "对着麦克风把脑子里的背景和纠结点一口气说出来，比打字交代上下文快三倍，信息量也足得多。",
+      "whenToUse": "开新需求、写读后批注、给 Agent 交代复杂修改意见时。"
+    }
+  ],
+  "templates": [
+    {
+      "id": "tpl-handoff",
+      "title": "长任务跨窗口交接单",
+      "tag": "上下文管理",
+      "desc": "对话太长、AI 开始变笨时，填好这张单子贴进新窗口，马上满血续上。",
+      "aiIntro": "下面是上一个对话窗口留下的任务交接单。请先完整阅读，然后接着推进。不要重复已经验证过的工作，也不要尝试交接单里明确排除的方向。开始前先用两句话复述你理解的当前进度。",
+      "fields": [
+        { "label": "最终目标（一句话）", "hint": "例如：完成首页改版，并通过移动端适配检查" },
+        { "label": "已完成并验证过的事项", "hint": "每行一条，写清楚怎么验证的", "multiline": true },
+        { "label": "踩过的坑 / 明确排除的方向", "hint": "接班必看，避免 AI 重走死路", "multiline": true },
+        { "label": "关键文件位置", "hint": "例如：lib/templates.mjs、public/styles.css", "multiline": true },
+        { "label": "下一步唯一要做的事", "hint": "只写一件，越具体越好" }
+      ]
+    },
+    {
+      "id": "tpl-kickoff",
+      "title": "动手前「反问对齐」启动指令",
+      "tag": "提问起手式",
+      "desc": "防止 AI 一上来就按错误理解闷头写几百行代码。",
+      "aiIntro": "我要开始一个新任务。请先不要直接写代码。先阅读相关目录，然后：第一，用三句话复述你理解的核心逻辑；第二，列出最关键的 2 到 3 个待定问题向我确认。等我拍板后，再一次性高质量实现。",
+      "fields": [
+        { "label": "我要做什么", "hint": "一两句话说清目标" },
+        { "label": "核心用户 / 用途", "hint": "给谁用、在什么场景下用" },
+        { "label": "明确不做的部分", "hint": "防止 AI 过度设计", "multiline": true },
+        { "label": "参考网站或资料", "hint": "可以直接贴百宝箱里复制的参考", "multiline": true }
+      ]
+    },
+    {
+      "id": "tpl-role-spec",
+      "title": "专职 AI 岗位定义卡",
+      "tag": "AI 团队搭建",
+      "desc": "提炼自《按岗位组建 AI 团队》：每设一个专职 Bot 或子 Agent，填完这几项就不越界。",
+      "aiIntro": "请按下面这张岗位卡，扮演一个专职 AI 角色。严格遵守权限红线：凡是红线里的动作，必须先停下来问我。每次交付后，按验收标准逐条自检，并告诉我自检结果。",
+      "fields": [
+        { "label": "岗位名称", "hint": "例如：竞品研究员 / 代码审查员" },
+        { "label": "唯一核心交付物", "hint": "例如：带出处链接的三段式对比表" },
+        { "label": "可以自动执行的动作", "hint": "可逆的动作：读文件、写草稿、跑测试…", "multiline": true },
+        { "label": "权限红线（必须先问我）", "hint": "不可逆的动作：对外发送、改线上数据、付款…", "multiline": true },
+        { "label": "30 秒验收标准", "hint": "每行一条，扫一眼就能判断合不合格", "multiline": true }
+      ]
+    },
+    {
+      "id": "tpl-site-collect",
+      "title": "好网站 / 组件库收藏卡",
+      "tag": "设计收集",
+      "desc": "看到惊艳的网站随手填一下，让 AI 帮你整理成标准收藏卡，再点「＋ 收录」存进来。",
+      "aiIntro": "我收藏了一个参考网站。请帮我把它整理成一张标准收藏卡，包括：它属于设计参考还是学习资料；好在哪（两三句话）；最值得借鉴的三个点；以后适合在什么项目里参考。",
+      "fields": [
+        { "label": "网站名称与链接", "hint": "例如：Spherium https://tryspherium.com" },
+        { "label": "主色调与整体气质", "hint": "例如：深空黑 + 琥珀金，专业克制" },
+        { "label": "最打动我的细节", "hint": "两三个就够", "multiline": true },
+        { "label": "以后适合参考的项目", "hint": "例如：数据大屏、官网地球动效" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "name": "orbit-ai-workbench",
+  "version": "0.6.0",
+  "private": true,
+  "type": "module",
+  "description": "Orbit · AI Workbench — 我们团队的 AI 工作台与灵感总站：设计灵感、学习收藏、Skills 工作流、产品孵化，人和 AI 都能读。",
+  "scripts": {
+    "dev": "node --watch server.mjs",
+    "start": "node server.mjs",
+    "build": "node scripts/build.mjs"
+  }
+}
