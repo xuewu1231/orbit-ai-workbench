@@ -107,11 +107,23 @@ function addVaultItem(payload) {
   fs.writeFileSync(ECO_PATH, JSON.stringify(ecoData, null, 2), 'utf8');
 }
 
+function writesEnabled() {
+  if (process.env.ORBIT_ALLOW_WRITES === '1') return true;
+  if (process.env.ORBIT_ALLOW_WRITES === '0') return false;
+  return process.env.NODE_ENV !== 'production';
+}
+
 const server = http.createServer(async (req, res) => {
   try {
     res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
     const urlObj = new URL(req.url || '/', `http://localhost:${PORT}`);
     const pathname = urlObj.pathname.replace(/\/+$/, '') || '/';
+
+    if (req.method === 'POST' && (pathname === '/api/vault-add' || pathname === '/api/subscribe' || pathname === '/api/feedback') && !writesEnabled()) {
+      res.writeHead(403, { 'Content-Type': 'application/json; charset=utf-8' });
+      res.end(JSON.stringify({ ok: false, error: 'writes-disabled' }));
+      return;
+    }
 
     if (req.method === 'POST' && pathname === '/api/vault-add') {
       const payload = await readRequestBody(req);
