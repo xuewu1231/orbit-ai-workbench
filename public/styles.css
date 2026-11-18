@@ -1622,10 +1622,12 @@ html[data-theme="dark"] .tile-indigo { background: rgba(99, 102, 241, 0.16); col
 .vault-card[data-vault-kind="ui-lib"] .lane-pill { background: var(--blue-soft); color: var(--blue); }
 .vault-card[data-vault-kind="motion"] .lane-pill { background: #fdf2f8; color: #db2777; }
 .vault-card[data-vault-kind="loader"] .lane-pill { background: #fff7e6; color: #d97706; }
+.vault-card[data-vault-kind="personal"] .lane-pill { background: #e7f3ee; color: #1d3a34; }
 .vault-card[data-vault-kind="design-site"] .lane-pill { background: var(--bg-subtle); color: var(--ink-primary); }
 .vault-card[data-vault-kind="style"] .lane-pill { background: #fff1e8; color: #c2410c; }
 html[data-theme="dark"] .vault-card[data-vault-kind="motion"] .lane-pill { background: rgba(236, 72, 153, 0.16); color: #f472b6; }
 html[data-theme="dark"] .vault-card[data-vault-kind="loader"] .lane-pill { background: rgba(245, 158, 11, 0.16); color: #fbbf24; }
+html[data-theme="dark"] .vault-card[data-vault-kind="personal"] .lane-pill { background: rgba(45, 90, 80, 0.28); color: #9dcec2; }
 html[data-theme="dark"] .vault-card[data-vault-kind="style"] .lane-pill { background: rgba(234, 88, 12, 0.16); color: #fdba74; }
 
 .cat-label {
