@@ -816,32 +816,75 @@
 
   const shelfTabs = document.querySelectorAll('[data-shelf-filter]');
   const shelfGroups = document.querySelectorAll('[data-shelf-group]');
+  const laneTabs = document.querySelectorAll('[data-lane-filter]');
   const vaultSearch = $('vault-search');
   const vaultCards = document.querySelectorAll('.vault-card');
   let activeShelf = 'all';
+  let activeLane = 'all';
   let vaultQuery = '';
+  function markTabs(tabs, attr, value) {
+    tabs.forEach((tab) => {
+      const on = tab.getAttribute(attr) === value;
+      tab.classList.toggle('is-active', on);
+      tab.setAttribute('aria-selected', on ? 'true' : 'false');
+    });
+  }
   function applyVault() {
     shelfGroups.forEach((g) => { g.style.display = activeShelf === 'all' || g.getAttribute('data-shelf-group') === activeShelf ? '' : 'none'; });
+    const laneOn = activeLane !== 'all';
+    document.querySelectorAll('[data-design-lane]').forEach((lane) => {
+      const id = lane.getAttribute('data-design-lane');
+      const wantLane = !laneOn || id === activeLane;
+      let shown = 0;
+      lane.querySelectorAll('.vault-card').forEach((card) => {
+        const okQ = !vaultQuery || (card.getAttribute('data-vault-search') || '').toLowerCase().includes(vaultQuery);
+        const show = wantLane && okQ;
+        card.style.display = show ? '' : 'none';
+        if (show) shown += 1;
+      });
+      lane.style.display = shown ? '' : 'none';
+      lane.classList.toggle('is-current', laneOn && id === activeLane && shown > 0);
+    });
     vaultCards.forEach((card) => {
+      if (card.closest('[data-design-lane]')) return;
       const okQ = !vaultQuery || (card.getAttribute('data-vault-search') || '').toLowerCase().includes(vaultQuery);
       card.style.display = okQ ? '' : 'none';
+    });
+    document.querySelectorAll('[data-lane-empty]').forEach((el) => {
+      const scope = el.parentElement;
+      const any = scope && [...scope.querySelectorAll('[data-design-lane]')].some((lane) => lane.style.display !== 'none');
+      el.hidden = !!any;
     });
   }
   shelfTabs.forEach((tab) => {
     tab.addEventListener('click', () => {
       click(1160);
-      shelfTabs.forEach((t) => t.classList.remove('is-active'));
-      tab.classList.add('is-active');
       activeShelf = tab.getAttribute('data-shelf-filter');
+      markTabs(shelfTabs, 'data-shelf-filter', activeShelf);
+      applyVault();
+    });
+  });
+  laneTabs.forEach((tab) => {
+    tab.addEventListener('click', () => {
+      click(980);
+      activeLane = tab.getAttribute('data-lane-filter');
+      if (shelfTabs.length && activeLane !== 'all') {
+        activeShelf = 'design';
+        markTabs(shelfTabs, 'data-shelf-filter', activeShelf);
+      }
+      markTabs(laneTabs, 'data-lane-filter', activeLane);
       applyVault();
     });
   });
   if (vaultSearch) vaultSearch.addEventListener('input', (e) => { vaultQuery = e.target.value.trim().toLowerCase(); applyVault(); });
-  const urlShelf = new URLSearchParams(window.location.search).get('shelf');
-  if (urlShelf && shelfTabs.length) {
-    const m = document.querySelector(`[data-shelf-filter="${urlShelf}"]`);
-    if (m) m.click();
-  }
+  const vaultParams = new URLSearchParams(window.location.search);
+  const urlShelf = vaultParams.get('shelf');
+  const urlLane = vaultParams.get('lane');
+  if (urlShelf && document.querySelector(`[data-shelf-filter="${urlShelf}"]`)) activeShelf = urlShelf;
+  if (urlLane && document.querySelector(`[data-lane-filter="${urlLane}"]`)) activeLane = urlLane;
+  if (shelfTabs.length) markTabs(shelfTabs, 'data-shelf-filter', activeShelf);
+  if (laneTabs.length) markTabs(laneTabs, 'data-lane-filter', activeLane);
+  if (urlShelf || urlLane) applyVault();
 
   /* ---------------------------------------------------------------------------
      12. ⌘K search
