@@ -115,6 +115,32 @@
   ],
   "vaultItems": [
     {
+      "id": "v-pasta-ui",
+      "shelf": "design",
+      "kind": "ui-lib",
+      "kindLabel": "UI 组件库",
+      "name": "Pasta UI",
+      "tag": "Agent 干活时的界面",
+      "url": "https://pastaui.com",
+      "swatches": ["#111111", "#171717", "#FFFFFF", "#2B7FFF"],
+      "whyGood": "标注：这是 Agent 正在干活时的界面，不是聊天外壳。官网自己写的是 “interfaces for AI agents”。计划审批、任务进度、上下文窗口拆分（对话 / 项目文件 / 工具定义各占多少）、本次花费、后台任务队列、工具时间线、权限授予、记忆，都做成了能直接用的卡片。用 shadcn 装进项目，例如 npx shadcn@latest add @pastaui/plan-approval-card，源码归你改。分类覆盖对话、工具执行、Agent 活动、运行与操作、富输出。和 assistant-ui、prompt-kit 的分工：那两个管对话长什么样，Pasta 管 Agent 做事的那一块。",
+      "borrow": ["上下文和花费用一张拆分卡说清楚，不要只写「即将超出限制」", "后台任务做成队列：正在跑、排队、可以取消，不要藏进一个转圈", "要人拍板的计划单独做成审批卡，和普通回复分开"],
+      "whenToUse": "做编码 Agent、研究 Agent、后台自动化时，需要让人看见进度、花费、上下文和待审批动作。"
+    },
+    {
+      "id": "v-prompt-kit",
+      "shelf": "design",
+      "kind": "ui-lib",
+      "kindLabel": "UI 组件库",
+      "name": "prompt-kit",
+      "tag": "AI 对话界面零件",
+      "url": "https://www.prompt-kit.com",
+      "swatches": ["#FFFFFF", "#FAFAFA", "#18181B", "#F97415"],
+      "whyGood": "标注：这是 AI 对话界面的零件，不是带运行时的整套聊天框架。建在 shadcn/ui 上，一个个拷进项目。输入条、消息、Markdown、代码块、推理链、思考条、工具调用、引用来源、文件上传、反馈条都有。模型状态你自己接，它不绑某家后端；文档里给了 OpenAI SDK 和 Vercel AI SDK 的接法，也有 /llms.txt。和 assistant-ui 的差别：assistant-ui 管对话状态和流式运行时，prompt-kit 只管这块界面长什么样、好不好改。",
+      "borrow": ["输入、消息、推理、工具调用分成独立组件，缺哪个装哪个", "思考中用思考条或文字微光，不要换成一个与内容无关的圈", "引用来源和工具结果跟在回答旁边，不要堆进同一段正文"],
+      "whenToUse": "已有 shadcn 项目，只想要一套干净的 AI 对话界面，运行时准备自己接的时候。"
+    },
+    {
       "id": "v-assistant-ui",
       "shelf": "design",
       "kind": "ui-lib",
