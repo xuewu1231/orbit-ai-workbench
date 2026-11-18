@@ -1,8 +1,9 @@
 ---
 slug: role-based-ai-team
 kind: curated
-publisher: other
-category: 多角色 Agent 落地指南
+publisher: xai
+coverTitle: 按岗位组建你的 AI 团队
+category: Grok · 多角色落地指南
 title: 按岗位组建你的 AI 团队：从“全能聊天框”到 7 类专职岗位蓝图
 subtitle: 别把 AI 当成什么都往里塞的杂物抽屉——拆解岗位拆分的 5 个信号、不可逆动作审批红线，以及工程/研究/内容等 7 套即插即用配置。
 access: free

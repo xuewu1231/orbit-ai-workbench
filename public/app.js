@@ -724,9 +724,9 @@
           io.unobserve(en.target);
         }
       });
-    }, { threshold: 0.07 });
+    }, { threshold: 0.02, rootMargin: '0px 0px 140px 0px' });
     revealEls.forEach((el, i) => {
-      el.style.transitionDelay = (i % 3) * 55 + 'ms';
+      el.style.transitionDelay = (i % 3) * 35 + 'ms';
       io.observe(el);
     });
   } else {
