@@ -1,6 +1,7 @@
 ---
 slug: openai-image-prompting
 kind: curated
+publisher: openai
 category: OpenAI · 图像
 title: GPT Image 生图与修图：先定义画面，再一次只改一件事
 subtitle: OpenAI 的图像提示指南把生成和修图拆开。生成要写清主体、构图和约束；修图要写清改哪里、留下哪里，并用参考图的角色而不是形容词碰运气。

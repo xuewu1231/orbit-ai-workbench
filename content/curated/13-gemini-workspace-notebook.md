@@ -1,6 +1,7 @@
 ---
 slug: gemini-workspace-notebook
 kind: curated
+publisher: google
 category: Gemini · Google
 title: 谷歌的上班用法：四段提示，加上只读你文件的 Notebook
 subtitle: Workspace 团队把 Gemini 的日常提示收成角色、任务、上下文、格式。Notebook 则规定模型只能根据你上传的材料回答，适合把一叠散文件变成团队能问的资料。

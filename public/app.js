@@ -739,7 +739,11 @@
   const filterPills = document.querySelectorAll('[data-filter]');
   const catalogSearch = $('catalog-search');
   const articleCards = document.querySelectorAll('.card-shell[data-access]');
+  const pressPills = document.querySelectorAll('[data-press]');
+  const pressShelves = document.querySelectorAll('[data-press-shelf]');
+  const pressEmpty = $('press-empty');
   let curFilter = 'all';
+  let pressFilter = 'all';
   let curQuery = '';
   function applyCatalog() {
     articleCards.forEach((card) => {
@@ -747,6 +751,22 @@
       const okQ = !curQuery || (card.getAttribute('data-search') || '').toLowerCase().includes(curQuery);
       card.style.display = okA && okQ ? '' : 'none';
     });
+  }
+  function applyPress() {
+    let shown = 0;
+    pressShelves.forEach((shelf) => {
+      const shelfOn = pressFilter === 'all' || shelf.getAttribute('data-press-shelf') === pressFilter;
+      let shelfShown = 0;
+      shelf.querySelectorAll('.book').forEach((book) => {
+        const okQ = !curQuery || (book.getAttribute('data-search') || '').toLowerCase().includes(curQuery);
+        const on = shelfOn && okQ;
+        book.hidden = !on;
+        if (on) shelfShown += 1;
+      });
+      shelf.hidden = shelfShown === 0;
+      shown += shelfShown;
+    });
+    if (pressEmpty) pressEmpty.hidden = shown !== 0;
   }
   filterPills.forEach((pill) => {
     pill.addEventListener('click', () => {
@@ -757,7 +777,42 @@
       applyCatalog();
     });
   });
-  if (catalogSearch) catalogSearch.addEventListener('input', (e) => { curQuery = e.target.value.trim().toLowerCase(); applyCatalog(); });
+  pressPills.forEach((pill) => {
+    pill.addEventListener('click', () => {
+      click(1120);
+      pressPills.forEach((p) => {
+        p.classList.remove('is-active');
+        p.setAttribute('aria-selected', 'false');
+      });
+      pill.classList.add('is-active');
+      pill.setAttribute('aria-selected', 'true');
+      pressFilter = pill.getAttribute('data-press');
+      applyPress();
+    });
+  });
+  if (catalogSearch) {
+    catalogSearch.addEventListener('input', (e) => {
+      curQuery = e.target.value.trim().toLowerCase();
+      if (pressShelves.length) applyPress();
+      else applyCatalog();
+    });
+  }
+
+  if (canHover) {
+    document.querySelectorAll('.book').forEach((book) => {
+      book.addEventListener('mousemove', (e) => {
+        const r = book.getBoundingClientRect();
+        const nx = (e.clientX - r.left) / r.width - 0.5;
+        const ny = (e.clientY - r.top) / r.height - 0.5;
+        book.style.setProperty('--tilt-x', (ny * -8).toFixed(2) + 'deg');
+        book.style.setProperty('--tilt-y', (nx * 12).toFixed(2) + 'deg');
+      });
+      book.addEventListener('mouseleave', () => {
+        book.style.removeProperty('--tilt-x');
+        book.style.removeProperty('--tilt-y');
+      });
+    });
+  }
 
   const shelfTabs = document.querySelectorAll('[data-shelf-filter]');
   const shelfGroups = document.querySelectorAll('[data-shelf-group]');

@@ -1,6 +1,7 @@
 ---
 slug: gemini-prompt-design
 kind: curated
+publisher: google
 category: Gemini · Google
 title: Gemini 提示设计：指令、例子和约束怎么摆
 subtitle: Google AI Studio 的提示指南不靠一套神秘模板。它把输入分成问题、任务、对象和补全，并说明新一代 Gemini 已经不再吃你手调的 temperature。

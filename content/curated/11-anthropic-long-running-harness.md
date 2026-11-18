@@ -1,6 +1,7 @@
 ---
 slug: anthropic-long-running-harness
 kind: curated
+publisher: anthropic
 category: Anthropic · Agent
 title: 长时间运行的 Agent：换班靠进度文件，不靠记忆
 subtitle: 压缩上下文并不能让 Agent 做完一个要干很多小时的项目。Anthropic 用初始化代理和编码代理两套开场白，外加一份不许偷改的功能清单，把长任务拆成一班一班的增量。
