@@ -18,8 +18,10 @@ const DATA_DIR = path.join(ROOT_DIR, 'data');
 const ECO_PATH = path.join(ROOT_DIR, 'content', 'catalog', 'ecosystem.json');
 
 const KIND_META = {
-  'design-site': { shelf: 'design', label: '设计好站' },
-  'ui-lib': { shelf: 'design', label: 'UI 组件库' },
+  'design-site': { shelf: 'design', label: '整站参考' },
+  'ui-lib': { shelf: 'design', label: 'UI 组件' },
+  motion: { shelf: 'design', label: '动效' },
+  loader: { shelf: 'design', label: '等待动画' },
   style: { shelf: 'design', label: '视觉风格' },
   'prompt-hub': { shelf: 'learning', label: 'Prompt / Bot 市场' },
   guide: { shelf: 'learning', label: '学习指南' },
