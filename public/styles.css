@@ -3178,11 +3178,13 @@ html[data-theme="dark"] .related-wrap { --shelf: #3a342c; }
 .book.press-google { --cloth: #f4f0e6; --spine: #e7e0d2; --face-ink: #1c1a16; }
 .book.press-google .book-board { box-shadow: 8px 14px 24px -16px rgba(20, 16, 10, 0.35), inset 0 0 0 1px rgba(40, 30, 10, 0.08); }
 .book.press-google .book-press { color: #1a73e8; opacity: 1; }
+.book.press-cognition { --cloth: #2c3358; --spine: #1c223d; --face-ink: #f4f1ea; }
 .book.press-other { --cloth: #1d3a34; --spine: #122622; --face-ink: #e7f3ee; }
 .press-swatch.press-openai { background: #16130f; }
 .press-swatch.press-youtube { background: #6d2433; }
 .press-swatch.press-anthropic { background: #c47a5a; }
 .press-swatch.press-google { background: #f4f0e6; }
+.press-swatch.press-cognition { background: #2c3358; }
 .press-swatch.press-other { background: #1d3a34; }
 .book.press-anthropic .book-press { color: #e7a48a; opacity: 1; }
 
