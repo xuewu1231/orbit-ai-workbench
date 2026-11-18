@@ -2,6 +2,8 @@
 slug: anthropic-building-effective-agents
 kind: curated
 publisher: anthropic
+coverFace: low
+coverTitle: 先用|工作流
 category: Anthropic · Agent
 title: 构建有效的 Agent：先用工作流，再把自主权交出去
 subtitle: Anthropic 把「代理式系统」拆成两条：路径写死的工作流，和由模型自己决定下一步的 Agent。大多数团队该停在更简单的那条上。

@@ -2,7 +2,8 @@
 slug: gemini-long-context-playbook
 kind: curated
 publisher: google
-coverTitle: 百万级长上下文工程实战
+coverFace: poster
+coverTitle: 捞针|之后
 category: Gemini · Google DeepMind
 title: 百万级长上下文工程实战：当大海捞针召回率超 99.7% 后，怎么重做知识检索？
 subtitle: 传统切块向量 RAG 常常把完整逻辑切得支离破碎——详解 Gemini 超长多模态窗口 + Context Caching 上下文缓存的高性价比组合拳。

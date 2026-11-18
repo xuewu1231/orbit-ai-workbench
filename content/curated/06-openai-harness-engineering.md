@@ -2,6 +2,8 @@
 slug: openai-harness-engineering
 kind: curated
 publisher: openai
+coverFace: poster
+coverTitle: 人管|环境
 category: OpenAI · Codex
 title: Harness Engineering：人负责环境，Codex 负责写代码
 subtitle: OpenAI 用一个内部产品做了五个月实验：人不直接写代码。工程师的工作变成设计仓库、反馈回路，以及代理能读懂的知识地图。
