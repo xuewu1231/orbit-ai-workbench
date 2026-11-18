@@ -1500,6 +1500,47 @@
   });
   if (promptFav) promptFav.addEventListener('error', () => promptFav.parentElement.classList.add('is-empty'));
 
+  /* 6b. Parts that came out of the vault: thinking button + agent status */
+  const STATUS_COPY = {
+    plan: { zh: '先看哪一块零件能用。', en: 'See which part fits first.' },
+    run: { zh: '正在用这一块，先别换。', en: 'This part is in use. Stay with it.' },
+    ask: { zh: '这一步要你点头，才继续。', en: 'This step waits for you.' },
+  };
+  document.querySelectorAll('[data-agent-status]').forEach((group) => {
+    const line = group.parentElement.querySelector('[data-status-line]');
+    group.querySelectorAll('[data-status]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        group.querySelectorAll('[data-status]').forEach((b) => b.classList.remove('is-on'));
+        btn.classList.add('is-on');
+        const copy = STATUS_COPY[btn.getAttribute('data-status')];
+        if (!line || !copy) return;
+        const zh = line.querySelector('[data-line-zh]');
+        const en = line.querySelector('[data-line-en]');
+        if (zh) zh.textContent = copy.zh;
+        if (en) en.textContent = copy.en;
+      });
+    });
+  });
+  document.querySelectorAll('[data-think-demo]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      if (btn.classList.contains('is-thinking')) return;
+      const labels = btn.querySelectorAll('[data-think-label]');
+      const write = (key) => {
+        labels.forEach((el) => {
+          const which = el.classList.contains('i18n-en') ? 'en' : 'zh';
+          el.textContent = btn.getAttribute(`data-${key}-${which}`) || '';
+        });
+      };
+      btn.classList.add('is-thinking');
+      write('busy');
+      setTimeout(() => {
+        btn.classList.remove('is-thinking');
+        write('done');
+        setTimeout(() => write('idle'), 900);
+      }, 1400);
+    });
+  });
+
   /* 6. 双读卡片的光标微光 */
   document.querySelectorAll('.dual-card').forEach((card) => {
     card.addEventListener('mousemove', (e) => {
