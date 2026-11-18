@@ -157,10 +157,24 @@
       "whenToUse": "做 Agent 产品的主聊天界面、侧边 Copilot、页面里嵌的助手时，先用它搭结构和状态，再换成自己的视觉。"
     },
     {
+      "id": "v-directoryyy",
+      "shelf": "design",
+      "kind": "personal",
+      "kindLabel": "个人网站",
+      "name": "directoryyy · perfollos",
+      "tag": "极简个人站目录",
+      "url": "https://directoryyy.com",
+      "preview": "/previews/directoryyy.jpg",
+      "swatches": ["#FBFBFB", "#FFFFFF", "#111111", "#707070"],
+      "whyGood": "标注：别人精选过的个人网站合集，不是组件库。站点自称 perfollos，地址是 directoryyy.com。页面几乎全白，顶上是一排扇开的作品预览，左边一列筛选：All、Minimal、Thoughtful、Playful、Creative、Showcase。现在收录 309 个个人站，还在增加。极简这一档尤其干净：大留白，介绍压成两行，没有卡片墙。Mike Barton 的 mikes.cv 也在这本目录里。",
+      "borrow": ["个人站目录用一列气质筛选，不要做成无限瀑布流", "极简档只留大留白和一张预览，介绍压成两行", "做自己的个人站前，先把 Minimal 这一档看完"],
+      "whenToUse": "做个人站、设计师主页或作品集之前，先来这里看极简这一档别人怎么收。"
+    },
+    {
       "id": "v-mikes-cv",
       "shelf": "design",
-      "kind": "design-site",
-      "kindLabel": "整站参考",
+      "kind": "personal",
+      "kindLabel": "个人网站",
       "name": "Mike Barton · mikes.cv",
       "tag": "登机式个人站",
       "url": "https://www.mikes.cv",

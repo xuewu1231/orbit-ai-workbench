@@ -18,6 +18,7 @@ const DATA_DIR = path.join(ROOT_DIR, 'data');
 const ECO_PATH = path.join(ROOT_DIR, 'content', 'catalog', 'ecosystem.json');
 
 const KIND_META = {
+  personal: { shelf: 'design', label: '个人网站' },
   'design-site': { shelf: 'design', label: '整站参考' },
   'ui-lib': { shelf: 'design', label: 'UI 组件' },
   motion: { shelf: 'design', label: '动效' },

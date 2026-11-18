@@ -18,6 +18,7 @@ const SITES = [
   ['prompt-kit', 'https://www.prompt-kit.com'],
   ['assistant-ui', 'https://www.assistant-ui.com'],
   ['mikes-cv', 'https://www.mikes.cv'],
+  ['directoryyy', 'https://directoryyy.com'],
   ['loader-buttons', 'https://loader-buttons.appllama.io'],
   ['thinking-orbs', 'https://libraries.dev/orbs'],
   ['morphicons', 'https://www.morphicons.com'],
