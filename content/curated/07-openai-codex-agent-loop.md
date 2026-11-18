@@ -1,6 +1,7 @@
 ---
 slug: openai-codex-agent-loop
 kind: curated
+publisher: openai
 category: OpenAI · Codex
 title: 拆开 Codex 的 Agent 循环：一次对话里实际发生了什么
 subtitle: Codex 的核心不是一个更长的提示词，而是一轮一轮的循环：组提示、调用模型、执行工具、把结果追加回去，直到模型交出给用户的那句话。

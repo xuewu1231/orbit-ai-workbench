@@ -1,6 +1,7 @@
 ---
 slug: karpathy-how-i-use-llms
 kind: curated
+publisher: youtube
 category: AI 基础与提效
 title: 我是如何使用大语言模型的：Karpathy 的日常用法
 subtitle: 上一集讲模型怎么被造出来。这一集他打开自己的屏幕，演示思考模型、搜索、深研、文件、代码环境和 NotebookLM 各自该在什么时候上场。

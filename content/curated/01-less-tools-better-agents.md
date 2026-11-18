@@ -1,6 +1,7 @@
 ---
 slug: less-tools-better-agents
 kind: curated
+publisher: other
 category: Agent 与工程架构
 title: 给 Agent 工具做减法：为什么砍掉 80% 的专用工具反而更强
 subtitle: 当团队费尽心思为 Agent 编写了二十多个精细化专用工具后，为什么只保留 Bash 与文件读写两个原子工具，准确率与速度反而全面胜出？
