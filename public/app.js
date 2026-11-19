@@ -1090,6 +1090,27 @@
   });
 
   const readerSheet = $('reader-sheet');
+  const docToc = document.querySelector('.doc-toc');
+  if (docToc) {
+    const pairs = [...docToc.querySelectorAll('a')]
+      .map((link) => ({ link, section: document.getElementById((link.getAttribute('href') || '').slice(1)) }))
+      .filter((pair) => pair.section);
+    const mark = (id) => {
+      pairs.forEach(({ link }) => link.classList.toggle('is-current', link.getAttribute('href') === `#${id}`));
+    };
+    const place = () => {
+      if (!pairs.length) return;
+      const line = window.innerHeight * 0.35;
+      let current = pairs[0].section.id;
+      pairs.forEach(({ section }) => {
+        if (section.getBoundingClientRect().top <= line) current = section.id;
+      });
+      mark(current);
+    };
+    place();
+    window.addEventListener('scroll', place, { passive: true });
+    window.addEventListener('hashchange', place);
+  }
   if (readerSheet) {
     document.querySelectorAll('[data-font]').forEach((btn) => {
       btn.addEventListener('click', () => {
