@@ -220,6 +220,20 @@
       "whenToUse": "做 Agent 产品的主聊天界面、侧边 Copilot、页面里嵌的助手时，先用它搭结构和状态，再换成自己的视觉。"
     },
     {
+      "id": "v-dissolve",
+      "shelf": "design",
+      "kind": "ui-lib",
+      "kindLabel": "UI 组件",
+      "name": "dissolve",
+      "tag": "现成交互",
+      "url": "https://dissolve.rselmi.com",
+      "preview": "/previews/dissolve.jpg",
+      "swatches": ["#121212", "#FBFBFB", "#8AB4FF", "#2457D6"],
+      "whyGood": "标注：一套能直接加进 React Native 的交互，不是网页组件库。网站把它们在浏览器里跑给你看，电脑上点着挑，滑动、长按、下拉这些手机手势也能看清。页脚标着 v0.0.5、MIT。底层是 react-native-dissolve：任意一块界面先拍成快照，再化成灰尘、沙、余烬、碎玻璃、漩涡，或从角落揭下来。旁边是现成交互，用 npx react-native-dissolve add <名字> 拷进 Expo 项目，也可以把首页那段提示词直接贴给 Agent：左滑删除、Toast、滑动确认、下拉刷新、拖拽重排、分段控件、验证码、语音条、骨架屏、点赞、思考球。做网页时不要装这个包，把交互照着做。",
+      "borrow": ["删除、确认、刷新做成一个完整手势，不要只换一枚图标", "出场和退场用同一种粒子语言，不要每个页面换一套", "一次只加一个交互，按名字拷进项目，不要整包拖进来"],
+      "whenToUse": "做 React Native / Expo 的删除、确认、列表重排、下拉刷新时，先在网页上把交互看完再 add。做网页时，来这里看手势怎么收，再自己实现。"
+    },
+    {
       "id": "v-directoryyy",
       "shelf": "design",
       "kind": "personal",
@@ -288,6 +302,20 @@
       "whyGood": "标注：图标切换时是变形，不是两个图标交叉淡出。任意两个 SVG 可以互变，Lucide、Tabler、Heroicons、Phosphor 都能混用，线框变填充也行。它算出旋转、缩放和平移，形状对得上就转过去。弹簧手感可调，gzip 约 10KB，零运行时依赖，React / Vue / Svelte / React Native / Astro 都能用。菜单变关闭、播放变暂停、复制变打勾，是同一个图标在变。",
       "borrow": ["状态切换用同一个图标变形，不要叠两个图标做淡入淡出", "图标当数据传进去（路径或 IconNode），不要为每套图标写包装组件", "一屏只让真正表示状态变化的那一个图标变形"],
       "whenToUse": "菜单开关、播放暂停、复制成功、主题切换这类成对图标，想让切换本身被看见时。"
+    },
+    {
+      "id": "v-kubai-icons",
+      "shelf": "design",
+      "kind": "motion",
+      "kindLabel": "动效",
+      "name": "Kubai Icons",
+      "tag": "会动的图标",
+      "url": "https://icons.kubai.design",
+      "preview": "/previews/kubai-icons.jpg",
+      "swatches": ["#FFFFFF", "#0A0A0A", "#5393FF", "#8B5CF6"],
+      "whyGood": "标注：一套开源的会动图标，现在 3026 枚，不是两枚图标互相变形。悬停或点一下，文件夹自己打开，铃会响，锁会解开。React、Vue、网页组件和静态 SVG 都能用，npm i kubai-icons-react。每枚图标单独成模块，按需引进，页面上的例子是一枚大约 1.1KB gzip。颜色从一个强调色推出来，也有常见状态的徽章。尊重系统的减少动效。中文站在 /zh/。和 morphicons 的分工：morphicons 管两个图标变成对方，Kubai 管这一枚图标自己的动作。",
+      "borrow": ["图标的动作跟它的意思走：打开、响起、解锁，不要全站共用一种弹跳", "一枚一枚装，不要把整套图标打进包", "全站只用一个强调色来推图标的颜色"],
+      "whenToUse": "导航、工具条、空状态需要图标自己说明「发生了什么」时。菜单开关、播放暂停这种成对切换仍看 morphicons。"
     },
     {
       "id": "v-great-ui",
