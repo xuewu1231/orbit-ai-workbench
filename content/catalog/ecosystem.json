@@ -262,6 +262,62 @@
       "whenToUse": "做个人站、设计师主页、作品集开场，想让人记住进站的那几秒时。"
     },
     {
+      "id": "v-natochi",
+      "shelf": "design",
+      "kind": "personal",
+      "kindLabel": "个人网站",
+      "name": "natochi",
+      "tag": "能听的点画",
+      "url": "https://natochi.cv",
+      "preview": "/previews/natochi.jpg",
+      "swatches": ["#1A1A1C", "#F2F2F2", "#3A3A3E", "#C8C8C8"],
+      "whyGood": "标注：这是个人网站，不是简历。进站是一幅深色点画：一棵树，左边标着 writing，右边标着 me。底下有一句 maybe you'll know me better if you listen to what i like，旁边正在放一首歌。页面标题里的那句是：智利圣地亚哥的辍学生，在创业公司、项目和有意思的事情里找增长杠杆。人被收成一幅能听的画面。",
+      "borrow": ["用一幅画面代替首屏自我介绍", "让人先听一首你在听的歌，再决定要不要往下看", "画面上只留两个词，说明这棵树在说什么"],
+      "whenToUse": "做个人站，想让进站的第一眼是一幅能停一下的画面时。"
+    },
+    {
+      "id": "v-oil-book",
+      "shelf": "design",
+      "kind": "personal",
+      "kindLabel": "个人网站",
+      "name": "Oil Book",
+      "tag": "可变现的指南站",
+      "url": "https://book.oiloil.org",
+      "preview": "/previews/oil-book.jpg",
+      "swatches": ["#F4F1E8", "#1C1C1C", "#D4A656", "#3E6B5A"],
+      "whyGood": "标注：这是一个做成书、并且在卖的个人站，不是免费博客，也不是要搬过来的正文。Oil 欧呦把实测和项目经验收成「实战指南」，旁边是模型推荐，正文用 Pro 订阅挡住。首页能看到目录和章节，点进去才是付费内容。我们只学这个站怎么把个人经验变成可以买的一本，笔记本身不抄。",
+      "borrow": ["个人站按书来组织：目录在前，正文按章，不要一列时间线博客", "免费能看到目录和推荐，完整做法放在订阅后面", "模型、工具这类会过期的选择单独开一栏，和长文分开"],
+      "whenToUse": "要把自己的实战笔记做成能订阅的个人站，先看它怎么分免费目录和 Pro 正文。"
+    },
+    {
+      "id": "v-weilanx",
+      "shelf": "design",
+      "kind": "personal",
+      "kindLabel": "个人网站",
+      "name": "蔚蓝 · Weilanx",
+      "tag": "社交入口摊开",
+      "url": "https://weilanx.com/about#social",
+      "preview": "/previews/weilanx.jpg",
+      "swatches": ["#F7F8FC", "#111111", "#1A6CFF", "#7EB6FF"],
+      "whyGood": "标注：这是独立开发者的个人主页，不是公司官网。蔚蓝（Weilanx）进站写着 AI 产品经理 / 独立开发者 / 内容创作者，旁边是一只蓝狐狸，身上挂着 Claude Code 和 Cursor。三行是 build、think、share。社媒不在页脚：#social 按用途摊开，长文在公众号和博客，日常在 X 和小红书，视频在 B 站、YouTube 和抖音，每处写清你在那里发什么。",
+      "borrow": ["进站用一个形象和三行做事，不要先放一段履历", "社媒按长文、日常、视频、开发者社区分组，每组写清发什么", "作品和关于分开链出去，这一页只负责让人认识你"],
+      "whenToUse": "做独立开发者主页，想让人一眼知道你是谁、用什么做东西、去哪能找到你时。"
+    },
+    {
+      "id": "v-weilanx-works",
+      "shelf": "design",
+      "kind": "personal",
+      "kindLabel": "个人网站",
+      "name": "蔚蓝 · 全部作品",
+      "tag": "一个人的作品墙",
+      "url": "https://pages.weilanx.com/works/",
+      "preview": "/previews/weilanx-works.jpg",
+      "swatches": ["#F6F3EC", "#111111", "#FF5A1F", "#3B6CFF"],
+      "whyGood": "标注：这是同一个人的作品墙，不是应用商店。蔚蓝把做过的东西放在一页：网站、插件、App、游戏、Skill、Prompt，站上现在标着 31 件。每件写清它是什么、能不能打开、是不是开源。插件里有 VS Code / Obsidian 的思维导图，数据是一份 JSON。和关于页分开，关于页讲人，这一页只讲做出来的东西。",
+      "borrow": ["作品按网站、插件、App、游戏、Skill、提示词分栏，不要混成一条时间线", "每件只写它是什么、能不能打开、源码在不在", "关于页和作品页分开，人是人，东西是东西"],
+      "whenToUse": "一个人做了很多小东西，需要一页能筛选、能点开的作品墙时。和蔚蓝的关于页一起看。"
+    },
+    {
       "id": "v-loader-buttons",
       "shelf": "design",
       "kind": "loader",
@@ -430,6 +486,20 @@
       "whenToUse": "页面骨架搭完后，挑 2-3 个关键交互点加动效点睛。"
     },
     {
+      "id": "v-vibedesign",
+      "shelf": "design",
+      "kind": "motion",
+      "kindLabel": "动效",
+      "name": "Vibe Design Tips",
+      "tag": "交互细节",
+      "url": "https://vibedesign.tips",
+      "preview": "/previews/vibedesign.jpg",
+      "swatches": ["#FFFFFF", "#111111", "#F3F1EC", "#E7E5E4"],
+      "whyGood": "标注：这是一本按期出的交互细节杂志，不是组件库。每期只讲一个让软件显得被做过的小效果：滚动卡片、全息卡、加载、Toast、删除退场、液态玻璃、缓动、中英混排。页面上能直接看演示，旁边有一段可以贴给编程工具的提示词。分类是 Motion、Interaction、Components、Type & Layout、Effects。和「会动的图标」是同一个人在写。",
+      "borrow": ["一次只收一个交互细节，配一个能看的演示", "细节旁边放一段能贴给 Agent 的提示词，不要只放录屏", "动效、控件、排版分开筛选，不要堆在同一列"],
+      "whenToUse": "页面已经能用，想补一处让它显得被做过的小交互时。先看一期，再决定要不要做。"
+    },
+    {
       "id": "v-usegrokbot",
       "shelf": "learning",
       "kind": "prompt-hub",
@@ -456,6 +526,34 @@
       "whyGood": "把多 Agent 团队讲得非常务实：拆分岗位的 5 个信号、可逆 / 不可逆动作的审批矩阵，以及每个岗位的「交付物 + 红线 + 30 秒验收标准」。",
       "borrow": ["每个 AI 岗位只写三件事：交付物、红线、验收标准", "可逆动作放行，不可逆动作必须人工审批", "深色文档站的双目录（全书 / 本页）阅读体验"],
       "whenToUse": "给团队配置专职 AI 岗位、写内部 SOP，或者搭暗色知识文档站时（已精编进「精选好文」）。"
+    },
+    {
+      "id": "v-betteropc",
+      "shelf": "learning",
+      "kind": "guide",
+      "kindLabel": "学习指南",
+      "name": "BetterOPC",
+      "tag": "OPC 日报",
+      "url": "https://betteropc.com",
+      "preview": "/previews/betteropc.jpg",
+      "swatches": ["#FFFFFF", "#F5F7FB", "#FF5C2A", "#6C63FF"],
+      "whyGood": "标注：这是给超级个体看的日报和情报台，不是设计参考。站上写的是「在这里，成为更好的 OPC」。打开就能看今日榜单、OPC 专区、社区榜单，也能看到 AI 产品的低价渠道和额度活动。一条动态标着信源和时间，不是一篇长文。",
+      "borrow": ["日报按今天的榜单排，每条带时间和信源，不要做成文章流", "政策、社区、产品额度分成不同入口，不要挤在同一条时间线", "面向一个人的情报台，首页先给今天看什么"],
+      "whenToUse": "想每天扫一眼 OPC 和 AI 产品动态，或者以后做自己的日报页时，看它怎么把榜单和入口分开。"
+    },
+    {
+      "id": "v-grokbot-guide",
+      "shelf": "learning",
+      "kind": "guide",
+      "kindLabel": "学习指南",
+      "name": "Grok Bot 中文指南",
+      "tag": "中文上岗路线",
+      "url": "https://grokbotguide.pages.dev",
+      "preview": "/previews/grokbot-guide.jpg",
+      "swatches": ["#F6F4F0", "#111111", "#F5A8C8", "#F0A020"],
+      "whyGood": "标注：这是一份中文实践手册和学习路线，不是提示词市场，也不是第 24 章那篇岗位文章。一宿君写的，MIT。手册从安装、第一个 Bot、云电脑走到进阶工作台。Bot 馆现在放着 6 个可导入的队友：小夜、码初、晨号、批签、拾纸、账青。点「导入模板」会打开 x.ai/bot 上的分享链接，唤起本机的 Grok Bot。",
+      "borrow": ["学习路线按 30 分钟能做完的一步来写，不要先给概念总览", "每个角色只留一句它做什么、一句它不做什么", "导入按钮直接打开官方客户端，教程留在网页上"],
+      "whenToUse": "想用中文把 Grok Bot 从安装走到能上岗的角色，先走这条路线。找现成提示词去 UseGrokBot，写岗位红线看第 24 章。"
     },
     {
       "id": "v-skill-clean-ui",

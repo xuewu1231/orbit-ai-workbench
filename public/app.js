@@ -1111,6 +1111,7 @@
       labBench.querySelectorAll('[data-lab-pane]').forEach((pane) => {
         pane.classList.toggle('is-on', pane.getAttribute('data-lab-pane') === name);
       });
+      if (name === 'grain') window.dispatchEvent(new Event('grain-show'));
     };
     labBench.querySelectorAll('[data-lab-tool]').forEach((btn) => {
       btn.addEventListener('click', () => {
@@ -1620,12 +1621,12 @@
   });
 })();
 
-/* Product page only: the title is grains that part around the pointer and gather home again. */
+/* Bench tool: grains that part around the pointer and gather home again. */
 (function () {
-  const root = document.querySelector('.grain-title');
-  const canvas = document.getElementById('grain-title');
+  const root = document.querySelector('.grain-stage');
+  const canvas = document.getElementById('grain-stage');
   if (!root || !canvas) return;
-  const word = root.getAttribute('data-word') || '产品';
+  const word = root.getAttribute('data-word') || '散开再聚';
   const ctx = canvas.getContext('2d');
   if (!ctx) return;
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -1646,8 +1647,8 @@
 
   function fontSpec() {
     const size = parseFloat(getComputedStyle(root).fontSize) || 96;
-    const family = getComputedStyle(root).fontFamily;
-    return { size, font: `800 ${size}px ${family}` };
+    const font = `800 ${size}px "PingFang SC", "Noto Sans CJK SC", "Noto Sans SC", "Source Han Sans SC", "WenQuanYi Micro Hei", "Droid Sans Fallback", sans-serif`;
+    return { size, font };
   }
 
   function layout() {
@@ -1762,14 +1763,18 @@
     };
   }
 
-  canvas.addEventListener('pointermove', (event) => {
+  const onMove = (event) => {
     pointer = localPoint(event);
     wake();
-  });
-  canvas.addEventListener('pointerleave', () => {
+  };
+  canvas.addEventListener('pointermove', onMove);
+  canvas.addEventListener('mousemove', onMove);
+  const onLeave = () => {
     pointer = null;
     wake();
-  });
+  };
+  canvas.addEventListener('pointerleave', onLeave);
+  canvas.addEventListener('mouseleave', onLeave);
   canvas.addEventListener('pointerdown', (event) => {
     if (reduce) return;
     const point = localPoint(event);
@@ -1792,6 +1797,11 @@
       arrived = true;
       layout();
     }, 160);
+  });
+
+  window.addEventListener('grain-show', () => {
+    arrived = true;
+    layout();
   });
 
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(layout);
