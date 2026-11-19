@@ -1,6 +1,21 @@
 {
   "products": [
     {
+      "id": "framescript",
+      "name": "FrameScript · AI 代码视频工坊",
+      "tagline": "用声明式代码与真实 UI 组件拍视频，改一句话毫秒级重渲整支成片",
+      "formBadge": "AI 编程视频平台",
+      "stage": "beta",
+      "flagship": true,
+      "icon": "🎬",
+      "summary": "输入产品发布文案、技术文章或网址，AI 自动编排分镜节奏、弹簧镜头曲线与配音字幕，把真实前端组件、动态排版与数据图表直接编译成 60fps 高清视频（16:9 横屏与 9:16 竖屏同出）。",
+      "why": "黑盒文生视频没法精确改一个字，也没法 100% 还原真实产品界面与品牌字体；『代码定义画面 + AI 编排镜头节奏』才是产品演示片、功能发布与知识可视化最可控的解法。",
+      "mvp": "内置 6 套高质感动态分镜母版（开场痛点卡点 / 真实组件特写 / 数据对比 / 收尾 CTA），支持一句话改词与浏览器端一键导出 MP4。",
+      "metrics": "核心筹备位 · 改词即改片 · 60fps 双比例同出",
+      "relatedArticle": "ai-native-mental-model",
+      "ctaLabel": "看动态视频底座思路 →"
+    },
+    {
       "id": "taste-clipper",
       "name": "Taste Clipper · 灵感一键入库插件",
       "tagline": "逛到好网站，点一下就变成「人能看 + AI 能用」的收藏卡",
@@ -174,6 +189,34 @@
       "metrics": "小样已放在本页台上",
       "relatedArticle": "compounding-byproducts",
       "ctaLabel": "看沉淀方法论 →"
+    },
+    {
+      "id": "motion-spec",
+      "name": "Motion Spec · 网站动效拆帧镜",
+      "tagline": "录 3 秒丝滑交互或贴个网址，反推出弹簧参数与可直接用的动效代码",
+      "formBadge": "Web / 浏览器插件",
+      "stage": "concept",
+      "icon": "↻",
+      "summary": "看到别人网站舒服的展开、翻转或微弹跳，不用靠肉眼瞎猜 cubic-bezier：自动拆解位移轨迹、阻尼刚度与延迟阶梯，输出 React / CSS 动效片段，还能直接导进 FrameScript 当视频镜头母版。",
+      "why": "静态截图好存，但『丝滑的手感』最难向 AI 描述清楚。把动效翻译成精确曲线参数，好交互才真正能复用。",
+      "mvp": "支持上传一段短录屏或读取目标 DOM 过渡属性，生成左右对比预览与一键复制给 AI 的动效规格单。",
+      "metrics": "打通百宝箱动效与视频镜头复用",
+      "relatedArticle": "anti-template-design-system",
+      "ctaLabel": "看去模板味规范 →"
+    },
+    {
+      "id": "eval-arena",
+      "name": "Eval Arena · 提示词与技能靶场",
+      "tagline": "改了一版 Prompt 或 Skill 到底变强还是退化？拿 10 个真实案例一键盲测",
+      "formBadge": "CLI / Web 评测台",
+      "stage": "concept",
+      "icon": "◎",
+      "summary": "把日常踩过坑的真实任务存成测试集，每次修改系统提示词、切换新模型或精简工具后，并发跑一遍新旧版本对比，直观展示准确率、耗时与 Token 账单变化。",
+      "why": "大多数团队改提示词全凭最近一次试跑的感觉，经常修好东墙塌了西墙。有固定靶场才敢大胆做减法。",
+      "mvp": "读取本地 JSONL 用例集，跑双栏盲测对比视图，支持人工点选胜负并自动统计胜率。",
+      "metrics": "告别凭感觉调优 Prompt 与 Skill",
+      "relatedArticle": "less-tools-better-agents",
+      "ctaLabel": "看工具减法实测 →"
     }
   ],
   "vaultItems": [

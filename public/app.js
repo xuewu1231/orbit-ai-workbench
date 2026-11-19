@@ -7,9 +7,19 @@
      ------------------------------------------------------------------------- */
   let soundEnabled = true;
   try { if (localStorage.getItem('orbit-sound') === 'off') soundEnabled = false; } catch (e) {}
+  const soundBtn = $('sound-toggle');
+  let eqPulseTimer = null;
+  function pulseSoundEq() {
+    if (!soundBtn || !soundEnabled) return;
+    soundBtn.classList.add('is-pulsing');
+    clearTimeout(eqPulseTimer);
+    eqPulseTimer = setTimeout(() => soundBtn.classList.remove('is-pulsing'), 260);
+  }
+
   let audioCtx = null;
   function click(freq = 1150, dur = 0.018) {
     if (!soundEnabled) return;
+    pulseSoundEq();
     try {
       const Ctx = window.AudioContext || window.webkitAudioContext;
       if (!Ctx) return;
@@ -59,16 +69,17 @@
     }
   }
 
-  const soundIcon = $('sound-icon');
-  if (soundIcon) soundIcon.textContent = soundEnabled ? '🔊' : '🔇';
-  const soundBtn = $('sound-toggle');
   if (soundBtn) {
+    soundBtn.classList.toggle('is-muted', !soundEnabled);
     soundBtn.addEventListener('click', () => {
       soundEnabled = !soundEnabled;
-      if (soundIcon) soundIcon.textContent = soundEnabled ? '🔊' : '🔇';
+      soundBtn.classList.toggle('is-muted', !soundEnabled);
+      soundBtn.classList.remove('is-pop');
+      void soundBtn.offsetWidth;
+      soundBtn.classList.add('is-pop');
       try { localStorage.setItem('orbit-sound', soundEnabled ? 'on' : 'off'); } catch (e) {}
       if (soundEnabled) click(1400, 0.022);
-      toast(soundEnabled ? '🔊 轻触音效已开启' : '🔇 轻触音效已静音');
+      toast(soundEnabled ? '♪ 轻触音效已开启' : '× 轻触音效已静音');
     });
   }
 
@@ -79,6 +90,9 @@
   if (themeBtn) {
     themeBtn.addEventListener('click', () => {
       click(920);
+      themeBtn.classList.remove('is-spinning');
+      void themeBtn.offsetWidth;
+      themeBtn.classList.add('is-spinning');
       const next = htmlEl.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
       htmlEl.setAttribute('data-theme', next);
       try { localStorage.setItem('studio-theme', next); } catch (e) {}
@@ -89,6 +103,9 @@
   if (langBtn) {
     langBtn.addEventListener('click', () => {
       click(1080);
+      langBtn.classList.remove('is-flipping');
+      void langBtn.offsetWidth;
+      langBtn.classList.add('is-flipping');
       const next = htmlEl.getAttribute('data-lang') === 'zh' ? 'en' : 'zh';
       htmlEl.setAttribute('data-lang', next);
       try { localStorage.setItem('studio-lang', next); } catch (e) {}
@@ -393,6 +410,8 @@
   if (pop && canHover) {
     document.querySelectorAll('[data-preview-url]').forEach((card) => {
       card.addEventListener('mouseenter', () => {
+        const galleryRoot = card.closest('#vault-gallery-root');
+        if (galleryRoot && galleryRoot.getAttribute('data-view') === 'gallery' && card.getAttribute('data-preview-img')) return;
         popCard = card;
         clearTimeout(popTimer);
         popTimer = setTimeout(() => { if (popCard === card) showPop(card); }, 90);
@@ -414,13 +433,24 @@
 
   function flashBtn(btn, label) {
     if (!btn) return;
+    const lblEl = btn.querySelector('.btn-label');
+    if (lblEl) {
+      const origText = lblEl.textContent;
+      btn.classList.add('is-done');
+      lblEl.textContent = label.replace(/^[✓✦]\s*/, '');
+      setTimeout(() => {
+        btn.classList.remove('is-done');
+        lblEl.textContent = origText;
+      }, 1550);
+      return;
+    }
     const orig = btn.innerHTML;
     btn.classList.add('is-done');
     btn.textContent = label;
     setTimeout(() => {
       btn.classList.remove('is-done');
       btn.innerHTML = orig;
-    }, 1500);
+    }, 1550);
   }
 
   document.querySelectorAll('[data-ai-copy]').forEach((btn) => {
@@ -621,16 +651,19 @@
   try { wants = JSON.parse(localStorage.getItem('orbit-wants') || '{}'); } catch (e) {}
   document.querySelectorAll('[data-want-count]').forEach((el) => { el.textContent = wants[el.getAttribute('data-want-count')] || 0; });
   document.querySelectorAll('[data-want]').forEach((btn) => {
+    const initId = btn.getAttribute('data-want');
+    if (wants[initId] > 0) btn.classList.add('is-voted');
     btn.addEventListener('click', () => {
       const id = btn.getAttribute('data-want');
       wants[id] = (wants[id] || 0) + 1;
       try { localStorage.setItem('orbit-wants', JSON.stringify(wants)); } catch (e) {}
       document.querySelectorAll(`[data-want-count="${id}"]`).forEach((el) => { el.textContent = wants[id]; });
+      document.querySelectorAll(`[data-want="${id}"]`).forEach((b) => b.classList.add('is-voted'));
       btn.classList.remove('is-bump');
       void btn.offsetWidth;
       btn.classList.add('is-bump');
       click(1500, 0.02);
-      toast('＋1 已记下，票高的构想优先开发');
+      toast('⚡ ＋1 已点亮，高票构想优先推进开发');
     });
   });
 
@@ -1806,4 +1839,246 @@
 
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(layout);
   else layout();
+})();
+
+/* =============================================================================
+   V8 · KINETIC MICRO-CONTROLS, VAULT COMPOSER & FRAMESCRIPT VIDEO STUDIO
+   ============================================================================= */
+(function () {
+  const $ = (id) => document.getElementById(id);
+  const vaultMap = window.__VAULT_MAP__ || {};
+
+  async function copyPlain(text) {
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch (e) {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand('copy'); } catch (err) {}
+      document.body.removeChild(ta);
+    }
+  }
+
+  function showToast(msg) {
+    const t = $('orbit-toast');
+    if (!t) return;
+    t.textContent = msg;
+    t.hidden = false;
+    t.style.animation = 'none';
+    void t.offsetWidth;
+    t.style.animation = '';
+    setTimeout(() => { t.hidden = true; }, 2400);
+  }
+
+  /* 1. Homepage: 4-State Vector Icon Morpher + 3-Mode Harmonic Orb */
+  const morphBtn = $('morph-demo-btn');
+  const morphName = $('morph-demo-name');
+  const MORPH_STATES = ['01 · Menu 菜单', '02 · Close 关闭', '03 · Run 运行', '04 · Verified 通过'];
+  if (morphBtn) {
+    morphBtn.addEventListener('click', () => {
+      const next = ((Number(morphBtn.getAttribute('data-state')) || 0) + 1) % 4;
+      morphBtn.setAttribute('data-state', String(next));
+      if (morphName) morphName.textContent = MORPH_STATES[next];
+    });
+  }
+
+  const orbBtn = $('orb-mode-btn');
+  const orbLabel = $('orb-mode-label');
+  const ORB_MODES = ['Breathing · 待命呼吸', 'Searching · 深度检索', 'Synthesizing · 高速合成'];
+  if (orbBtn) {
+    orbBtn.addEventListener('click', () => {
+      const next = ((Number(orbBtn.getAttribute('data-orb-mode')) || 0) + 1) % 3;
+      orbBtn.setAttribute('data-orb-mode', String(next));
+      if (orbLabel) orbLabel.textContent = ORB_MODES[next];
+    });
+  }
+
+  const statusDot = $('agent-status-dot');
+  document.querySelectorAll('[data-agent-status] [data-status]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      if (statusDot) statusDot.setAttribute('data-mode', btn.getAttribute('data-status') || 'plan');
+    });
+  });
+
+  /* 2. Vault Page: Gallery ⇄ Compact View Switcher & Multi-Select AI Composer */
+  const vaultRoot = $('vault-gallery-root');
+  document.querySelectorAll('[data-vault-view]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const view = btn.getAttribute('data-vault-view') || 'gallery';
+      document.querySelectorAll('[data-vault-view]').forEach((b) => b.classList.toggle('is-on', b === btn));
+      if (vaultRoot) vaultRoot.setAttribute('data-view', view);
+    });
+  });
+
+  const pickedIds = new Set();
+  const tray = $('vault-composer-tray');
+  const ctCount = $('ct-count');
+  const ctChips = $('ct-chips');
+  const ctScene = $('ct-scene-select');
+  const ctCopyBtn = $('ct-copy-combo-btn');
+  const ctClearBtn = $('ct-clear-btn');
+  const presetComboBtn = $('preset-combo-btn');
+
+  function syncComposerUI() {
+    document.querySelectorAll('[data-vault-pick]').forEach((btn) => {
+      const id = btn.getAttribute('data-vault-pick');
+      const on = pickedIds.has(id);
+      btn.classList.toggle('is-done', on);
+      const lbl = btn.querySelector('.vp-label');
+      if (lbl) lbl.textContent = on ? '已选' : '组合';
+      const card = btn.closest('.vault-card');
+      if (card) card.classList.toggle('is-picked-card', on);
+    });
+    if (!tray) return;
+    if (pickedIds.size === 0) {
+      tray.hidden = true;
+      return;
+    }
+    tray.hidden = false;
+    if (ctCount) ctCount.textContent = String(pickedIds.size);
+    if (ctChips) {
+      ctChips.innerHTML = '';
+      pickedIds.forEach((id) => {
+        const item = vaultMap[id];
+        if (!item) return;
+        const chip = document.createElement('span');
+        chip.className = 'ct-chip';
+        chip.innerHTML = `<strong>${item.name}</strong><button type="button" aria-label="移除">×</button>`;
+        chip.querySelector('button').addEventListener('click', () => {
+          pickedIds.delete(id);
+          syncComposerUI();
+        });
+        ctChips.appendChild(chip);
+      });
+    }
+  }
+
+  document.querySelectorAll('[data-vault-pick]').forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      const id = btn.getAttribute('data-vault-pick');
+      if (!id) return;
+      if (pickedIds.has(id)) pickedIds.delete(id);
+      else pickedIds.add(id);
+      syncComposerUI();
+    });
+  });
+
+  if (presetComboBtn) {
+    presetComboBtn.addEventListener('click', () => {
+      ['v-skimbly', 'v-motion-primitives', 'v-skill-clean-ui'].forEach((id) => {
+        if (vaultMap[id]) pickedIds.add(id);
+      });
+      syncComposerUI();
+      showToast('✦ 已载入推荐三件套（版式 + 动效 + 反塑料规范），看屏幕底部拼装台');
+    });
+  }
+
+  if (ctClearBtn) {
+    ctClearBtn.addEventListener('click', () => {
+      pickedIds.clear();
+      syncComposerUI();
+    });
+  }
+
+  if (ctCopyBtn) {
+    ctCopyBtn.addEventListener('click', async () => {
+      const list = [...pickedIds].map((id) => vaultMap[id]).filter(Boolean);
+      if (!list.length) return;
+      const scene = ctScene ? ctScene.value : '新做高质感 Web 界面';
+      const blocks = list.map((it, idx) => {
+        const lines = [`参考 ${idx + 1}：${it.name}${it.url ? '（' + it.url + '）' : ''}`, `核心亮点：${it.whyGood}`];
+        if (it.borrow && it.borrow.length) lines.push(`重点借鉴：${it.borrow.join('；')}`);
+        return lines.join('\n');
+      });
+      const masterPrompt = [
+        `任务目标：我要${scene}。请综合下面我为你挑选的 ${list.length} 份百宝箱参考进行设计与实现。`,
+        blocks.join('\n\n'),
+        '执行要求：\n1. 把各份参考的长处融合进同一套协调的视觉语言里，绝不要拼凑生硬或使用廉价蓝紫发光渐变。\n2. 动手写代码前，先用 4 条要点告诉我你打算分别从每份参考里吸收什么，等我确认后再实现。',
+      ].join('\n\n');
+      await copyPlain(masterPrompt);
+      ctCopyBtn.classList.add('is-done');
+      const lbl = ctCopyBtn.querySelector('.btn-label');
+      if (lbl) lbl.textContent = '已合并复制';
+      showToast(`✦ 已将 ${list.length} 份参考合并成超级提示词，直接粘贴给 AI！`);
+      setTimeout(() => {
+        ctCopyBtn.classList.remove('is-done');
+        if (lbl) lbl.textContent = '合并复制给 AI';
+      }, 1700);
+    });
+  }
+
+  /* 3. Product Lab: FrameScript Interactive Code-to-Video Studio Monitor */
+  const fsMonitor = $('fs-monitor');
+  const fsCodeView = $('fs-code-view');
+  const fsPlayBtn = $('fs-play-toggle');
+  const fsPlayhead = $('fs-playhead');
+  const fsTimecode = $('fs-timecode');
+
+  const FS_SCENES = {
+    hook: `<Sequence from={0} durationInFrames={90} spring="snappy">\n  <KineticHeadline accent="#3B82F6" beatSync />\n  <CaptionTrack voice="zh-studio" text="改一行文案，整支 60fps 成片即刻重渲" />\n</Sequence>`,
+    ui: `<Sequence from={90} durationInFrames={120} camera="push-in-1.18x">\n  <MountComponent src="@/components/VaultCard" theme="light" />\n  <CursorChoreography target="[data-ai-copy]" clickAtFrame={138} />\n</Sequence>`,
+    chart: `<Sequence from={210} durationInFrames={90} easing="spring(180, 22)">\n  <BenchmarkBars data={[34, 52, 92]} highlightIndex={2} />\n  <EndCard metric="8.5x 提速" export={["16:9_4K.mp4", "9:16_Reel.mp4"]} />\n</Sequence>`,
+  };
+  const SCENE_ORDER = ['hook', 'ui', 'chart'];
+
+  function setFsScene(sceneKey) {
+    if (!fsMonitor) return;
+    fsMonitor.setAttribute('data-scene', sceneKey);
+    document.querySelectorAll('[data-fs-scene]').forEach((b) => b.classList.toggle('is-on', b.getAttribute('data-fs-scene') === sceneKey));
+    document.querySelectorAll('[data-fs-panel]').forEach((p) => p.classList.toggle('is-on', p.getAttribute('data-fs-panel') === sceneKey));
+    if (fsCodeView && FS_SCENES[sceneKey]) fsCodeView.textContent = FS_SCENES[sceneKey];
+  }
+
+  document.querySelectorAll('[data-fs-scene]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      fsPlaying = false;
+      if (fsPlayBtn) fsPlayBtn.textContent = '▶';
+      const sc = btn.getAttribute('data-fs-scene') || 'hook';
+      const idx = SCENE_ORDER.indexOf(sc);
+      if (idx >= 0) fsFrame = idx * 180;
+      setFsScene(sc);
+    });
+  });
+
+  document.querySelectorAll('[data-fs-ratio]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const ratio = btn.getAttribute('data-fs-ratio') || '16:9';
+      document.querySelectorAll('[data-fs-ratio]').forEach((b) => b.classList.toggle('is-on', b === btn));
+      if (fsMonitor) fsMonitor.setAttribute('data-ratio', ratio);
+    });
+  });
+
+  let fsPlaying = true;
+  let fsFrame = 0;
+  const TOTAL_FRAMES = 540; // 9 seconds @ 60fps
+  if (fsPlayBtn) {
+    fsPlayBtn.addEventListener('click', () => {
+      fsPlaying = !fsPlaying;
+      fsPlayBtn.textContent = fsPlaying ? '❚❚' : '▶';
+    });
+  }
+
+  if (fsMonitor && fsPlayhead && fsTimecode) {
+    let lastTs = performance.now();
+    (function tickFs(now) {
+      requestAnimationFrame(tickFs);
+      if (fsPlaying && now - lastTs >= 16) {
+        fsFrame = (fsFrame + 1) % TOTAL_FRAMES;
+        lastTs = now;
+        const pct = (fsFrame / TOTAL_FRAMES) * 100;
+        fsPlayhead.style.left = pct.toFixed(2) + '%';
+        const sec = Math.floor(fsFrame / 60);
+        const frm = fsFrame % 60;
+        fsTimecode.textContent = `00:0${sec}:${String(frm).padStart(2, '0')}`;
+        const targetScene = SCENE_ORDER[Math.floor(fsFrame / 180)] || 'hook';
+        if (fsMonitor.getAttribute('data-scene') !== targetScene) setFsScene(targetScene);
+      }
+    })(performance.now());
+  }
 })();
