@@ -783,7 +783,57 @@
   let curFilter = 'all';
   let pressFilter = 'all';
   let curQuery = '';
+  const noteSections = document.querySelectorAll('[data-note-section]');
+  const noteLaneTabs = document.querySelectorAll('[data-note-lane]');
+  const noteModuleTabs = document.querySelectorAll('[data-note-module]');
+  const noteParams = new URLSearchParams(window.location.search);
+  let noteLane = noteParams.get('lane') || 'all';
+  let noteModule = noteParams.get('module') || 'all';
+  if (!document.querySelector(`[data-note-lane="${noteLane}"]`)) noteLane = 'all';
+  if (!document.querySelector(`[data-note-module="${noteModule}"]`)) noteModule = 'all';
+  if (noteModule !== 'all') noteLane = 'company';
+
+  function syncNoteUrl() {
+    const url = new URL(window.location.href);
+    if (noteLane === 'all') url.searchParams.delete('lane');
+    else url.searchParams.set('lane', noteLane);
+    if (noteModule === 'all') url.searchParams.delete('module');
+    else url.searchParams.set('module', noteModule);
+    history.replaceState(null, '', url);
+  }
+
+  function applyNotes() {
+    noteSections.forEach((section) => {
+      const id = section.getAttribute('data-note-section');
+      const laneOn = noteLane === 'all' || noteLane === id;
+      section.hidden = !laneOn;
+      section.querySelectorAll('[data-note-module-block]').forEach((block) => {
+        const mid = block.getAttribute('data-note-module-block');
+        block.hidden = !laneOn || (noteModule !== 'all' && noteModule !== mid);
+      });
+      section.querySelectorAll('.card-shell[data-access]').forEach((card) => {
+        const okA = curFilter === 'all' || card.getAttribute('data-access') === curFilter;
+        const okQ = !curQuery || (card.getAttribute('data-search') || '').toLowerCase().includes(curQuery);
+        card.style.display = okA && okQ ? '' : 'none';
+      });
+      section.querySelectorAll('[data-note-module-block]').forEach((block) => {
+        const any = [...block.querySelectorAll('.card-shell')].some((card) => card.style.display !== 'none');
+        const empty = block.querySelector('[data-note-empty]');
+        if (empty) empty.hidden = any;
+      });
+      const any = [...section.querySelectorAll('.card-shell')].some((card) => card.style.display !== 'none');
+      const empty = section.querySelector(':scope > [data-note-empty]');
+      if (empty) empty.hidden = any;
+    });
+    markTabs(noteLaneTabs, 'data-note-lane', noteLane);
+    markTabs(noteModuleTabs, 'data-note-module', noteModule);
+  }
+
   function applyCatalog() {
+    if (noteSections.length) {
+      applyNotes();
+      return;
+    }
     articleCards.forEach((card) => {
       const okA = curFilter === 'all' || card.getAttribute('data-access') === curFilter;
       const okQ = !curQuery || (card.getAttribute('data-search') || '').toLowerCase().includes(curQuery);
@@ -815,6 +865,25 @@
       applyCatalog();
     });
   });
+  noteLaneTabs.forEach((tab) => {
+    tab.addEventListener('click', () => {
+      click(980);
+      noteLane = tab.getAttribute('data-note-lane') || 'all';
+      if (noteLane !== 'company') noteModule = 'all';
+      syncNoteUrl();
+      applyNotes();
+    });
+  });
+  noteModuleTabs.forEach((tab) => {
+    tab.addEventListener('click', () => {
+      click(980);
+      noteModule = tab.getAttribute('data-note-module') || 'all';
+      noteLane = 'company';
+      syncNoteUrl();
+      applyNotes();
+    });
+  });
+  if (noteSections.length) applyNotes();
   pressPills.forEach((pill) => {
     pill.addEventListener('click', () => {
       click(1120);

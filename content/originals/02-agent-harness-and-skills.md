@@ -1,6 +1,7 @@
 ---
 slug: agent-harness-and-skills
 kind: original
+lane: made
 series: Agent 与 Workflow 实战
 chapter: 第 02 章
 title: 从写提示词到建系统：我们是怎么搭团队级 Agent 工作流的
