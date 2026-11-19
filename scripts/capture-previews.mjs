@@ -32,6 +32,13 @@ const SITES = [
   ['shadcn', 'https://ui.shadcn.com'],
   ['motion-primitives', 'https://motion-primitives.com'],
   ['usegrokbot', 'https://usegrokbot.com/zh-cn'],
+  ['vibedesign', 'https://vibedesign.tips'],
+  ['natochi', 'https://natochi.cv'],
+  ['oil-book', 'https://book.oiloil.org'],
+  ['betteropc', 'https://betteropc.com'],
+  ['grokbot-guide', 'https://grokbotguide.pages.dev'],
+  ['weilanx', 'https://weilanx.com/about'],
+  ['weilanx-works', 'https://pages.weilanx.com/works/'],
 ];
 
 function sleep(ms) {
@@ -127,7 +134,7 @@ async function captureOne(browser, name, url) {
     } catch {
       /* capture whatever painted */
     }
-    await sleep(1400);
+    await sleep(name === 'weilanx' ? 5200 : 1400);
     const shot = await browser.send(
       'Page.captureScreenshot',
       { format: 'jpeg', quality: 68, fromSurface: true, captureBeyondViewport: false },
@@ -164,7 +171,9 @@ try {
   const version = await waitForPort();
   const browser = connect(version.webSocketDebuggerUrl);
   await browser.ready;
+  const only = process.argv.slice(2);
   for (const [name, url] of SITES) {
+    if (only.length && !only.includes(name)) continue;
     try {
       await captureOne(browser, name, url);
     } catch (err) {
