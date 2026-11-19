@@ -22,6 +22,8 @@ const SITES = [
   ['loader-buttons', 'https://loader-buttons.appllama.io'],
   ['thinking-orbs', 'https://libraries.dev/orbs'],
   ['morphicons', 'https://www.morphicons.com'],
+  ['dissolve', 'https://dissolve.rselmi.com'],
+  ['kubai-icons', 'https://icons.kubai.design'],
   ['great-ui', 'https://www.great-ui.com/components'],
   ['spec-01', 'https://spec-01.vercel.app'],
   ['spherium', 'https://tryspherium.com'],
