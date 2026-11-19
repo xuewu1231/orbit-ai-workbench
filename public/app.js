@@ -1619,3 +1619,181 @@
     });
   });
 })();
+
+/* Product page only: the title is grains that part around the pointer and gather home again. */
+(function () {
+  const root = document.querySelector('.grain-title');
+  const canvas = document.getElementById('grain-title');
+  if (!root || !canvas) return;
+  const word = root.getAttribute('data-word') || '产品';
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return;
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const gap = 3.6;
+  const reach = 86;
+  const pad = 42;
+  let grains = [];
+  let width = 0;
+  let height = 0;
+  let dpr = 1;
+  let pointer = null;
+  let raf = 0;
+  let arrived = false;
+
+  function ink() {
+    return getComputedStyle(root).color || '#111';
+  }
+
+  function fontSpec() {
+    const size = parseFloat(getComputedStyle(root).fontSize) || 96;
+    const family = getComputedStyle(root).fontFamily;
+    return { size, font: `800 ${size}px ${family}` };
+  }
+
+  function layout() {
+    const { size, font } = fontSpec();
+    dpr = Math.min(2, window.devicePixelRatio || 1);
+    const measure = document.createElement('canvas').getContext('2d');
+    measure.font = font;
+    width = Math.ceil(measure.measureText(word).width + size * 0.08);
+    height = Math.ceil(size * 1.08);
+    canvas.width = Math.ceil((width + pad * 2) * dpr);
+    canvas.height = Math.ceil((height + pad * 2) * dpr);
+    canvas.style.width = `${width + pad * 2}px`;
+    canvas.style.height = `${height + pad * 2}px`;
+    const sample = document.createElement('canvas');
+    sample.width = width;
+    sample.height = height;
+    const pen = sample.getContext('2d');
+    pen.font = font;
+    pen.fillStyle = '#000';
+    pen.textBaseline = 'alphabetic';
+    pen.fillText(word, 4, Math.round(size * 0.86));
+    const pixels = pen.getImageData(0, 0, width, height).data;
+    const next = [];
+    for (let y = gap / 2; y < height; y += gap) {
+      for (let x = gap / 2; x < width; x += gap) {
+        if (pixels[((y | 0) * width + (x | 0)) * 4 + 3] < 150) continue;
+        const angle = Math.random() * Math.PI * 2;
+        const dist = 22 + Math.random() * 48;
+        const sx = x + Math.cos(angle) * dist;
+        const sy = y - 18 + Math.sin(angle) * dist * 0.55;
+        next.push({
+          hx: x,
+          hy: y,
+          sx,
+          sy,
+          x: arrived || reduce ? x : sx,
+          y: arrived || reduce ? y : sy,
+          vx: 0,
+          vy: 0,
+          wait: (x / Math.max(width, 1)) * 380 + Math.random() * 140,
+        });
+      }
+    }
+    grains = next;
+    if (grains.length) root.classList.add('is-live');
+    wake(performance.now());
+  }
+
+  function wake(now) {
+    if (raf) return;
+    raf = requestAnimationFrame(draw);
+    if (!canvas.dataset.born) canvas.dataset.born = String(now || performance.now());
+  }
+
+  function draw(now) {
+    raf = 0;
+    const born = Number(canvas.dataset.born) || now;
+    const elapsed = now - born;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, width + pad * 2, height + pad * 2);
+    ctx.translate(pad, pad);
+    ctx.fillStyle = ink();
+    let moving = false;
+    for (const grain of grains) {
+      const intro = reduce || arrived ? 1 : Math.min(1, Math.max(0, (elapsed - grain.wait) / 820));
+      if (intro < 1) {
+        moving = true;
+        const ease = 1 - (1 - intro) ** 3;
+        grain.x = grain.sx + (grain.hx - grain.sx) * ease;
+        grain.y = grain.sy + (grain.hy - grain.sy) * ease;
+      } else {
+        let pushX = 0;
+        let pushY = 0;
+        if (pointer && !reduce) {
+          const dx = grain.x - pointer.x;
+          const dy = grain.y - pointer.y;
+          const dist = Math.hypot(dx, dy);
+          if (dist < reach && dist > 0.4) {
+            const force = (1 - dist / reach) * 3.4;
+            pushX = (dx / dist) * force;
+            pushY = (dy / dist) * force;
+          }
+        }
+        grain.vx = (grain.vx + pushX + (grain.hx - grain.x) * 0.09) * 0.78;
+        grain.vy = (grain.vy + pushY + (grain.hy - grain.y) * 0.09) * 0.78;
+        grain.x += grain.vx;
+        grain.y += grain.vy;
+        if (Math.abs(grain.vx) + Math.abs(grain.vy) > 0.04 || Math.abs(grain.hx - grain.x) + Math.abs(grain.hy - grain.y) > 0.12) {
+          moving = true;
+        } else {
+          grain.x = grain.hx;
+          grain.y = grain.hy;
+          grain.vx = 0;
+          grain.vy = 0;
+        }
+      }
+      ctx.beginPath();
+      ctx.arc(grain.x, grain.y, 1.25, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    if (!arrived && elapsed > 1400) arrived = true;
+    if (moving || pointer) wake();
+  }
+
+  function localPoint(event) {
+    const box = canvas.getBoundingClientRect();
+    const scaleX = (width + pad * 2) / box.width;
+    const scaleY = (height + pad * 2) / box.height;
+    return {
+      x: (event.clientX - box.left) * scaleX - pad,
+      y: (event.clientY - box.top) * scaleY - pad,
+    };
+  }
+
+  canvas.addEventListener('pointermove', (event) => {
+    pointer = localPoint(event);
+    wake();
+  });
+  canvas.addEventListener('pointerleave', () => {
+    pointer = null;
+    wake();
+  });
+  canvas.addEventListener('pointerdown', (event) => {
+    if (reduce) return;
+    const point = localPoint(event);
+    for (const grain of grains) {
+      const dx = grain.x - point.x;
+      const dy = grain.y - point.y;
+      const dist = Math.hypot(dx, dy) || 1;
+      if (dist > reach * 1.5) continue;
+      const kick = (1 - dist / (reach * 1.5)) * (8 + Math.random() * 7);
+      grain.vx += (dx / dist) * kick;
+      grain.vy += (dy / dist) * kick - 1.5;
+    }
+    wake();
+  });
+
+  let resizeTimer = 0;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+      arrived = true;
+      layout();
+    }, 160);
+  });
+
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(layout);
+  else layout();
+})();

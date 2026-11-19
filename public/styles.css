@@ -1773,6 +1773,48 @@ html[data-theme="dark"] .vault-card[data-vault-kind="style"] .lane-pill { backgr
   letter-spacing: -0.03em;
 }
 
+.inner-page-hero h1.grain-title {
+  position: relative;
+  margin: 2px 0 0;
+  font-family: "PingFang SC", "Hiragino Sans GB", "Noto Sans SC", "Noto Sans CJK SC", "Source Han Sans SC", "WenQuanYi Micro Hei", "Droid Sans Fallback", sans-serif;
+  font-size: clamp(88px, 13vw, 132px);
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  line-height: 1;
+  color: var(--ink-primary);
+}
+.grain-title canvas {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  cursor: crosshair;
+  touch-action: none;
+}
+.grain-title-text {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+.grain-title:not(.is-live) .grain-title-text {
+  position: static;
+  width: auto;
+  height: auto;
+  margin: 0;
+  overflow: visible;
+  clip: auto;
+}
+.grain-title-note {
+  margin: 0 0 14px !important;
+  font-size: 13px !important;
+  color: var(--ink-muted) !important;
+}
+
 .inner-page-hero p {
   margin: 0 0 22px;
   max-width: 680px;
