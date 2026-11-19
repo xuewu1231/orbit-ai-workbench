@@ -1,6 +1,7 @@
 ---
 slug: anti-template-design-system
 kind: original
+lane: made
 series: 界面质感与设计审美
 chapter: 第 03 章
 title: 怎么去掉 AI 生成网页的“模板塑料味”：我们的极简界面规范

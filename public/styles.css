@@ -2341,18 +2341,40 @@ html[data-theme="dark"] .tile-rose { background: rgba(236, 72, 153, 0.15); color
   margin: -6px 0 18px;
   border-radius: 18px;
 }
-.lane-rail .pill-tab span {
+.lane-rail .pill-tab .lane-count,
+.note-modules .pill-tab .lane-count {
   margin-left: 4px;
   color: var(--ink-muted);
   font-variant-numeric: tabular-nums;
 }
-.lane-rail .pill-tab.is-active span { color: inherit; }
+.lane-rail .pill-tab.is-active .lane-count,
+.note-modules .pill-tab.is-active .lane-count { color: inherit; }
 .lane-empty {
   margin: 0 0 18px;
   color: var(--ink-muted);
   font-size: 14px;
 }
 .design-lane { margin: 0 0 28px; }
+.note-section { margin: 8px 0 34px; }
+.note-section > .lane-head { margin-top: 8px; }
+.note-modules { margin: 0 0 16px; }
+.note-module { margin: 0 0 22px; }
+.note-module h4 {
+  margin: 0 0 4px;
+  font-size: 16px;
+  letter-spacing: -0.02em;
+}
+.note-module h4 .shelf-count { margin-left: 6px; }
+.note-module > p { margin: 0 0 12px; color: var(--ink-secondary); font-size: 13.5px; }
+.note-empty {
+  margin: 0;
+  padding: 16px 18px;
+  border-radius: 16px;
+  background: var(--bg-shell);
+  color: var(--ink-secondary);
+  font-size: 14.5px;
+}
+.toolbar-row .lane-rail { margin: 0; width: auto; flex: 1 1 280px; }
 .lane-head {
   display: flex;
   align-items: flex-end;

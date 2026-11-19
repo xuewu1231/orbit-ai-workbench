@@ -1,6 +1,7 @@
 ---
 slug: ai-native-mental-model
 kind: original
+lane: made
 series: 高认知判断与思维模型
 chapter: 认知图谱 01
 title: 一页纸高认知：AI Native 人才与普通“工具人”的 4 个本质区别

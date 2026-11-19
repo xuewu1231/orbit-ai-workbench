@@ -11,7 +11,7 @@
   - 每条收藏都有「✦ 复制给 AI」（干净纯文本提示词）、悬停网站预览、原站图标、色号一键复制
 - **填空模板**：交接单、反问对齐、岗位卡、收藏卡，填完直接复制给 AI
 - **产品孵化**（`/products`）：已上线、内测中与构想池
-- **实战原创 / 精选好文**：Markdown 驱动的长文阅读页
+- **经历 / 精选好文**：Markdown 驱动的长文阅读页。经历分自己做的、公司里、简便办法；公司里再分知识、决策、现状。
 - **给 AI 读的接口**：`/llms.txt`、`/vault.json`
 
 ## 本地运行
@@ -31,7 +31,7 @@ npm run build   # 导出纯静态站点到 dist/，可直接部署到 Vercel / C
 | 产品或构想 | `content/catalog/ecosystem.json` 的 `products` |
 | 填空模板 | `content/catalog/ecosystem.json` 的 `templates` |
 | 首页 AI 工作台 | `content/catalog/workbench.json` |
-| 实战原创文章 | `content/originals/*.md`（`<!-- PRO_CUT -->` 以下为 Pro 内容） |
+| 经历 | `content/originals/*.md`（`lane: made / company / method`，公司笔记再写 `module: knowledge / decision / now`；`<!-- PRO_CUT -->` 以下为 Pro 内容） |
 | 精选好文 | `content/curated/*.md`（`studioNoteBody` 为我们的实战笔记） |
 | 品牌名、定价 | `content/site.json` |
 

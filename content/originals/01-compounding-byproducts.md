@@ -1,6 +1,7 @@
 ---
 slug: compounding-byproducts
 kind: original
+lane: made
 series: 总站方法论与沉淀体系
 chapter: 第 01 章
 title: 为什么我们要建这个 AI 总站：对内给自己复用，对外沉淀成资产
