@@ -290,6 +290,23 @@
   });
 
   const canHover = window.matchMedia('(hover: hover)').matches;
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (canHover && !reduceMotion) {
+    document.querySelectorAll('.mark-card').forEach((card) => {
+      card.addEventListener('mousemove', (e) => {
+        const r = card.getBoundingClientRect();
+        const nx = (e.clientX - r.left) / r.width - 0.5;
+        const ny = (e.clientY - r.top) / r.height - 0.5;
+        card.style.setProperty('--rx', (-ny * 4.5).toFixed(2) + 'deg');
+        card.style.setProperty('--ry', (nx * 6).toFixed(2) + 'deg');
+      });
+      card.addEventListener('mouseleave', () => {
+        card.style.removeProperty('--rx');
+        card.style.removeProperty('--ry');
+      });
+    });
+  }
+
   if (canHover) {
     document.querySelectorAll('.tilt-3d').forEach((el) => {
       el.addEventListener('mouseenter', () => { el.style.transition = 'transform 0.12s ease-out'; });
@@ -958,10 +975,10 @@
   const shelfGroups = document.querySelectorAll('[data-shelf-group]');
   const laneTabs = document.querySelectorAll('[data-lane-filter]');
   const vaultSearch = $('vault-search');
-  const vaultCards = document.querySelectorAll('.vault-card');
   let activeShelf = 'all';
   let activeLane = 'all';
   let vaultQuery = '';
+  let vaultFilterKey = '';
   function markTabs(tabs, attr, value) {
     tabs.forEach((tab) => {
       const on = tab.getAttribute(attr) === value;
@@ -969,26 +986,56 @@
       tab.setAttribute('aria-selected', on ? 'true' : 'false');
     });
   }
+  function paintMarks(root, want) {
+    let shown = 0;
+    let extraHit = false;
+    root.querySelectorAll('.mark-card, .vault-card').forEach((card) => {
+      const okQ = !vaultQuery || (card.getAttribute('data-vault-search') || '').toLowerCase().includes(vaultQuery);
+      const show = want && okQ;
+      card.style.display = show ? '' : 'none';
+      if (show) {
+        shown += 1;
+        if (card.hasAttribute('data-mark-extra')) extraHit = true;
+      }
+    });
+    const stage = root.querySelector('.mark-stage');
+    if (stage) {
+      const any = [...stage.querySelectorAll('.mark-card')].some((card) => card.style.display !== 'none');
+      stage.hidden = !any;
+    }
+    return { shown, extraHit };
+  }
+  function syncExpand(root, wantOpen) {
+    if (root.classList.contains('is-shut')) wantOpen = false;
+    root.classList.toggle('is-hit', wantOpen);
+    const btn = root.querySelector('[data-lane-expand]');
+    if (!btn) return;
+    const extraShown = [...root.querySelectorAll('[data-mark-extra]')].some((card) => card.style.display !== 'none');
+    btn.hidden = !!vaultQuery && !extraShown;
+    const on = root.classList.contains('is-open') || root.classList.contains('is-hit');
+    btn.setAttribute('aria-expanded', on ? 'true' : 'false');
+  }
   function applyVault() {
+    const filterKey = activeLane + '|' + vaultQuery;
+    const filterChanged = filterKey !== vaultFilterKey;
+    vaultFilterKey = filterKey;
     shelfGroups.forEach((g) => { g.style.display = activeShelf === 'all' || g.getAttribute('data-shelf-group') === activeShelf ? '' : 'none'; });
     const laneOn = activeLane !== 'all';
     document.querySelectorAll('[data-design-lane]').forEach((lane) => {
+      if (filterChanged) lane.classList.remove('is-shut');
       const id = lane.getAttribute('data-design-lane');
       const wantLane = !laneOn || id === activeLane;
-      let shown = 0;
-      lane.querySelectorAll('.vault-card').forEach((card) => {
-        const okQ = !vaultQuery || (card.getAttribute('data-vault-search') || '').toLowerCase().includes(vaultQuery);
-        const show = wantLane && okQ;
-        card.style.display = show ? '' : 'none';
-        if (show) shown += 1;
-      });
+      const { shown, extraHit } = paintMarks(lane, wantLane);
       lane.style.display = shown ? '' : 'none';
       lane.classList.toggle('is-current', laneOn && id === activeLane && shown > 0);
+      syncExpand(lane, wantLane && ((laneOn && id === activeLane) || (!!vaultQuery && extraHit)));
     });
-    vaultCards.forEach((card) => {
-      if (card.closest('[data-design-lane]')) return;
-      const okQ = !vaultQuery || (card.getAttribute('data-vault-search') || '').toLowerCase().includes(vaultQuery);
-      card.style.display = okQ ? '' : 'none';
+    shelfGroups.forEach((group) => {
+      if (group.querySelector('[data-design-lane]')) return;
+      if (filterChanged) group.classList.remove('is-shut');
+      const visible = group.style.display !== 'none';
+      const { extraHit } = paintMarks(group, visible);
+      syncExpand(group, visible && !!vaultQuery && extraHit);
     });
     document.querySelectorAll('[data-lane-empty]').forEach((el) => {
       const scope = el.parentElement;
@@ -996,6 +1043,22 @@
       el.hidden = !!any;
     });
   }
+  document.querySelectorAll('[data-lane-expand]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const lane = btn.closest('[data-design-lane], .vault-group');
+      if (!lane) return;
+      const expanded = lane.classList.contains('is-open') || lane.classList.contains('is-hit');
+      if (expanded) {
+        lane.classList.remove('is-open', 'is-hit');
+        lane.classList.add('is-shut');
+      } else {
+        lane.classList.add('is-open');
+        lane.classList.remove('is-shut');
+      }
+      const on = lane.classList.contains('is-open') || lane.classList.contains('is-hit');
+      btn.setAttribute('aria-expanded', on ? 'true' : 'false');
+    });
+  });
   shelfTabs.forEach((tab) => {
     tab.addEventListener('click', () => {
       click(1160);
@@ -1025,6 +1088,17 @@
   if (shelfTabs.length) markTabs(shelfTabs, 'data-shelf-filter', activeShelf);
   if (laneTabs.length) markTabs(laneTabs, 'data-lane-filter', activeLane);
   if (urlShelf || urlLane) applyVault();
+  const hashId = decodeURIComponent((location.hash || '').replace(/^#/, ''));
+  if (hashId) {
+    const hashed = document.getElementById(hashId);
+    const hashedLane = hashed && hashed.closest('[data-design-lane], .vault-group');
+    if (hashedLane && hashed.hasAttribute('data-mark-extra')) {
+      hashedLane.classList.add('is-open');
+      hashedLane.classList.remove('is-shut');
+      const hashedBtn = hashedLane.querySelector('[data-lane-expand]');
+      if (hashedBtn) hashedBtn.setAttribute('aria-expanded', 'true');
+    }
+  }
 
   /* ---------------------------------------------------------------------------
      12. ⌘K search
