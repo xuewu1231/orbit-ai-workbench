@@ -1508,6 +1508,183 @@ html[data-theme="dark"] .moon-svg { display: none; }
   gap: 18px;
 }
 
+.mark-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 18px 12px;
+  margin-top: 10px;
+  padding: 16px;
+  border-radius: 22px;
+  background: #121214;
+}
+.mark-card {
+  min-width: 0;
+  color: #f4f4f5;
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.mark-card:hover { transform: translateY(-6px); }
+.mark-shot {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #1c1c1f;
+  box-shadow: 0 10px 24px -18px rgba(0, 0, 0, 0.8);
+}
+.mark-shot-link, .mark-shot img, .mark-fallback {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.mark-shot img {
+  object-fit: cover;
+  object-position: top center;
+  transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.mark-card:hover .mark-shot img { transform: scale(1.06) translateY(-2%); }
+.mark-fallback {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 16px;
+  color: #f4f4f5;
+  background:
+    radial-gradient(180px circle at 100% 0%, rgba(255, 255, 255, 0.08), transparent 70%),
+    #1c1c1f;
+}
+.mark-fallback b { font-size: 14px; }
+.mark-open {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 3;
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  background: rgba(12, 12, 14, 0.72);
+  color: #fff;
+  transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.mark-open:hover { transform: scale(1.08); }
+.mark-more {
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  bottom: 8px;
+  z-index: 2;
+  padding: 12px;
+  border-radius: 12px;
+  background: rgba(12, 12, 14, 0.86);
+  color: #f5f5f4;
+  backdrop-filter: blur(12px);
+  opacity: 0;
+  transform: translateY(10px);
+  pointer-events: none;
+  transition: opacity 0.24s ease, transform 0.36s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.mark-card:hover .mark-more,
+.mark-card:focus-within .mark-more {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+.mark-more p {
+  margin: 0 0 8px;
+  font-size: 12.5px;
+  line-height: 1.45;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.mark-borrow {
+  margin: 0 0 8px;
+  padding: 0 0 0 16px;
+  font-size: 12px;
+  line-height: 1.4;
+  color: #d6d3d1;
+}
+.mark-borrow li + li { margin-top: 3px; }
+.mark-actions { display: flex; align-items: center; gap: 6px; }
+.mark-swatches { display: inline-flex; gap: 4px; margin-right: auto; }
+.mark-actions .icon-ghost-btn,
+.mark-actions .vault-pick-btn {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.16);
+}
+.mark-meta { padding: 10px 2px 0; }
+.mark-name { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.mark-name h3 {
+  margin: 0;
+  min-width: 0;
+  font-size: 14.5px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.mark-kind { margin-left: auto; flex-shrink: 0; font-size: 11px; color: #a1a1aa; }
+.mark-line {
+  margin: 4px 0 0;
+  min-height: 2.9em;
+  font-size: 12.5px;
+  line-height: 1.45;
+  color: #a1a1aa;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.mark-fav {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  background: #fff;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+.mark-fav.is-broken { display: none; }
+.mark-fallback-letter {
+  display: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  background: #3f3f46;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 16px;
+  text-align: center;
+  flex-shrink: 0;
+}
+.mark-fav.is-broken + .mark-fallback-letter { display: inline-block; }
+#vault-gallery-root[data-view="compact"] .mark-grid { background: transparent; padding: 0; gap: 12px; }
+#vault-gallery-root[data-view="compact"] .mark-card {
+  padding: 14px;
+  border-radius: 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  color: var(--ink-primary);
+}
+#vault-gallery-root[data-view="compact"] .mark-shot { display: none; }
+#vault-gallery-root[data-view="compact"] .mark-more {
+  position: static;
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+  margin-top: 10px;
+  background: var(--bg-shell);
+  color: var(--ink-secondary);
+}
+#vault-gallery-root[data-view="compact"] .mark-line,
+#vault-gallery-root[data-view="compact"] .mark-kind { color: var(--ink-secondary); }
+
 /* Badges */
 .mini-pill-badge {
   display: inline-flex;
@@ -2298,6 +2475,7 @@ html[data-theme="dark"] .vault-card[data-vault-kind="style"] .lane-pill { backgr
   .sandbox-grid {
     grid-template-columns: 1fr;
   }
+  .mark-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); padding: 10px; gap: 14px 8px; }
   .reader-inner { padding: 8px 0 16px; }
   .navbar-inner {
     grid-template-columns: minmax(0, 1fr) auto;

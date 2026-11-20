@@ -431,6 +431,20 @@
       "whenToUse": "页面已经有了，只差一个 Dock、转场、引用卡或时间线，想直接改源码时。"
     },
     {
+      "id": "v-designbookmark",
+      "shelf": "design",
+      "kind": "design-site",
+      "kindLabel": "整站参考",
+      "name": "DesignBookmark",
+      "tag": "界面铺开的目录",
+      "url": "https://designbookmark.com",
+      "preview": "/previews/designbookmark.jpg",
+      "swatches": ["#0B0B0D", "#161618", "#F4F4F5", "#FFFFFF"],
+      "whyGood": "标注：设计工具的目录，不是组件库。深色底上把每个产品自己的界面铺成一排，名字和一句话压在图下面，打开和收藏只在图上轻轻放着。扫一眼就知道这是什么。站点首页写着 2,868 个设计工具和网站，分成 59 类。",
+      "borrow": ["收藏先摆界面，简介只留一两行", "更多说明放到悬停，卡片不要写成一篇文章", "深色底让截图自己成为颜色"],
+      "whenToUse": "做资源目录或灵感墙，想让人扫一眼就认出每个站时。"
+    },
+    {
       "id": "v-skimbly",
       "shelf": "design",
       "kind": "design-site",
