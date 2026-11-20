@@ -733,8 +733,17 @@
       }
       $('wb-strengths').innerHTML = item.strengths.map((s) => '<li>' + s + '</li>').join('');
       const link = $('wb-article-link');
-      link.href = (window.__BASE_PATH__ || '') + '/read/' + item.relatedSlug;
-      link.textContent = item.relatedTitle + ' →';
+      if (link) {
+        if (item.relatedSlug) {
+          link.hidden = false;
+          link.href = (window.__BASE_PATH__ || '') + '/read/' + item.relatedSlug;
+          link.textContent = item.relatedTitle + ' →';
+        } else {
+          link.hidden = true;
+          link.removeAttribute('href');
+          link.textContent = '';
+        }
+      }
       if (dossierCard) dossierCard.classList.remove('is-switching');
     }, 130);
   }

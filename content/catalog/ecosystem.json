@@ -11,9 +11,7 @@
       "summary": "输入产品发布文案、技术文章或网址，AI 自动编排分镜节奏、弹簧镜头曲线与配音字幕，把真实前端组件、动态排版与数据图表直接编译成 60fps 高清视频（16:9 横屏与 9:16 竖屏同出）。",
       "why": "黑盒文生视频没法精确改一个字，也没法 100% 还原真实产品界面与品牌字体；『代码定义画面 + AI 编排镜头节奏』才是产品演示片、功能发布与知识可视化最可控的解法。",
       "mvp": "内置 6 套高质感动态分镜母版（开场痛点卡点 / 真实组件特写 / 数据对比 / 收尾 CTA），支持一句话改词与浏览器端一键导出 MP4。",
-      "metrics": "核心筹备位 · 改词即改片 · 60fps 双比例同出",
-      "relatedArticle": "ai-native-mental-model",
-      "ctaLabel": "看动态视频底座思路 →"
+      "metrics": "核心筹备位 · 改词即改片 · 60fps 双比例同出"
     },
     {
       "id": "taste-clipper",
@@ -25,9 +23,7 @@
       "summary": "在任意网页点插件按钮：自动截图、提取主色板与字体、判断它是设计参考还是学习资料，并生成一段「复制给 AI」的提示词，直接同步进 Orbit 百宝箱。",
       "why": "收藏这件事最大的阻力是「懒得整理」。把整理成本压到 10 秒，百宝箱才会真正越攒越厚。",
       "mvp": "Chrome 插件 + 截图 + 取色 + 调用一次模型生成「好在哪 / 可借鉴点」，POST 到本站 /api/vault-add。",
-      "metrics": "收藏整理从 10 分钟降到 10 秒",
-      "relatedArticle": "compounding-byproducts",
-      "ctaLabel": "看沉淀方法论 →"
+      "metrics": "收藏整理从 10 分钟降到 10 秒"
     },
     {
       "id": "orbit-mcp",
@@ -39,9 +35,7 @@
       "summary": "把百宝箱暴露成 MCP 工具：Agent 可以直接调用 search_vault(\"暗色数据看板\")，拿回最匹配的参考网站、配色和整理好的提示词，不用人再来回复制粘贴。",
       "why": "这是「给 AI 看的网站」的终局形态：人负责收藏和判断品味，AI 负责在干活时主动检索。",
       "mvp": "读取本站 /vault.json，提供 search_vault 与 get_prompt 两个工具，先在本地 Claude Code 里跑通。",
-      "metrics": "本站已提供 /llms.txt 与 /vault.json 作为数据底座",
-      "relatedArticle": "agent-harness-and-skills",
-      "ctaLabel": "看 Agent 工作流 →"
+      "metrics": "本站已提供 /llms.txt 与 /vault.json 作为数据底座"
     },
     {
       "id": "prompt-pocket",
@@ -53,9 +47,7 @@
       "summary": "不用打开网站：在 Claude、Gemini、Cursor 任意输入框里按快捷键，模糊搜索「交接单」「Skimbly 风格」，选中即把整理好的纯文本提示词粘贴进去。",
       "why": "人记不住 prompt，但记得住一个快捷键。把复用的最后一步缩短到 2 秒。",
       "mvp": "Raycast Extension 读取 /vault.json，列表展示 + 回车复制 + 自动粘贴。",
-      "metrics": "预计每天节省 20+ 次重复描述",
-      "relatedArticle": "ai-native-mental-model",
-      "ctaLabel": "看高认知图谱 →"
+      "metrics": "预计每天节省 20+ 次重复描述"
     },
     {
       "id": "style-dna",
@@ -67,9 +59,7 @@
       "summary": "分析目标网站的配色比例、圆角层级、字体字重、阴影和间距节奏，导出 Tailwind 配置 / CSS 变量，外加一段「请按这个风格设计」的 AI 说明书。",
       "why": "「我喜欢这个网站的感觉」很难说清楚。把感觉翻译成参数，AI 才能稳定复现。",
       "mvp": "截图 + DOM 计算样式采样，输出 8 个颜色变量、3 档圆角、字号阶梯和一段风格描述。",
-      "metrics": "把「感觉」变成可复用参数",
-      "relatedArticle": "anti-template-design-system",
-      "ctaLabel": "看去模板味规范 →"
+      "metrics": "把「感觉」变成可复用参数"
     },
     {
       "id": "handoff-keeper",
@@ -109,9 +99,7 @@
       "summary": "按「定义 → 新旧对比 → 四大支柱 → 总结公式」的金字塔结构，用纯代码驱动镜头与排版，改文案即可重新渲染整支视频。",
       "why": "复杂认知用文字讲要三千字，用结构化动态画面三十秒就能讲透。",
       "mvp": "已完成《AI Native 人才全景图谱》84 秒成片。",
-      "metrics": "单支科普成片制作提速 85%",
-      "relatedArticle": "ai-native-mental-model",
-      "ctaLabel": "看背后的认知框架 →"
+      "metrics": "单支科普成片制作提速 85%"
     },
     {
       "id": "signal-radar",
@@ -155,9 +143,7 @@
       "summary": "贴上一句界面文案或介绍，标出那些一听就是模板的词，并留一句更具体的骨架：谁，在哪个界面，完成哪一步。",
       "why": "塑料味通常不是颜色，是句子在空转。先把空转的词看见，页面才收得干净。",
       "mvp": "一份常见空话词表，命中就高亮，并给出一句改写骨架。",
-      "metrics": "小样已放在本页台上",
-      "relatedArticle": "anti-template-design-system",
-      "ctaLabel": "看去模板味规范 →"
+      "metrics": "小样已放在本页台上"
     },
     {
       "id": "proof-frame",
@@ -186,9 +172,7 @@
       "summary": "不写日报。三行纯文本，自动带上日期，复制进明天的第一个窗口。做成了留证据，卡住了留原因，明天只留一个动作。",
       "why": "一天的判断如果不过夜，第二天又从聊天记录里翻。",
       "mvp": "三格输入，复制成一段带日期的纯文本。账号和提醒以后再说。",
-      "metrics": "小样已放在本页台上",
-      "relatedArticle": "compounding-byproducts",
-      "ctaLabel": "看沉淀方法论 →"
+      "metrics": "小样已放在本页台上"
     },
     {
       "id": "motion-spec",
@@ -200,9 +184,7 @@
       "summary": "看到别人网站舒服的展开、翻转或微弹跳，不用靠肉眼瞎猜 cubic-bezier：自动拆解位移轨迹、阻尼刚度与延迟阶梯，输出 React / CSS 动效片段，还能直接导进 FrameScript 当视频镜头母版。",
       "why": "静态截图好存，但『丝滑的手感』最难向 AI 描述清楚。把动效翻译成精确曲线参数，好交互才真正能复用。",
       "mvp": "支持上传一段短录屏或读取目标 DOM 过渡属性，生成左右对比预览与一键复制给 AI 的动效规格单。",
-      "metrics": "打通百宝箱动效与视频镜头复用",
-      "relatedArticle": "anti-template-design-system",
-      "ctaLabel": "看去模板味规范 →"
+      "metrics": "打通百宝箱动效与视频镜头复用"
     },
     {
       "id": "eval-arena",

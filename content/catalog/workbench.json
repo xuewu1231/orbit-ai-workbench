@@ -23,9 +23,7 @@
             "遇到真实报错能顺着堆栈定位根因，而不是盲目猜补丁"
           ],
           "boundaries": "单次调用成本偏高，简单数据清洗或固定格式批处理交给轻量引擎即可。",
-          "pairedSkill": "npx orbit-ai run arch-review",
-          "relatedSlug": "agent-harness-and-skills",
-          "relatedTitle": "从写提示词到建系统：我们是怎么搭团队级 Agent 工作流的"
+          "pairedSkill": "npx orbit-ai run arch-review"
         },
         {
           "id": "gemini-carbon",
@@ -44,9 +42,7 @@
             "看设计截图、还原交互细节、拆解视频逻辑一气呵成"
           ],
           "boundaries": "交代任务时重点定好“目标与评判标尺”，少用死板机械步骤限制它。",
-          "pairedSkill": "npx orbit-ai run deep-digest",
-          "relatedSlug": "compounding-byproducts",
-          "relatedTitle": "为什么我们要建这个 AI 总站：对内给自己复用，对外沉淀成资产"
+          "pairedSkill": "npx orbit-ai run deep-digest"
         }
       ]
     },
@@ -73,9 +69,7 @@
             "新页面开工先并行出 3 版不同气质原型，团队一眼选出最优解"
           ],
           "boundaries": "必须提前加载禁用清单（禁廉价蓝紫发光渐变、禁杂乱图标混搭）。",
-          "pairedSkill": "npx orbit-ai add skill-clean-ui",
-          "relatedSlug": "anti-template-design-system",
-          "relatedTitle": "怎么去掉 AI 生成网页的“模板塑料味”：我们的极简界面规范"
+          "pairedSkill": "npx orbit-ai add skill-clean-ui"
         },
         {
           "id": "motion-3d",
@@ -94,9 +88,7 @@
             "把抽象复杂的系统逻辑在 30 秒内讲得连外行都一眼秒懂"
           ],
           "boundaries": "动效贵精不贵多，一屏只保留 1-2 处视觉焦点，避免喧宾夺主。",
-          "pairedSkill": "npx orbit-ai run visual-forge",
-          "relatedSlug": "ai-native-mental-model",
-          "relatedTitle": "一页纸高认知：AI Native 人才与普通“工具人”的 4 个本质区别"
+          "pairedSkill": "npx orbit-ai run visual-forge"
         }
       ]
     },
