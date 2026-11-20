@@ -1358,30 +1358,6 @@
     } catch (e) { return null; }
   }
 
-  const fbToggle = $('toggle-feedback-btn');
-  const fbForm = $('chapter-feedback-form');
-  if (fbToggle && fbForm) fbToggle.addEventListener('click', () => (fbForm.hidden = !fbForm.hidden));
-  if (fbForm) {
-    fbForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const fd = new FormData(fbForm);
-      await postJson('/api/feedback', { slug: fbForm.getAttribute('data-slug'), message: fd.get('message'), contact: fd.get('contact') });
-      toast('✓ 已收到你的留言');
-      fbForm.reset();
-      fbForm.hidden = true;
-    });
-  }
-
-  const nlForm = $('newsletter-form');
-  if (nlForm) {
-    nlForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      await postJson('/api/subscribe', { email: new FormData(nlForm).get('email') });
-      toast('✓ 订阅成功');
-      nlForm.reset();
-    });
-  }
-
   const addForm = $('add-vault-form');
   if (addForm) {
     addForm.addEventListener('submit', async (e) => {
