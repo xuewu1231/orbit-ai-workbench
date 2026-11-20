@@ -17,7 +17,7 @@ sourceUrl: https://x.com/runmaotui/status/2120454874156749026
 coverAccent: slate
 coverSymbol: rings
 pairedSkill: ""
-relatedSlugs: pm-ai-full-cycle,anthropic-building-effective-agents,gemini-prompt-design
+relatedSlugs: pm-ai-full-cycle,claude-code-verification,lauren-tan-grok-garden
 summary: 转型 AI 产品不必从 GPU 学到 Agent 的每一项。大毛腿用五层栈和一次路由取舍说明：先看这项技术会不会改你手头的决定。
 studioNoteTitle: 我们的实战笔记 · 学一项技术，用一次取舍来验收
 studioNoteBody: 我们看技术文，容易收成术语表。这篇有用的地方是后半：Token 网关要不要做智能路由，他们当时选择先把接入和整条链路做稳。这和「少做工具、先把环境做清楚」是同一种判断。学习资源以原帖里的表为准，这里只留怎么用这张地图。

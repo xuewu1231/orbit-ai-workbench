@@ -17,13 +17,13 @@ sourceUrl: https://www.youtube.com/watch?v=zdshL1IcetU
 coverAccent: vermilion
 coverSymbol: compass
 pairedSkill: ""
-relatedSlugs: claude-code-verification,x-builders-agentic-workflow,simon-willison-llm-workflows
+relatedSlugs: pm-ai-full-cycle,iso-explode-film,claude-code-verification
 summary: 他认定 2027 年一个人最值钱的，是抓住注意力。自己做，或替一到三个客户做创意。品牌、选题、成稿分成三份工作，AI 出草稿，人定方向。
 studioNoteTitle: 我们的实战笔记 · 信和视频是同一篇，架上只留这一本
 studioNoteBody: 视频标题就是「2027 年最赚钱的 AI 生意」。他给的两条路里，和第二条更近我们现在在做的：把定位、选题和能交出去的成品收在一处，而不是再堆一个代工号。数字是他的估计，不是我们的报价。原文视频和信件都在文末。
 ---
 
-Dan Koe 是做一人事业的创作者，站和频道都很大。2026 年 11 月，他把《The most lucrative AI business to start in 2027》讲成了一期 YouTube，同一篇也发在信里：[letters.thedankoe.com](https://letters.thedankoe.com/p/the-most-lucrative-ai-business-to)。下面按视频里的顺序记，不搬他的提示词，也不把他的工具广告当成方法。
+Dan Koe 是做一人事业的创作者。2026 年 11 月，他把《The most lucrative AI business to start in 2027》讲成了一期 YouTube，同一篇也发在信里：[letters.thedankoe.com](https://letters.thedankoe.com/p/the-most-lucrative-ai-business-to)。下面按他讲的顺序写完：先是那门生意，再是一支创意团队里的三份工作，然后是怎么把一个人写成能用的材料，最后是第一个客户怎么来。数字是他的估计。
 
 他的前提很短：东西再好，没人知道，就没人付钱。注意力有限，还会更贵。工作可能变少的时候，人通常有三条路：抱怨、再去学一门去找下一份工、或者自己做一门生意。他认为会有很多人走第三条，而第三条的入口是个人品牌。
 

@@ -13,7 +13,7 @@ audioDuration: 13:50
 coverAccent: ochre
 coverSymbol: Bauhaus
 pairedSkill: "@folio/skill-editorial-ui"
-relatedSlugs: compounding-byproducts,high-leverage-product-teams
+relatedSlugs: compounding-byproducts,four-layer-cognition
 summary: 为什么 95% 用 AI 生成的网站一眼就能看出来？详解我们从瑞士编辑出版物中提炼的色彩约束、排版阶梯与三稿盲选工作流。
 ---
 

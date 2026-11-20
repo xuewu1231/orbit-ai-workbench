@@ -82,8 +82,8 @@
       "why": "长任务最容易死在换窗口这一步，信息丢一半，AI 就开始重复劳动。",
       "mvp": "一个 SKILL.md + 交接单模板（已在本站模板区提供），先手动触发，再做自动阈值。",
       "metrics": "长任务换窗口零信息丢失",
-      "relatedArticle": "long-running-context-engineering",
-      "ctaLabel": "看长任务上下文工程 →"
+      "relatedArticle": "claude-code-verification",
+      "ctaLabel": "看验收怎么写进日常 →"
     },
     {
       "id": "squad-builder",
@@ -96,8 +96,8 @@
       "why": "按岗位拆分是多 Agent 落地最稳的方式，但从零写岗位卡门槛太高。",
       "mvp": "基于本站「岗位定义卡」模板做成表单向导，导出纯文本与 Markdown 两种格式。",
       "metrics": "新团队 10 分钟搭好 AI 编制",
-      "relatedArticle": "role-based-ai-team",
-      "ctaLabel": "看岗位组建指南 →"
+      "relatedArticle": "pm-ai-full-cycle",
+      "ctaLabel": "看产品怎么跟完全程 →"
     },
     {
       "id": "ai-native-visualizer",
@@ -124,8 +124,8 @@
       "why": "信息过载时代，筛选本身就是最稀缺的能力。",
       "mvp": "已上线：每日定时抓取 + 轻量模型初筛 + 人工精选入库。",
       "metrics": "每天帮团队省下 2 小时刷信息流",
-      "relatedArticle": "less-tools-better-agents",
-      "ctaLabel": "看精选好文 →"
+      "relatedArticle": "four-layer-cognition",
+      "ctaLabel": "看留下的一篇长文 →"
     },
     {
       "id": "folio-press",
@@ -171,8 +171,8 @@
       "why": "代理说改好了，和人看见改好了，中间差的就是这一帧。",
       "mvp": "交接单模板加两格图片。先手动粘贴截图，再做成提交前自动拍。",
       "metrics": "和交接单守护者是一对",
-      "relatedArticle": "long-running-context-engineering",
-      "ctaLabel": "看长任务怎么交接 →"
+      "relatedArticle": "claude-code-verification",
+      "ctaLabel": "看改动怎么自己跑一遍 →"
     },
     {
       "id": "night-slip",
@@ -215,8 +215,8 @@
       "why": "大多数团队改提示词全凭最近一次试跑的感觉，经常修好东墙塌了西墙。有固定靶场才敢大胆做减法。",
       "mvp": "读取本地 JSONL 用例集，跑双栏盲测对比视图，支持人工点选胜负并自动统计胜率。",
       "metrics": "告别凭感觉调优 Prompt 与 Skill",
-      "relatedArticle": "less-tools-better-agents",
-      "ctaLabel": "看工具减法实测 →"
+      "relatedArticle": "claude-code-verification",
+      "ctaLabel": "看验收怎么打分 →"
     }
   ],
   "vaultItems": [

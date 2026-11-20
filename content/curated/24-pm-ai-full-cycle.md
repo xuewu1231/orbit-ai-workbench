@@ -17,7 +17,7 @@ sourceUrl: https://x.com/runmaotui/status/2100157320944881776
 coverAccent: vermilion
 coverSymbol: layers
 pairedSkill: ""
-relatedSlugs: high-leverage-product-teams,long-running-context-engineering,pm-tech-stack
+relatedSlugs: pm-tech-stack,claude-code-verification,dan-koe-ai-business-2027
 summary: 大毛腿把 AI 从写 PPT 推进到跟完一个需求的全程。关键不是换工具，而是给它一个能留下来的项目，并且每次决定都写回去。
 studioNoteTitle: 我们的实战笔记 · 这和交接单是同一件事
 studioNoteBody: 他写的是产品经理的一天，我们拿来对的是同一条规矩：上下文要持续补，加法要有人删，决定要写回项目而不是留在会议里。台上的交接单五格，就是把「评审之后写回去」收成能复制的一段。原文很长，出处在文末。

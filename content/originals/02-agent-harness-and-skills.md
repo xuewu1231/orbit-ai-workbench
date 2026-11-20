@@ -13,7 +13,7 @@ audioDuration: 16:15
 coverAccent: pine
 coverSymbol: grid
 pairedSkill: "@folio/skill-verify-gate"
-relatedSlugs: less-tools-better-agents,long-running-context-engineering
+relatedSlugs: compounding-byproducts,claude-code-verification
 summary: 深度拆解 Agent 系统的四代演进脉络，公开我们内部把首次任务完成率从 72% 提升至 95% 的精简规则模板与自动验证钩子方案。
 ---
 
