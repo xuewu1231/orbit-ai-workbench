@@ -2053,11 +2053,6 @@ html[data-theme="dark"] .vault-card[data-vault-kind="style"] .lane-pill { backgr
   color: var(--ink-secondary);
 }
 .doc-preface strong { color: var(--ink-primary); font-weight: 650; }
-.doc-after {
-  max-width: 820px;
-  margin: 48px auto 0;
-  padding-top: 8px;
-}
 
 .reader-meta-pills { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
 .muted-text { font-size: 12.5px; color: var(--ink-muted); }
@@ -2201,13 +2196,6 @@ html[data-theme="dark"] .vault-card[data-vault-kind="style"] .lane-pill { backgr
 .pro-unlocked-ribbon { margin: 20px 0 14px; padding: 8px 14px; border-radius: 10px; background: var(--mint-soft); color: var(--mint); font-size: 12.5px; font-weight: 600; }
 
 .hairline-hr { border: none; border-top: 1px solid var(--border-subtle); margin: 34px 0 24px; }
-.utility-grid { display: flex; flex-direction: column; gap: 14px; }
-.utility-card { padding: 18px 20px; border-radius: 16px; background: var(--bg-shell); border: 1px solid var(--border-subtle); }
-.utility-card h3 { margin: 0 0 4px; font-size: 15.5px; }
-.utility-card p { margin: 0; font-size: 13px; color: var(--ink-secondary); }
-.inline-subscribe-form { margin-top: 12px; display: flex; gap: 8px; }
-.inline-subscribe-form input { flex: 1; padding: 9px 14px; border-radius: 999px; border: 1px solid var(--border-strong); background: var(--bg-card); color: var(--ink-primary); font-size: 13.5px; }
-.fb-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .clean-form { margin-top: 12px; display: flex; flex-direction: column; gap: 10px; }
 .clean-form input, .clean-form textarea, .clean-select { width: 100%; padding: 10px 14px; border-radius: 12px; border: 1px solid var(--border-strong); background: var(--bg-card); color: var(--ink-primary); font-size: 13.5px; }
 .fb-submit-row { display: flex; gap: 10px; }
