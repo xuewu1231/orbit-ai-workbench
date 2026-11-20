@@ -1555,6 +1555,7 @@ html[data-theme="dark"] .moon-svg { display: none; }
   content: "";
   position: absolute;
   inset: 0;
+  z-index: 1;
   background: radial-gradient(150px circle at var(--mx, 50%) var(--my, 30%), rgba(255, 255, 255, 0.22), transparent 68%);
   opacity: 0;
   pointer-events: none;
@@ -1727,16 +1728,18 @@ html[data-theme="dark"] .moon-svg { display: none; }
 .mark-stage[data-mark-count="4"] .mark-side { grid-template-columns: 1fr 1fr; }
 .mark-stage[data-mark-count="4"] .mark-side > .mark-card:first-child { grid-column: 1 / -1; }
 .mark-stage .mark-card.is-lead .mark-shot { aspect-ratio: 16 / 10; }
-.mark-stage:has(.mark-card:hover) .mark-card,
-.mark-rest .mark-grid:has(.mark-card:hover) .mark-card {
-  opacity: 0.46;
-  filter: saturate(0.72);
+.mark-shot::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: rgba(0, 0, 0, 0.34);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s ease;
 }
-.mark-stage .mark-card:hover,
-.mark-rest .mark-grid .mark-card:hover {
-  opacity: 1;
-  filter: none;
-}
+.mark-card:hover .mark-shot::before,
+.mark-card:focus-within .mark-shot::before { opacity: 1; }
 .mark-rest {
   display: grid;
   grid-template-rows: 0fr;
@@ -1844,6 +1847,7 @@ html[data-theme="dark"] .moon-svg { display: none; }
 @media (prefers-reduced-motion: reduce) {
   .mark-card,
   .mark-shot img,
+  .mark-shot::before,
   .mark-shot::after,
   .mark-rest,
   .mark-deck img,
