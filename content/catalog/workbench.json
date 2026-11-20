@@ -124,8 +124,8 @@
           ],
           "boundaries": "前期需求模糊时切忌直接并发，先在总师规划台对齐一页纸接口定义。",
           "pairedSkill": "npx orbit-ai add skill-verify-gate",
-          "relatedSlug": "role-based-ai-team",
-          "relatedTitle": "按岗位组建你的 AI 团队：从“全能聊天框”到 7 类专职岗位蓝图"
+          "relatedSlug": "pm-ai-full-cycle",
+          "relatedTitle": "产品经理把 AI 放进全流程：从一份能长期工作的项目，到上线后再回来"
         },
         {
           "id": "deepseek-flash",
@@ -145,8 +145,8 @@
           ],
           "boundaries": "涉及最终对外文案打磨或复杂架构判断时，交回总师台终审。",
           "pairedSkill": "npx orbit-ai run radar-sync",
-          "relatedSlug": "less-tools-better-agents",
-          "relatedTitle": "给 Agent 工具做减法：为什么砍掉 80% 的专用工具反而更强"
+          "relatedSlug": "claude-code-verification",
+          "relatedTitle": "Claude Code 团队怎么验收：先让改动自己跑一遍"
         }
       ]
     }

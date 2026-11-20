@@ -1,7 +1,7 @@
 ---
 slug: claude-code-verification
 kind: curated
-publisher: anthropic
+publisher: practice
 coverFace: index
 coverTitle: 跑过|才算数
 category: Anthropic · Claude Code 怎么验收
@@ -17,13 +17,13 @@ sourceUrl: https://x.com/addyosmani/status/2122590683055993308
 coverAccent: pine
 coverSymbol: check
 pairedSkill: ""
-relatedSlugs: x-builders-agentic-workflow,anthropic-long-running-harness,openai-harness-engineering
+relatedSlugs: lauren-tan-grok-garden,pm-tech-stack,iso-explode-film
 summary: 验收不是多写几条提示。端到端先跑通，属性测试抓人想不到的边，迁移用旧系统当对照。失败三次还过不了，就停下来找人。
 studioNoteTitle: 我们的实战笔记 · 台上能跑完，才算这件小工具做完
 studioNoteBody: 他写的验收，落到我们这页就是：小工具要在浏览器里真的走一遍，不是看截图觉得像。交接单里的「已验证」一格，对应他说的那条停手线：自己修了几轮还失败，就交给人，不要再空转。原文在文末。
 ---
 
-这篇是 Addy Osmani 2026 年 11 月 17 日发在 X 上的长文，讲 Claude Code 团队自己怎么验收。下面是我们留下来能对照的笔记，不是原文。
+Addy Osmani 在 2026 年 11 月 17 日把 Claude Code 团队的验收写成一篇长文。下面按他的顺序写完：先是规模和为什么必须有证据，然后是三种先做的测试，再是验收怎么放进每天的提交，最后是检查本身也要被检查。
 
 他先把规模说清楚：团队里绝大部分代码由 Claude 写，也由 Claude 审。他自己写的比例大约是九成。没有验收时，人得自己看每一处，所以同时只能开一两个。有了验收，才能把更多个放在一起跑。
 

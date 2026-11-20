@@ -18,7 +18,7 @@ sourceUrl: https://x.com/YsfPPoc/status/2120155087389733066
 coverAccent: slate
 coverSymbol: layers
 pairedSkill: ""
-relatedSlugs: role-based-ai-team,less-tools-better-agents
+relatedSlugs: pm-ai-full-cycle,claude-code-verification
 summary: 我们常常听说人的一生都在为自己的认知买单，那么什么是认知，如何提升它？
 studioNoteTitle: ""
 studioNoteBody: ""

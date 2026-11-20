@@ -13,7 +13,7 @@ audioDuration: 12:40
 coverAccent: vermilion
 coverSymbol: rings
 pairedSkill: "@folio/skill-deep-teardown"
-relatedSlugs: agent-harness-and-skills,less-tools-better-agents
+relatedSlugs: agent-harness-and-skills,four-layer-cognition
 summary: 基石免费篇：拆解『对内消化理解 × 对外展示连接 × 副产物封装』的完整闭环，让学习、造产品、做传播与商业化变成同一件事的四个切面。
 ---
 
