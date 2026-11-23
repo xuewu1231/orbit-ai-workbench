@@ -5,10 +5,12 @@ import { ROOT_DIR, loadAllSiteData } from './lib/content-loader.mjs';
 import {
   renderHomePage,
   renderCatalogPage,
+  renderCreatorPage,
   renderProductsPage,
   renderEcosystemPage,
   renderReaderPage,
   renderLlmsTxt,
+  renderRoleContextTxt,
   buildVaultExport,
 } from './lib/templates.mjs';
 
@@ -170,9 +172,34 @@ const server = http.createServer(async (req, res) => {
       res.end(renderLlmsTxt(data));
       return;
     }
+    if (pathname === '/context/design.txt') {
+      res.writeHead(200, { 'Content-Type': 'text/plain; charset=utf-8' });
+      res.end(renderRoleContextTxt(data, 'design'));
+      return;
+    }
+    if (pathname === '/context/creator.txt') {
+      res.writeHead(200, { 'Content-Type': 'text/plain; charset=utf-8' });
+      res.end(renderRoleContextTxt(data, 'creator'));
+      return;
+    }
+    if (pathname === '/context/skills.txt') {
+      res.writeHead(200, { 'Content-Type': 'text/plain; charset=utf-8' });
+      res.end(renderRoleContextTxt(data, 'skills'));
+      return;
+    }
+    if (pathname.startsWith('/skills/') && pathname.endsWith('.md')) {
+      const slug = decodeURIComponent(pathname.slice('/skills/'.length, -3));
+      const found = (data.skills || []).find((s) => s.slug === slug);
+      if (found) {
+        res.writeHead(200, { 'Content-Type': 'text/markdown; charset=utf-8' });
+        res.end(found.rawContent);
+        return;
+      }
+    }
     if (pathname === '/vault.json') return sendJson(res, buildVaultExport(data));
     if (pathname === '/') return sendHtml(res, renderHomePage(data));
-    if (pathname === '/originals') return sendHtml(res, renderCatalogPage(data, 'originals'));
+    if (pathname === '/originals' || pathname === '/depot') return sendHtml(res, renderCatalogPage(data, 'originals'));
+    if (pathname === '/creator') return sendHtml(res, renderCreatorPage(data));
     if (pathname === '/curated') return sendHtml(res, renderCatalogPage(data, 'curated'));
     if (pathname === '/products') return sendHtml(res, renderProductsPage(data));
     if (pathname === '/ecosystem' || pathname === '/vault') return sendHtml(res, renderEcosystemPage(data));

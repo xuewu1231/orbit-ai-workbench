@@ -1,0 +1,79 @@
+[
+  {
+    "id": "rad-excalidraw",
+    "ring": "adopt",
+    "ringLabel": "主力常驻",
+    "name": "Excalidraw 手绘白板讲稿流",
+    "category": "自媒体视觉底座",
+    "demo": true,
+    "verdict": "目前做硬核 AI 拆解视频性价比最高的视觉载体。手绘粗糙感天然消解了技术说教味，观众注意力全跟着箭头走。",
+    "pitfall": "避坑提醒：一屏绝对不要塞超过 4 个方框，字号统一选 Large，否则手机竖屏看全是蚂蚁字。",
+    "action": "保留为所有深度口播视频的 Step 1 标准起点。"
+  },
+  {
+    "id": "rad-claude-code",
+    "ring": "adopt",
+    "ringLabel": "主力常驻",
+    "name": "Claude Code + 独立 SKILL.md 胶囊",
+    "category": "Agent 编码与自动化",
+    "demo": true,
+    "verdict": "把审美护栏、口播去塑料规则拆成独立 SKILL.md 按需挂载，比塞一个臃肿的全局系统提示词精准太多。",
+    "pitfall": "避坑提醒：单次窗口上下文超过 65% 后指令遵循度会明显下滑，必须用五格交接单开新窗。",
+    "action": "持续在 content/skills/ 沉淀高频可复用胶囊。"
+  },
+  {
+    "id": "rad-remotion-code-video",
+    "ring": "trial",
+    "ringLabel": "正在试水",
+    "name": "AI 代码驱动视频渲染（FrameScript / Remotion 路线）",
+    "category": "视频工程化",
+    "demo": true,
+    "verdict": "真实前端组件直接入镜、60fps 弹簧节奏零失真，改一句文案即可重新出片，非常适合产品演示与数据叙事。",
+    "pitfall": "试水观察：纯观点闲聊类视频用代码写偏重，适合和 Excalidraw 白板口播形成「轻快日常 + 精品大片」高低搭配。",
+    "action": "在产品孵化页保留核心席位，优先打磨 3 套高频分镜母版。"
+  },
+  {
+    "id": "rad-role-context-txt",
+    "ring": "trial",
+    "ringLabel": "正在试水",
+    "name": "分场景静态 AI 上下文接口（/context/*.txt）",
+    "category": "私人 AI 弹药接口",
+    "demo": true,
+    "verdict": "不搞复杂的向量数据库，直接按「写界面 / 写自媒体 / 调工具」输出三份干净纯文本 URL，任何 Agent 都能零配置秒读。",
+    "pitfall": "试水观察：单文件保持在 4,000 Token 以内信噪比最高，只放精选准则，不堆流水账。",
+    "action": "随网站构建自动同步生成。"
+  },
+  {
+    "id": "rad-heavy-multi-agent",
+    "ring": "assess",
+    "ringLabel": "观望慎入",
+    "name": "重型黑盒多智能体编排框架（动辄 8 个角色互聊）",
+    "category": "Agent 架构",
+    "demo": true,
+    "verdict": "演示很炫酷，但真干活时 Token 消耗爆炸、中间幻觉层层放大，出了错根本不知道去哪一层修。",
+    "pitfall": "判断结论：一人团队 90% 的任务用「1 个强主模型 + 明确文件边界 + 脚本自检门禁」就能稳稳搞定。",
+    "action": "暂不引入重框架，坚持轻文件流与可检查文本协议。"
+  },
+  {
+    "id": "rad-oneclick-avatar-video",
+    "ring": "hold",
+    "ringLabel": "已弃坑 · 避雷",
+    "name": "全自动一键生成数字人口播流水线",
+    "category": "自媒体踩坑账本",
+    "demo": true,
+    "verdict": "曾以为能躺平日更，实测眼神僵硬、重音毫无情绪起伏，小红书观众前 2 秒直接划走，完播率惨不忍睹。",
+    "pitfall": "核心死因：自媒体真正的护城河是「真人的判断语气 + 亲手画的白板推演」，把灵魂外包给套模数字人等于自废武功。",
+    "action": "彻底弃用。改为 AI 辅助出白板结构与提词初稿，真人真声走心录制。"
+  },
+  {
+    "id": "rad-raw-web-clipper",
+    "ring": "hold",
+    "ringLabel": "已弃坑 · 避雷",
+    "name": "只存网址不写批注的「稍后阅读」堆积癖",
+    "category": "知识管理踩坑账本",
+    "demo": true,
+    "verdict": "剪藏了上千篇公众号和推文，真正做项目或找选题时一条都搜不出来，反而制造巨大的信息焦虑。",
+    "pitfall": "核心死因：没有经过「它好在哪 + 我怎么用」两句话转化的信息只是数字垃圾，不是弹药。",
+    "action": "立下铁律：进本工作台的每一条收录，必须当场写清可借鉴点与 AI 调用词。"
+  }
+]

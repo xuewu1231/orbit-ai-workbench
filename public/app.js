@@ -2162,3 +2162,1106 @@
     })(performance.now());
   }
 })();
+
+
+/* =============================================================================
+   V9 · AMMUNITION DEPOT, EXCALIDRAW GENERATOR, TELEPROMPTER & SHARE CARD STUDIO
+   ============================================================================= */
+(function () {
+  const $ = (id) => document.getElementById(id);
+  const depotData = window.__DEPOT_DATA__ || { contexts: {}, skills: {}, signals: [], creator: {} };
+
+  async function copyPlain(text) {
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch (e) {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand('copy'); } catch (err) {}
+      document.body.removeChild(ta);
+    }
+  }
+
+  function toast(msg) {
+    const t = $('orbit-toast');
+    if (!t) return;
+    t.textContent = msg;
+    t.hidden = false;
+    t.style.animation = 'none';
+    void t.offsetWidth;
+    t.style.animation = '';
+    setTimeout(() => { t.hidden = true; }, 2500);
+  }
+
+  function flashDone(btn, doneLabel, origLabel) {
+    btn.classList.add('is-done');
+    const lbl = btn.querySelector('.btn-label');
+    if (lbl && doneLabel) lbl.textContent = doneLabel;
+    setTimeout(() => {
+      btn.classList.remove('is-done');
+      if (lbl && origLabel) lbl.textContent = origLabel;
+    }, 1600);
+  }
+
+  /* -------------------------------------------------------------------------
+     1. Role-Specific Context Endpoints & Runnable SKILL.md Copy
+     ----------------------------------------------------------------------- */
+  document.querySelectorAll('[data-copy-context]').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      const key = btn.getAttribute('data-copy-context');
+      const txt = depotData.contexts && depotData.contexts[key];
+      if (!txt) return;
+      const orig = btn.querySelector('.btn-label')?.textContent || '复制给 AI';
+      await copyPlain(txt);
+      flashDone(btn, '已整包复制', orig);
+      toast(`✦ 已复制 ${key}.txt 完整上下文包，可直接粘贴喂给 AI`);
+    });
+  });
+
+  document.querySelectorAll('[data-copy-url]').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      const rel = btn.getAttribute('data-copy-url') || '';
+      const fullUrl = new URL(rel, window.location.origin).href;
+      await copyPlain(fullUrl);
+      toast(`✓ 已复制接口地址：${fullUrl}`);
+    });
+  });
+
+  document.querySelectorAll('[data-copy-skill]').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      const slug = btn.getAttribute('data-copy-skill');
+      const sk = depotData.skills && depotData.skills[slug];
+      if (!sk) return;
+      const orig = btn.querySelector('.btn-label')?.textContent || '复制指令给 AI';
+      await copyPlain(sk.plainPrompt);
+      flashDone(btn, '已复制指令', orig);
+      toast(`✦ 已复制「${sk.name}」完整可执行指令`);
+    });
+  });
+
+  /* -------------------------------------------------------------------------
+     2. Future Self Depot (/originals): Tabs, Signals, Radar, Diff Slider, Blueprint
+     ----------------------------------------------------------------------- */
+  const depotTabs = document.querySelectorAll('[data-depot-tab]');
+  const depotPanels = document.querySelectorAll('[data-depot-panel]');
+  function setDepotTab(tabId, syncUrl = false) {
+    depotTabs.forEach((btn) => btn.classList.toggle('is-active', btn.getAttribute('data-depot-tab') === tabId));
+    depotPanels.forEach((sec) => {
+      sec.hidden = tabId !== 'all' && sec.getAttribute('data-depot-panel') !== tabId;
+    });
+    if (syncUrl) {
+      const u = new URL(window.location.href);
+      if (tabId === 'all') u.searchParams.delete('tab');
+      else u.searchParams.set('tab', tabId);
+      history.replaceState(null, '', u);
+    }
+  }
+  if (depotTabs.length) {
+    const initTab = new URLSearchParams(window.location.search).get('tab') || 'all';
+    if (document.querySelector(`[data-depot-tab="${initTab}"]`)) setDepotTab(initTab, false);
+    depotTabs.forEach((btn) => {
+      btn.addEventListener('click', () => setDepotTab(btn.getAttribute('data-depot-tab') || 'all', true));
+    });
+  }
+
+  // Quick Signal Capture + Signal Multi-Select Composer
+  const signalsMap = new Map((depotData.signals || []).map((s) => [s.id, s]));
+  const pickedSignals = new Set();
+  const sigTray = $('signal-composer-tray');
+  const sigTrayCount = $('sig-tray-count');
+
+  function syncSigTray() {
+    if (!sigTray) return;
+    sigTray.hidden = pickedSignals.size === 0;
+    if (sigTrayCount) sigTrayCount.textContent = String(pickedSignals.size);
+  }
+
+  function bindSignalCheckboxes(scope = document) {
+    scope.querySelectorAll('[data-sig-check]').forEach((cb) => {
+      if (cb.dataset.bound) return;
+      cb.dataset.bound = '1';
+      cb.addEventListener('change', () => {
+        const id = cb.getAttribute('data-sig-check');
+        if (cb.checked) pickedSignals.add(id);
+        else pickedSignals.delete(id);
+        syncSigTray();
+      });
+    });
+  }
+  bindSignalCheckboxes();
+
+  const toggleQuickSigBtn = $('toggle-quick-signal-btn');
+  const quickSigForm = $('quick-signal-form');
+  const signalsList = $('signals-list');
+  if (toggleQuickSigBtn && quickSigForm) {
+    toggleQuickSigBtn.addEventListener('click', () => {
+      quickSigForm.hidden = !quickSigForm.hidden;
+      if (!quickSigForm.hidden) $('qs-title')?.focus();
+    });
+    quickSigForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const kind = $('qs-kind')?.value || '当时判断';
+      const title = ($('qs-title')?.value || '').trim();
+      const body = ($('qs-body')?.value || '').trim();
+      const rawTags = ($('qs-tags')?.value || '').trim();
+      if (!title || !body || !signalsList) return;
+      const tags = rawTags.split(/\s+/).filter(Boolean).map((t) => (t.startsWith('#') ? t : `#${t}`));
+      const id = 'sig-local-' + Date.now();
+      const today = new Date().toISOString().slice(0, 10);
+      const record = { id, date: today, kind, title, body, tags };
+      signalsMap.set(id, record);
+
+      const card = document.createElement('article');
+      card.className = 'signal-card spotlight-card';
+      card.innerHTML = `
+        <div class="sig-meta">
+          <time>${today}</time>
+          <span class="sig-kind tone-mint">${kind}</span>
+          <label class="sig-pick-wrap"><input type="checkbox" data-sig-check="${id}" /><span>勾选串稿</span></label>
+        </div>
+        <h3></h3>
+        <p class="sig-body"></p>
+        <div class="sig-foot">
+          <div class="sig-tags"></div>
+          <div class="sig-actions">
+            <button type="button" class="soft-pill-btn sm" data-open-share-card><span>生成分享卡</span></button>
+          </div>
+        </div>
+      `;
+      card.querySelector('h3').textContent = title;
+      card.querySelector('.sig-body').textContent = body;
+      const tagsWrap = card.querySelector('.sig-tags');
+      tags.forEach((tg) => {
+        const sp = document.createElement('span');
+        sp.textContent = tg;
+        tagsWrap.appendChild(sp);
+      });
+      const shareBtn = card.querySelector('[data-open-share-card]');
+      shareBtn.setAttribute('data-share-kicker', `${today} · ${kind}`);
+      shareBtn.setAttribute('data-share-title', title);
+      shareBtn.setAttribute('data-share-body', body);
+      shareBtn.setAttribute('data-share-tags', tags.join(' '));
+      signalsList.prepend(card);
+      bindSignalCheckboxes(card);
+      bindShareCardTriggers(card);
+      quickSigForm.reset();
+      quickSigForm.hidden = true;
+      toast('✓ 新闪念卡片已生成！可勾选串成初稿或导出分享图');
+    });
+  }
+
+  $('sig-tray-clear')?.addEventListener('click', () => {
+    pickedSignals.clear();
+    document.querySelectorAll('[data-sig-check]').forEach((cb) => { cb.checked = false; });
+    syncSigTray();
+  });
+
+  $('sig-copy-draft')?.addEventListener('click', async () => {
+    const list = [...pickedSignals].map((id) => signalsMap.get(id)).filter(Boolean);
+    if (!list.length) return;
+    const dnaPrompt = depotData.creator?.voiceDna?.systemPrompt || '';
+    const notesBlock = list.map((s, i) => `闪念 ${i + 1}（${s.kind}）：${s.title}\n展开：${s.body}`).join('\n\n');
+    const prompt = [
+      `任务：请把我平时攒下的这 ${list.length} 条真实思考切片串起来，帮我产出一套「Excalidraw 三格白板结构 + 90 秒自然口播逐字稿 + 小红书发布文案」。`,
+      notesBlock,
+      dnaPrompt,
+    ].filter(Boolean).join('\n\n');
+    await copyPlain(prompt);
+    toast(`✦ 已将 ${list.length} 条闪念连同你的文风 DNA 合并复制，直接粘贴给 AI！`);
+  });
+
+  $('sig-send-creator')?.addEventListener('click', () => {
+    const list = [...pickedSignals].map((id) => signalsMap.get(id)).filter(Boolean);
+    if (!list.length) return;
+    try {
+      sessionStorage.setItem('orbit-pending-signals', JSON.stringify(list));
+    } catch (e) {}
+  });
+
+  // Radar Filter
+  const radarBtns = document.querySelectorAll('[data-radar-filter]');
+  radarBtns.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const ring = btn.getAttribute('data-radar-filter') || 'all';
+      radarBtns.forEach((b) => b.classList.toggle('is-active', b === btn));
+      document.querySelectorAll('[data-radar-ring]').forEach((card) => {
+        card.style.display = ring === 'all' || card.getAttribute('data-radar-ring') === ring ? '' : 'none';
+      });
+    });
+  });
+
+  // Teardown Draggable Split Slider
+  document.querySelectorAll('[data-teardown-card]').forEach((card) => {
+    const stage = card.querySelector('.td-slider-stage');
+    const range = card.querySelector('.tds-range');
+    if (stage && range) {
+      range.addEventListener('input', () => {
+        stage.style.setProperty('--split', `${range.value}%`);
+      });
+    }
+  });
+
+  // Blueprint Persistent Checklist
+  const bpChecks = document.querySelectorAll('[data-bp-check]');
+  const bpProgress = $('bp-check-progress');
+  function syncBpProgress() {
+    if (!bpChecks.length) return;
+    let done = 0;
+    const state = {};
+    bpChecks.forEach((cb) => {
+      if (cb.checked) done += 1;
+      state[cb.getAttribute('data-bp-check')] = cb.checked;
+    });
+    if (bpProgress) bpProgress.textContent = `${done} / ${bpChecks.length} 已核对`;
+    try { localStorage.setItem('orbit-bp-checks', JSON.stringify(state)); } catch (e) {}
+  }
+  if (bpChecks.length) {
+    try {
+      const saved = JSON.parse(localStorage.getItem('orbit-bp-checks') || '{}');
+      bpChecks.forEach((cb) => {
+        const k = cb.getAttribute('data-bp-check');
+        if (saved[k]) cb.checked = true;
+        cb.addEventListener('change', syncBpProgress);
+      });
+      syncBpProgress();
+    } catch (e) {}
+    $('bp-reset-btn')?.addEventListener('click', () => {
+      bpChecks.forEach((cb) => { cb.checked = false; });
+      syncBpProgress();
+      toast('↺ 自检清单已重置');
+    });
+  }
+
+  /* -------------------------------------------------------------------------
+     3. Canvas Visual Card Renderer (Used by both Step 3 Xiaohongshu & Global Modal)
+     ----------------------------------------------------------------------- */
+  const CARD_THEMES = {
+    paper: {
+      bg: '#fcfaf5',
+      grid: '#e2dcd0',
+      cardBg: '#ffffff',
+      border: '#1e293b',
+      kickerBg: '#fff3bf',
+      kickerFg: '#92400e',
+      ink: '#0f172a',
+      sub: '#334155',
+      accent: '#2563eb',
+      tagFg: '#1d4ed8',
+    },
+    obsidian: {
+      bg: '#0c0e14',
+      grid: '#1e2433',
+      cardBg: '#141822',
+      border: '#d97706',
+      kickerBg: 'rgba(245, 158, 11, 0.18)',
+      kickerFg: '#fbbf24',
+      ink: '#f8fafc',
+      sub: '#cbd5e1',
+      accent: '#f59e0b',
+      tagFg: '#fbbf24',
+    },
+    cobalt: {
+      bg: '#0f296b',
+      grid: '#1d3f91',
+      cardBg: '#153482',
+      border: '#60a5fa',
+      kickerBg: 'rgba(96, 165, 250, 0.24)',
+      kickerFg: '#dbeafe',
+      ink: '#ffffff',
+      sub: '#dbeafe',
+      accent: '#38bdf8',
+      tagFg: '#93c5fd',
+    },
+  };
+
+  function wrapCanvasText(ctx, text, maxWidth) {
+    const paragraphs = String(text || '').split(/\n+/);
+    const lines = [];
+    for (const para of paragraphs) {
+      let line = '';
+      for (const ch of para) {
+        const test = line + ch;
+        if (ctx.measureText(test).width > maxWidth && line) {
+          lines.push(line);
+          line = ch;
+        } else {
+          line = test;
+        }
+      }
+      if (line) lines.push(line);
+    }
+    return lines;
+  }
+
+  function drawShareCanvas(canvas, opts) {
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+    const ratio = opts.ratio || '3:4';
+    const W = ratio === '16:9' ? 1280 : 900;
+    const H = ratio === '16:9' ? 720 : 1200;
+    if (canvas.width !== W || canvas.height !== H) {
+      canvas.width = W;
+      canvas.height = H;
+    }
+    const pal = CARD_THEMES[opts.theme] || CARD_THEMES.paper;
+
+    // Background + subtle dot grid
+    ctx.fillStyle = pal.bg;
+    ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = pal.grid;
+    for (let y = 28; y < H; y += 28) {
+      for (let x = 28; x < W; x += 28) {
+        ctx.beginPath();
+        ctx.arc(x, y, 1.4, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    // Inner Frame
+    const pad = ratio === '16:9' ? 54 : 56;
+    const cardW = W - pad * 2;
+    const cardH = H - pad * 2;
+    ctx.fillStyle = pal.cardBg;
+    ctx.strokeStyle = pal.border;
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.roundRect(pad, pad, cardW, cardH, 28);
+    ctx.fill();
+    ctx.stroke();
+
+    // Hard offset shadow accent for paper style
+    if (opts.theme === 'paper') {
+      ctx.fillStyle = '#1e293b';
+      ctx.globalAlpha = 0.08;
+      ctx.beginPath();
+      ctx.roundRect(pad + 10, pad + 10, cardW, cardH, 28);
+      ctx.fill();
+      ctx.globalAlpha = 1;
+    }
+
+    const innerX = pad + 52;
+    const maxW = cardW - 104;
+    let curY = pad + 68;
+
+    // Kicker Pill
+    const kicker = (opts.kicker || 'ORBIT AI WORKBENCH').slice(0, 38);
+    ctx.font = '700 22px "Inter", "PingFang SC", sans-serif';
+    const kw = Math.min(maxW, ctx.measureText(kicker).width + 36);
+    ctx.fillStyle = pal.kickerBg;
+    ctx.beginPath();
+    ctx.roundRect(innerX, curY, kw, 44, 22);
+    ctx.fill();
+    ctx.fillStyle = pal.kickerFg;
+    ctx.fillText(kicker, innerX + 18, curY + 30);
+    curY += 96;
+
+    // Title
+    const titleSize = ratio === '16:9' ? 48 : 52;
+    ctx.font = `800 ${titleSize}px "Plus Jakarta Sans", "PingFang SC", sans-serif`;
+    ctx.fillStyle = pal.ink;
+    const titleLines = wrapCanvasText(ctx, opts.title || '', maxW).slice(0, 4);
+    for (const ln of titleLines) {
+      ctx.fillText(ln, innerX, curY);
+      curY += titleSize * 1.32;
+    }
+
+    // Accent Divider
+    curY += 12;
+    ctx.fillStyle = pal.accent;
+    ctx.fillRect(innerX, curY, 88, 6);
+    curY += 52;
+
+    // Body Copy
+    const bodySize = ratio === '16:9' ? 27 : 30;
+    ctx.font = `500 ${bodySize}px "Inter", "PingFang SC", sans-serif`;
+    ctx.fillStyle = pal.sub;
+    const maxBodyLines = ratio === '16:9' ? 5 : 9;
+    const bodyLines = wrapCanvasText(ctx, opts.body || '', maxW).slice(0, maxBodyLines);
+    for (const ln of bodyLines) {
+      ctx.fillText(ln, innerX, curY);
+      curY += bodySize * 1.58;
+    }
+
+    // Footer Tags & Brand Stamp
+    const footY = pad + cardH - 54;
+    ctx.font = '700 23px "Inter", "PingFang SC", sans-serif';
+    ctx.fillStyle = pal.tagFg;
+    const tagStr = String(opts.tags || '').slice(0, 48);
+    ctx.fillText(tagStr, innerX, footY - 36);
+
+    ctx.font = '600 20px ui-monospace, SFMono-Regular, Menlo, monospace';
+    ctx.fillStyle = pal.sub;
+    ctx.globalAlpha = 0.72;
+    ctx.fillText(depotData.brandName || 'ORBIT · AI WORKBENCH & DEPOT', innerX, footY);
+    ctx.globalAlpha = 1;
+  }
+
+  function downloadCanvasPng(canvas, filename) {
+    if (!canvas) return;
+    const link = document.createElement('a');
+    link.download = filename;
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+  }
+
+  // Global Share Card Modal Binding
+  const shareModal = $('share-card-modal');
+  const shareCanvas = $('share-card-canvas');
+  let scRatio = '3:4';
+  let scTheme = 'paper';
+
+  function refreshShareModalCanvas() {
+    if (!shareCanvas) return;
+    drawShareCanvas(shareCanvas, {
+      ratio: scRatio,
+      theme: scTheme,
+      kicker: $('sc-kicker')?.value || '',
+      title: $('sc-title')?.value || '',
+      body: $('sc-body')?.value || '',
+      tags: $('sc-tags')?.value || '',
+    });
+    shareCanvas.style.maxWidth = scRatio === '16:9' ? '380px' : '270px';
+  }
+
+  function bindShareCardTriggers(scope = document) {
+    scope.querySelectorAll('[data-open-share-card]').forEach((btn) => {
+      if (btn.dataset.scBound) return;
+      btn.dataset.scBound = '1';
+      btn.addEventListener('click', () => {
+        if (!shareModal) return;
+        if ($('sc-kicker')) $('sc-kicker').value = btn.getAttribute('data-share-kicker') || 'ORBIT · 弹药库切片';
+        if ($('sc-title')) $('sc-title').value = btn.getAttribute('data-share-title') || '';
+        if ($('sc-body')) $('sc-body').value = btn.getAttribute('data-share-body') || '';
+        if ($('sc-tags')) $('sc-tags').value = btn.getAttribute('data-share-tags') || '#AI工作流 #实战复盘';
+        shareModal.hidden = false;
+        refreshShareModalCanvas();
+      });
+    });
+  }
+  bindShareCardTriggers();
+
+  if (shareModal) {
+    ['sc-kicker', 'sc-title', 'sc-body', 'sc-tags'].forEach((id) => {
+      $(id)?.addEventListener('input', refreshShareModalCanvas);
+    });
+    shareModal.querySelectorAll('[data-sc-ratio]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        scRatio = btn.getAttribute('data-sc-ratio') || '3:4';
+        shareModal.querySelectorAll('[data-sc-ratio]').forEach((b) => b.classList.toggle('is-active', b === btn));
+        refreshShareModalCanvas();
+      });
+    });
+    shareModal.querySelectorAll('[data-sc-theme]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        scTheme = btn.getAttribute('data-sc-theme') || 'paper';
+        shareModal.querySelectorAll('[data-sc-theme]').forEach((b) => b.classList.toggle('is-active', b === btn));
+        refreshShareModalCanvas();
+      });
+    });
+    $('sc-download-btn')?.addEventListener('click', () => {
+      downloadCanvasPng(shareCanvas, `orbit-card-${scRatio.replace(':', 'x')}.png`);
+      toast('⬇ 高清分享配图已导出！');
+    });
+  }
+
+  /* -------------------------------------------------------------------------
+     4. Creator System Studio (/creator) — Triangulator + Excalidraw + Prompter + XHS
+     ----------------------------------------------------------------------- */
+  const triInput = $('tri-topic-input');
+  if (!triInput) return; // Only run Creator Studio wiring when on /creator
+
+  const candidates = depotData.creator?.topicCandidates || [];
+  const bannedWords = depotData.creator?.voiceDna?.bannedWords || [];
+  const sliderHot = $('slider-hot');
+  const sliderInt = $('slider-interest');
+  const sliderAi = $('slider-ai');
+
+  // Step 00: Venn Triangulator
+  function evaluateTopic() {
+    const hot = Number(sliderHot?.value || 0);
+    const interest = Number(sliderInt?.value || 0);
+    const ai = Number(sliderAi?.value || 0);
+    if ($('val-hot')) $('val-hot').textContent = String(hot);
+    if ($('val-interest')) $('val-interest').textContent = String(interest);
+    if ($('val-ai')) $('val-ai').textContent = String(ai);
+
+    const score = Math.round(hot * 0.28 + interest * 0.42 + ai * 0.30);
+    if ($('venn-score-num')) $('venn-score-num').textContent = String(score);
+    if ($('tri-score-text')) $('tri-score-text').textContent = `综合值得拍指数：${score} / 100`;
+
+    // Move Venn circles closer as scores increase
+    const pull = (v) => ((v - 50) / 50) * 14;
+    $('venn-c-hot')?.setAttribute('cx', String(114 + pull(hot)));
+    $('venn-c-int')?.setAttribute('cx', String(166 - pull(interest)));
+    $('venn-c-ai')?.setAttribute('cy', String(148 - pull(ai)));
+    $('venn-core-glow')?.setAttribute('r', String(Math.max(10, Math.round(score * 0.28))));
+
+    const box = $('tri-verdict-box');
+    const badge = $('tri-verdict-badge');
+    const desc = $('tri-verdict-desc');
+    if (!box || !badge || !desc) return;
+
+    if (interest < 48 && hot >= 75) {
+      box.setAttribute('data-state', 'trap');
+      badge.textContent = '⚠️ 流量陷阱预警 · 建议换切角';
+      desc.textContent = '热度虽高，但你的真实表达欲偏低。硬蹭通稿录出来容易像毫无感情的念稿机，建议改成「拿自己真实任务实测一处成败」。';
+    } else if (hot < 48 && interest >= 75) {
+      box.setAttribute('data-state', 'warn');
+      badge.textContent = '自嗨小众预警 · 需借大众痛点做钩子';
+      desc.textContent = '你自己很有研究热情，但路人第一眼可能觉得跟自己无关。开场前 3 秒必须先挂一个高频痛点（省时间/防翻车）把人留住。';
+    } else if (score >= 78) {
+      box.setAttribute('data-state', 'gold');
+      badge.textContent = '✦ 黄金交集区 · 立刻进 Step 1 画白板';
+      desc.textContent = '既有大众共鸣痛点，又有你的亲手实战体感与 AI 硬核增量。顺着下方三格白板锁死骨架即可开录！';
+    } else {
+      box.setAttribute('data-state', 'warn');
+      badge.textContent = '潜力尚可 · 建议再收窄切口';
+      desc.textContent = '题目略宽泛，建议点左侧「切角按钮」，只挑一个最扎心的反差细节打透，90 秒干脆收尾。';
+    }
+  }
+
+  [sliderHot, sliderInt, sliderAi].forEach((s) => s?.addEventListener('input', evaluateTopic));
+
+  // Step 01: Excalidraw Live Preview + .excalidraw JSON File Builder
+  const exFields = ['center', 'pain', 'mech', 'action', 'takeaway'];
+  let xhsTheme = 'paper';
+  const xhsCanvas = $('xhs-inline-canvas');
+
+  function refreshXhsInlineCanvas() {
+    const pickedTags = [...document.querySelectorAll('.xhs-tag-pill.is-picked')].map((b) => b.getAttribute('data-xhs-tag'));
+    drawShareCanvas(xhsCanvas, {
+      ratio: '3:4',
+      theme: xhsTheme,
+      kicker: 'EXCALIDRAW × AI 实战笔记',
+      title: $('xhs-active-title')?.value || $('ex-center')?.value || '',
+      body: `${$('ex-pain')?.value || ''}\n\n→ ${$('ex-mech')?.value || ''}\n\n✓ ${$('ex-takeaway')?.value || ''}`,
+      tags: pickedTags.slice(0, 4).join(' '),
+    });
+  }
+
+  function syncExcalidrawPreview() {
+    exFields.forEach((k) => {
+      const val = $(`ex-${k}`)?.value || '';
+      const target = $(`prev-ex-${k}`);
+      if (target) target.textContent = val;
+    });
+    refreshXhsInlineCanvas();
+  }
+  exFields.forEach((k) => $(`ex-${k}`)?.addEventListener('input', syncExcalidrawPreview));
+
+  function wrapExText(str, maxChars) {
+    const clean = String(str || '').trim();
+    const out = [];
+    for (let i = 0; i < clean.length; i += maxChars) {
+      out.push(clean.slice(i, i + maxChars));
+    }
+    return out.join('\n') || ' ';
+  }
+
+  function buildExcalidrawJson() {
+    const now = Date.now();
+    let seed = 10420;
+    const baseEl = (extra) => ({
+      angle: 0,
+      strokeWidth: 2,
+      strokeStyle: 'solid',
+      roughness: 1,
+      opacity: 100,
+      groupIds: [],
+      frameId: null,
+      seed: (seed += 17),
+      version: 1,
+      versionNonce: (seed += 31),
+      isDeleted: false,
+      boundElements: null,
+      updated: now,
+      link: null,
+      locked: false,
+      ...extra,
+    });
+
+    const boxWithText = (idPrefix, x, y, w, h, bg, stroke, titleTag, content, dashed = false) => {
+      const wrapped = `${titleTag}\n${wrapExText(content, Math.floor((w - 36) / 20))}`;
+      const linesCount = wrapped.split('\n').length;
+      return [
+        baseEl({
+          id: `${idPrefix}-rect`,
+          type: 'rectangle',
+          x,
+          y,
+          width: w,
+          height: h,
+          strokeColor: stroke,
+          backgroundColor: bg,
+          fillStyle: 'solid',
+          strokeStyle: dashed ? 'dashed' : 'solid',
+          roundness: { type: 3 },
+        }),
+        baseEl({
+          id: `${idPrefix}-txt`,
+          type: 'text',
+          x: x + 20,
+          y: y + Math.max(18, (h - linesCount * 28) / 2),
+          width: w - 40,
+          height: linesCount * 28,
+          strokeColor: '#1e1e1e',
+          backgroundColor: 'transparent',
+          fillStyle: 'solid',
+          roundness: null,
+          text: wrapped,
+          fontSize: 20,
+          fontFamily: 1,
+          textAlign: 'left',
+          verticalAlign: 'top',
+          baseline: 20,
+          containerId: null,
+          originalText: wrapped,
+          lineHeight: 1.35,
+        }),
+      ];
+    };
+
+    const arrowEl = (id, x, y, dx, dy) =>
+      baseEl({
+        id,
+        type: 'arrow',
+        x,
+        y,
+        width: Math.abs(dx),
+        height: Math.abs(dy),
+        strokeColor: '#1e293b',
+        backgroundColor: 'transparent',
+        fillStyle: 'solid',
+        roundness: { type: 2 },
+        points: [[0, 0], [dx, dy]],
+        lastCommittedPoint: null,
+        startBinding: null,
+        endBinding: null,
+        startArrowhead: null,
+        endArrowhead: 'arrow',
+      });
+
+    const elements = [
+      ...boxWithText('banner', 120, 60, 960, 96, '#fff3bf', '#e67700', '【核心命题】', $('ex-center')?.value || ''),
+      ...boxWithText('pain', 120, 210, 280, 190, '#ffe3e3', '#c92a2a', '01 · 痛点 / 旧做法', $('ex-pain')?.value || ''),
+      arrowEl('arr-1', 412, 305, 48, 0),
+      ...boxWithText('mech', 472, 210, 280, 190, '#e7f5ff', '#1864ab', '02 · 核心机制 / 转折', $('ex-mech')?.value || ''),
+      arrowEl('arr-2', 764, 305, 48, 0),
+      ...boxWithText('action', 824, 210, 256, 190, '#d3f9d8', '#2b8a3e', '03 · 落地实操方案', $('ex-action')?.value || ''),
+      ...boxWithText('takeaway', 120, 452, 960, 92, '#f8f9fa', '#334155', '✦ 一句话带走结论：', $('ex-takeaway')?.value || '', true),
+    ];
+
+    return {
+      type: 'excalidraw',
+      version: 2,
+      source: 'https://xuewu1231.github.io/orbit-ai-workbench/creator',
+      elements,
+      appState: {
+        gridSize: 20,
+        viewBackgroundColor: '#ffffff',
+      },
+      files: {},
+    };
+  }
+
+  $('download-excalidraw-btn')?.addEventListener('click', () => {
+    const jsonStr = JSON.stringify(buildExcalidrawJson(), null, 2);
+    const blob = new Blob([jsonStr], { type: 'application/json;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'orbit-storyboard.excalidraw';
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    toast('⬇ 已下载 orbit-storyboard.excalidraw！可直接拖进 Excalidraw 打开录屏');
+  });
+
+  $('excalidraw-prompt-copy')?.addEventListener('click', async () => {
+    const sk = depotData.skills?.['excalidraw-storyboard']?.plainPrompt || '';
+    const topic = triInput.value.trim();
+    await copyPlain(`当前选题：${topic}\n\n${sk}`);
+    toast('✦ 已复制 Excalidraw 白板分镜生成指令给 AI');
+  });
+
+  // Step 02: Spoken Script Renderer, Stats, Plastic Guard & Scrolling Teleprompter
+  const scriptInput = $('spoken-script-input');
+  const tpRendered = $('tp-rendered-script');
+  const tpViewport = $('tp-viewport');
+  const tpBox = $('teleprompter-box');
+  const statPill = $('script-stat-pill');
+  const plasticGuard = $('script-plastic-guard');
+
+  function renderTeleprompterScript() {
+    const raw = scriptInput?.value || '';
+    const pureChars = raw.replace(/\[[^\]]*\]/g, '').replace(/\s+/g, '').length;
+    const totalSec = Math.max(5, Math.round((pureChars / 225) * 60));
+    const min = Math.floor(totalSec / 60);
+    const sec = totalSec % 60;
+    if (statPill) {
+      statPill.textContent = `${pureChars} 字 · 预计口播 ${min ? `${min} 分 ` : ''}${sec} 秒`;
+    }
+
+    const hitBanned = bannedWords.filter((w) => raw.includes(w));
+    if (plasticGuard) {
+      if (hitBanned.length) {
+        plasticGuard.className = 'plastic-guard-badge is-warn';
+        plasticGuard.textContent = `⚠️ 发现塑料词：${hitBanned.join('、')}`;
+      } else {
+        plasticGuard.className = 'plastic-guard-badge is-clean';
+        plasticGuard.textContent = '✓ 零塑料套话';
+      }
+    }
+
+    if (tpRendered) {
+      const paras = raw.split(/\n{2,}|\r?\n/).filter((p) => p.trim());
+      tpRendered.innerHTML = '';
+      paras.forEach((p) => {
+        const pEl = document.createElement('p');
+        const parts = p.split(/(\[[^\]]+\])/g);
+        parts.forEach((part) => {
+          if (/^\[[^\]]+\]$/.test(part)) {
+            const cue = document.createElement('span');
+            cue.className = 'tp-cue';
+            cue.textContent = part;
+            pEl.appendChild(cue);
+          } else if (part) {
+            pEl.appendChild(document.createTextNode(part));
+          }
+        });
+        tpRendered.appendChild(pEl);
+      });
+    }
+  }
+  scriptInput?.addEventListener('input', renderTeleprompterScript);
+
+  function insertAtCursor(ta, snippet) {
+    if (!ta) return;
+    const start = ta.selectionStart ?? ta.value.length;
+    const end = ta.selectionEnd ?? ta.value.length;
+    ta.value = ta.value.slice(0, start) + snippet + ta.value.slice(end);
+    ta.focus();
+    ta.selectionStart = ta.selectionEnd = start + snippet.length;
+    renderTeleprompterScript();
+  }
+  $('insert-cue-board')?.addEventListener('click', () => insertAtCursor(scriptInput, ' [切白板特写] '));
+  $('insert-cue-pause')?.addEventListener('click', () => insertAtCursor(scriptInput, ' [停顿半秒] '));
+  $('copy-raw-script')?.addEventListener('click', async () => {
+    await copyPlain(scriptInput?.value || '');
+    toast('✓ 已复制口播逐字稿');
+  });
+  $('copy-spoken-prompt')?.addEventListener('click', async () => {
+    const sk = depotData.skills?.['xiaohongshu-spoken-pack']?.plainPrompt || '';
+    const dna = depotData.creator?.voiceDna?.systemPrompt || '';
+    const boardSummary = [
+      `中心命题：${$('ex-center')?.value || ''}`,
+      `痛点框：${$('ex-pain')?.value || ''}`,
+      `机制框：${$('ex-mech')?.value || ''}`,
+      `实操框：${$('ex-action')?.value || ''}`,
+      `收尾金句：${$('ex-takeaway')?.value || ''}`,
+    ].join('\n');
+    await copyPlain(`请根据以下白板节点生成自然口播稿与小红书文案：\n${boardSummary}\n\n${sk}\n\n${dna}`);
+    toast('✦ 已复制「白板转口播稿 + 文风 DNA」完整指令给 AI');
+  });
+
+  // Teleprompter Smooth Auto-Scroll
+  let tpPlaying = false;
+  let tpScrollFloat = 0;
+  const tpPlayBtn = $('tp-play-toggle');
+  const tpSpeedInput = $('tp-speed');
+  const tpSpeedVal = $('tp-speed-val');
+
+  function setTpPlaying(next) {
+    tpPlaying = next;
+    if (tpPlayBtn) tpPlayBtn.textContent = tpPlaying ? '❚❚ 暂停滚动' : '▶ 开启滚动提词';
+    if (tpPlaying && tpViewport) tpScrollFloat = tpViewport.scrollTop;
+  }
+
+  tpPlayBtn?.addEventListener('click', () => setTpPlaying(!tpPlaying));
+  $('tp-reset-btn')?.addEventListener('click', () => {
+    setTpPlaying(false);
+    tpScrollFloat = 0;
+    if (tpViewport) tpViewport.scrollTop = 0;
+  });
+  tpSpeedInput?.addEventListener('input', () => {
+    const mult = (Number(tpSpeedInput.value) / 2.5).toFixed(1);
+    if (tpSpeedVal) tpSpeedVal.textContent = `${mult}×`;
+  });
+
+  const FONT_SIZES = ['md', 'lg', 'xl'];
+  $('tp-font-toggle')?.addEventListener('click', () => {
+    if (!tpBox) return;
+    const cur = tpBox.getAttribute('data-size') || 'md';
+    const next = FONT_SIZES[(FONT_SIZES.indexOf(cur) + 1) % FONT_SIZES.length];
+    tpBox.setAttribute('data-size', next);
+  });
+  $('tp-mirror-toggle')?.addEventListener('click', () => {
+    if (!tpBox) return;
+    const cur = tpBox.getAttribute('data-mirror') === '1' ? '0' : '1';
+    tpBox.setAttribute('data-mirror', cur);
+    toast(cur === '1' ? '⇄ 已开启水平镜像模式' : '⇄ 已恢复正常显示');
+  });
+  $('tp-fullscreen-toggle')?.addEventListener('click', () => {
+    if (!tpBox) return;
+    if (!document.fullscreenElement && tpBox.requestFullscreen) {
+      tpBox.requestFullscreen().catch(() => {});
+    } else if (document.exitFullscreen) {
+      document.exitFullscreen().catch(() => {});
+    }
+  });
+
+  (function tickPrompter() {
+    requestAnimationFrame(tickPrompter);
+    if (!tpPlaying || !tpViewport) return;
+    const speed = Number(tpSpeedInput?.value || 2.5) * 0.28;
+    tpScrollFloat += speed;
+    tpViewport.scrollTop = tpScrollFloat;
+    if (tpViewport.scrollTop + tpViewport.clientHeight >= tpViewport.scrollHeight - 2) {
+      setTpPlaying(false);
+    }
+  })();
+
+  // Step 03: Xiaohongshu Title Chips, #Tag Toggles & Full Post Copy
+  const xhsTitleOptions = $('xhs-title-options');
+  const xhsActiveTitle = $('xhs-active-title');
+  const xhsBodyInput = $('xhs-body-input');
+  const xhsSelectedLine = $('xhs-selected-tags-line');
+
+  function renderXhsTitleChips(titles) {
+    if (!xhsTitleOptions) return;
+    xhsTitleOptions.innerHTML = '';
+    (titles || []).forEach((t, idx) => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'xhs-title-chip' + (idx === 0 ? ' is-on' : '');
+      btn.textContent = `备选 ${idx + 1}：${t}`;
+      btn.addEventListener('click', () => {
+        xhsTitleOptions.querySelectorAll('.xhs-title-chip').forEach((b) => b.classList.remove('is-on'));
+        btn.classList.add('is-on');
+        if (xhsActiveTitle) xhsActiveTitle.value = t;
+        refreshXhsInlineCanvas();
+      });
+      xhsTitleOptions.appendChild(btn);
+    });
+  }
+
+  function syncSelectedTagsLine() {
+    const picked = [...document.querySelectorAll('.xhs-tag-pill.is-picked')].map((b) => b.getAttribute('data-xhs-tag'));
+    if (xhsSelectedLine) {
+      xhsSelectedLine.textContent = picked.length
+        ? `已挂载 ${picked.length} 个话题：${picked.join(' ')}`
+        : '暂未选择话题，点击上方胶囊即可挂进文案末尾';
+    }
+    refreshXhsInlineCanvas();
+  }
+
+  function bindTagPills(scope = document) {
+    scope.querySelectorAll('[data-xhs-tag]').forEach((btn) => {
+      if (btn.dataset.tagBound) return;
+      btn.dataset.tagBound = '1';
+      btn.addEventListener('click', () => {
+        btn.classList.toggle('is-picked');
+        syncSelectedTagsLine();
+      });
+    });
+  }
+  bindTagPills();
+
+  $('xhs-custom-tag-input')?.addEventListener('keydown', (e) => {
+    if (e.key !== 'Enter') return;
+    e.preventDefault();
+    let val = e.target.value.trim();
+    if (!val) return;
+    if (!val.startsWith('#')) val = `#${val}`;
+    const firstRow = document.querySelector('.xtg-pills');
+    if (firstRow) {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'xhs-tag-pill is-picked';
+      btn.setAttribute('data-xhs-tag', val);
+      btn.textContent = val;
+      firstRow.prepend(btn);
+      bindTagPills(firstRow);
+      syncSelectedTagsLine();
+    }
+    e.target.value = '';
+  });
+
+  xhsActiveTitle?.addEventListener('input', refreshXhsInlineCanvas);
+
+  document.querySelectorAll('[data-xhs-theme]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      xhsTheme = btn.getAttribute('data-xhs-theme') || 'paper';
+      document.querySelectorAll('[data-xhs-theme]').forEach((b) => b.classList.toggle('is-on', b === btn));
+      refreshXhsInlineCanvas();
+    });
+  });
+
+  $('download-xhs-cover-btn')?.addEventListener('click', () => {
+    downloadCanvasPng(xhsCanvas, 'xiaohongshu-cover-3x4.png');
+    toast('⬇ 已导出高清 3:4 小红书封面图！');
+  });
+
+  $('copy-full-xhs-btn')?.addEventListener('click', async (e) => {
+    const btn = e.currentTarget;
+    const title = (xhsActiveTitle?.value || '').trim();
+    const body = (xhsBodyInput?.value || '').trim();
+    const tags = [...document.querySelectorAll('.xhs-tag-pill.is-picked')].map((b) => b.getAttribute('data-xhs-tag')).join(' ');
+    const fullPost = [title, body, tags].filter(Boolean).join('\n\n');
+    await copyPlain(fullPost);
+    flashDone(btn, '已复制整篇文案与话题', '一键复制完整小红书发布包');
+    toast('✦ 已复制「标题 + 正文 + #话题」，直接去小红书粘贴即可！');
+  });
+
+  // Sync Whiteboard -> Spoken Script & Xiaohongshu
+  $('sync-board-to-script')?.addEventListener('click', () => {
+    const center = $('ex-center')?.value || '';
+    const pain = $('ex-pain')?.value || '';
+    const mech = $('ex-mech')?.value || '';
+    const action = $('ex-action')?.value || '';
+    const takeaway = $('ex-takeaway')?.value || '';
+
+    if (scriptInput) {
+      scriptInput.value = [
+        `[镜头：特写白板左侧红框] 先看大多数人最容易卡住的地方——${pain}。`,
+        `[切白板顶部标题] 所以今天只用这一张白板，跟你聊透：${center}。`,
+        `[画笔：圈出中间蓝框] 真正的转折点其实在这儿：${mech}。`,
+        `[顺箭头滑到右侧绿框 · 停顿半秒] 具体落到今天就能抄走的做法：${action}。`,
+        `[拉回全景收尾] 最后送你白板底下这句话：${takeaway}`,
+      ].join('\n\n');
+      renderTeleprompterScript();
+    }
+    if (xhsActiveTitle) xhsActiveTitle.value = center.slice(0, 20);
+    if (xhsBodyInput) {
+      xhsBodyInput.value = `${pain}\n\n用一张 Excalidraw 三格白板把破局思路梳理清楚了：\n\n1. 关键转折：${mech}\n2. 实操落地：${action}\n\n${takeaway}`;
+    }
+    refreshXhsInlineCanvas();
+    toast('✓ 已按最新白板节点同步刷新 Step 2 口播稿与 Step 3 小红书文案！');
+  });
+
+  // Load Candidate Preset Helper
+  function loadCandidate(cand) {
+    if (!cand) return;
+    triInput.value = cand.title;
+    if (sliderHot) sliderHot.value = String(cand.hot);
+    if (sliderInt) sliderInt.value = String(cand.interest);
+    if (sliderAi) sliderAi.value = String(cand.aiDepth);
+    evaluateTopic();
+    if ($('tri-verdict-desc') && cand.note) $('tri-verdict-desc').textContent = cand.note;
+
+    if (cand.board) {
+      if ($('ex-center')) $('ex-center').value = cand.board.center || '';
+      if ($('ex-pain')) $('ex-pain').value = cand.board.pain || '';
+      if ($('ex-mech')) $('ex-mech').value = cand.board.mechanism || '';
+      if ($('ex-action')) $('ex-action').value = cand.board.action || '';
+      if ($('ex-takeaway')) $('ex-takeaway').value = cand.board.takeaway || '';
+    }
+    if (scriptInput) scriptInput.value = cand.script || '';
+    renderTeleprompterScript();
+
+    renderXhsTitleChips(cand.xhsTitles || [cand.title]);
+    if (xhsActiveTitle) xhsActiveTitle.value = cand.xhsTitles?.[0] || cand.title;
+    if (xhsBodyInput) xhsBodyInput.value = cand.xhsBody || '';
+
+    const wanted = new Set(cand.selectedTags || []);
+    document.querySelectorAll('.xhs-tag-pill').forEach((pill) => {
+      pill.classList.toggle('is-picked', wanted.has(pill.getAttribute('data-xhs-tag')));
+    });
+    syncExcalidrawPreview();
+    syncSelectedTagsLine();
+  }
+
+  document.querySelectorAll('[data-topic-preset]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const id = btn.getAttribute('data-topic-preset');
+      const found = candidates.find((c) => c.id === id);
+      if (!found) return;
+      document.querySelectorAll('[data-topic-preset]').forEach((b) => b.classList.toggle('is-on', b === btn));
+      loadCandidate(found);
+      toast(`✓ 已载入选题样张：${found.title.slice(0, 16)}…`);
+    });
+  });
+
+  // Angle Reframing Buttons
+  document.querySelectorAll('[data-apply-angle]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const mode = btn.getAttribute('data-apply-angle');
+      const topic = triInput.value.trim() || 'AI 工作流实战';
+      if (mode === 'pitfall') {
+        if ($('ex-center')) $('ex-center').value = `避坑实测：${topic.slice(0, 14)}`;
+        if ($('ex-pain')) $('ex-pain').value = '跟风盲目套用热门方案 · 耗时又不稳定';
+        if ($('ex-mech')) $('ex-mech').value = '拆出真正卡脖子的两个边界条件';
+        if ($('ex-action')) $('ex-action').value = '只保留最小可用闭环，砍掉花哨步骤';
+      } else if (mode === 'board') {
+        if ($('ex-center')) $('ex-center').value = `一张白板拆透：${topic.slice(0, 13)}`;
+        if ($('ex-pain')) $('ex-pain').value = '概念满天飞 · 听完还是不会自己上手';
+        if ($('ex-mech')) $('ex-mech').value = '浓缩成输入 → 处理护栏 → 输出验证三步';
+        if ($('ex-action')) $('ex-action').value = '照着这三个手绘框直接套进日常项目';
+      } else {
+        if ($('ex-center')) $('ex-center').value = `前后反差实测：${topic.slice(0, 13)}`;
+        if ($('ex-pain')) $('ex-pain').value = '默认提示词直出 · 一股廉价模板塑料味';
+        if ($('ex-mech')) $('ex-mech').value = '挂载私人弹药库标准 + 标杆参考约束';
+        if ($('ex-action')) $('ex-action').value = '一遍出精品，沉淀成可复用的 SKILL.md';
+      }
+      syncExcalidrawPreview();
+      $('step-excalidraw')?.scrollIntoView({ behavior: 'smooth' });
+      toast('✦ 已按所选切角生成白板框架，可继续微调或下载 .excalidraw');
+    });
+  });
+
+  $('copy-topic-brainstorm')?.addEventListener('click', async () => {
+    const topic = triInput.value.trim();
+    const dna = depotData.creator?.voiceDna?.systemPrompt || '';
+    await copyPlain(
+      `我正在筹备一期 AI 自媒体视频，初步方向是：「${topic}」。\n请结合「热门痛点 × 我的实战体感 × AI 硬核增量」帮我发散 5 个高完播率切入角度（包含：踩坑劝退切角、三格白板拆解切角、前后反差切角），并为每个切角写出前 3 秒开口第一句话。\n\n${dna}`
+    );
+    toast('✦ 已复制选题切角发散指令给 AI');
+  });
+
+  // Inject Hook from Hook Vault into Step 2 Script
+  document.querySelectorAll('[data-inject-hook]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const hook = btn.getAttribute('data-inject-hook') || '';
+      if (!scriptInput || !hook) return;
+      scriptInput.value = `[镜头：开场前 3 秒直击痛点] ${hook}\n\n` + scriptInput.value;
+      renderTeleprompterScript();
+      $('step-teleprompter')?.scrollIntoView({ behavior: 'smooth' });
+      toast('↑ 已将该黄金钩子塞进 Step 2 口播稿第一句！');
+    });
+  });
+
+  // Check if Signals were sent over from /originals
+  let hydratedFromSignals = false;
+  try {
+    const pendingRaw = sessionStorage.getItem('orbit-pending-signals');
+    if (pendingRaw) {
+      sessionStorage.removeItem('orbit-pending-signals');
+      const sigs = JSON.parse(pendingRaw);
+      if (Array.isArray(sigs) && sigs.length) {
+        hydratedFromSignals = true;
+        triInput.value = sigs[0].title;
+        if ($('ex-center')) $('ex-center').value = sigs[0].title.slice(0, 22);
+        if ($('ex-pain')) $('ex-pain').value = sigs[0].body.slice(0, 34);
+        if ($('ex-mech')) $('ex-mech').value = (sigs[1]?.title || '提炼成可复用的结构与护栏').slice(0, 34);
+        if ($('ex-action')) $('ex-action').value = (sigs[2]?.title || '沉淀进个人工作台随时调用').slice(0, 34);
+        if ($('ex-takeaway')) $('ex-takeaway').value = '把踩过的坑变成随时能推上膛的弹药。';
+        $('sync-board-to-script')?.click();
+        toast(`✦ 已将 ${sigs.length} 条闪念自动铺进白板与口播流水线！`);
+      }
+    }
+  } catch (e) {}
+
+  // Initial Boot on /creator
+  if (!hydratedFromSignals && candidates[0]) {
+    loadCandidate(candidates[0]);
+  } else {
+    evaluateTopic();
+    renderTeleprompterScript();
+    syncExcalidrawPreview();
+    syncSelectedTagsLine();
+  }
+})();

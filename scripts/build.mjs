@@ -4,10 +4,12 @@ import { ROOT_DIR, loadAllSiteData } from '../lib/content-loader.mjs';
 import {
   renderHomePage,
   renderCatalogPage,
+  renderCreatorPage,
   renderProductsPage,
   renderEcosystemPage,
   renderReaderPage,
   renderLlmsTxt,
+  renderRoleContextTxt,
   buildVaultExport,
 } from '../lib/templates.mjs';
 
@@ -27,6 +29,7 @@ fs.cpSync(PUBLIC_DIR, DIST_DIR, { recursive: true });
 const data = loadAllSiteData();
 writeRoute('/', renderHomePage(data));
 writeRoute('/originals', renderCatalogPage(data, 'originals'));
+writeRoute('/creator', renderCreatorPage(data));
 writeRoute('/curated', renderCatalogPage(data, 'curated'));
 writeRoute('/products', renderProductsPage(data));
 writeRoute('/ecosystem', renderEcosystemPage(data));
@@ -34,6 +37,19 @@ for (const article of data.allArticles) writeRoute(`/read/${article.slug}`, rend
 
 fs.writeFileSync(path.join(DIST_DIR, 'llms.txt'), renderLlmsTxt(data), 'utf8');
 fs.writeFileSync(path.join(DIST_DIR, 'vault.json'), JSON.stringify(buildVaultExport(data), null, 2), 'utf8');
+
+const CONTEXT_DIR = path.join(DIST_DIR, 'context');
+fs.mkdirSync(CONTEXT_DIR, { recursive: true });
+fs.writeFileSync(path.join(CONTEXT_DIR, 'design.txt'), renderRoleContextTxt(data, 'design'), 'utf8');
+fs.writeFileSync(path.join(CONTEXT_DIR, 'creator.txt'), renderRoleContextTxt(data, 'creator'), 'utf8');
+fs.writeFileSync(path.join(CONTEXT_DIR, 'skills.txt'), renderRoleContextTxt(data, 'skills'), 'utf8');
+
+const SKILLS_OUT_DIR = path.join(DIST_DIR, 'skills');
+fs.mkdirSync(SKILLS_OUT_DIR, { recursive: true });
+for (const sk of data.skills || []) {
+  fs.writeFileSync(path.join(SKILLS_OUT_DIR, `${sk.slug}.md`), sk.rawContent, 'utf8');
+}
+
 fs.writeFileSync(path.join(DIST_DIR, '.nojekyll'), '', 'utf8');
 
 const base = (process.env.BASE_PATH || '').replace(/\/+$/, '');
@@ -44,4 +60,6 @@ fs.writeFileSync(
   'utf8',
 );
 
-console.log(`Built ${data.allArticles.length + 5} pages + llms.txt + vault.json into ${DIST_DIR}`);
+console.log(
+  `Built ${data.allArticles.length + 6} pages + llms.txt + context/{design,creator,skills}.txt + ${(data.skills || []).length} skills + vault.json into ${DIST_DIR}`
+);

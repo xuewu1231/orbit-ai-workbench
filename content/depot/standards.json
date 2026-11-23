@@ -1,0 +1,42 @@
+[
+  {
+    "id": "std-mcp-orbit",
+    "kind": "MCP 规格",
+    "badge": "MCP Config · Ready",
+    "demo": true,
+    "title": "Orbit 私人弹药库上下文挂载配置（MCP / URL 双模）",
+    "summary": "让本地 Claude Code、Cursor 或自建 Agent 随时拉取本站沉淀的设计品味、自媒体文风 DNA 与避坑红黑榜，不用每次重复粘贴背景。",
+    "when": "在新开项目或跨工具协同编写 UI / 脚本时挂载",
+    "snippet": "{\n  \"mcpServers\": {\n    \"orbit-ammunition-depot\": {\n      \"command\": \"npx\",\n      \"args\": [\"-y\", \"mcp-remote-context\", \"https://xuewu1231.github.io/orbit-ai-workbench/vault.json\"],\n      \"env\": {\n        \"ORBIT_DESIGN_CONTEXT\": \"https://xuewu1231.github.io/orbit-ai-workbench/context/design.txt\",\n        \"ORBIT_CREATOR_CONTEXT\": \"https://xuewu1231.github.io/orbit-ai-workbench/context/creator.txt\",\n        \"ORBIT_SKILLS_CONTEXT\": \"https://xuewu1231.github.io/orbit-ai-workbench/context/skills.txt\"\n      }\n    }\n  }\n}"
+  },
+  {
+    "id": "std-3sentence-gate",
+    "kind": "协作范式",
+    "badge": "SOP · 铁律 01",
+    "demo": true,
+    "title": "复杂任务「三句话先对齐，再写第一行代码」范式",
+    "summary": "凡是涉及新页面改版、架构调整或长视频脚本的任务，强制要求 AI 先输出不超过 3 句话的方案复述（改哪、保哪、绝不碰哪），确认无误再执行。",
+    "when": "追加在任何中高复杂度 Prompt 的最后一段",
+    "snippet": "动手执行前，请先停一下，只用 3 句话向我确认：\n1. 你理解的核心目标与最终交付物形态是什么；\n2. 你打算复用哪些现有模块、改动哪几个文件；\n3. 本次明确不碰的边界与规避的坑是什么。\n等我回复确认后，再开始完整输出。"
+  },
+  {
+    "id": "std-anti-plastic-copy",
+    "kind": "表达标准",
+    "badge": "SOP · 铁律 02",
+    "demo": true,
+    "title": "人机双读纯文本规范（拒绝符号污染与黑话空转）",
+    "summary": "本站一切「复制给 AI」或「小红书文案」输出，统一使用干净分段纯文本，剥离多余井号星号，禁用互联网大厂黑话与翻译腔。",
+    "when": "生成自媒体口播稿、小红书正文、产品落地页文案时全局生效",
+    "snippet": "表达纪律自检清单：\n- 禁用词黑名单：赋能、抓手、闭环、颗粒度、组合拳、开启新篇章、总而言之、众所周知。\n- 句式准则：能用动词不用抽象名词；能用 12 字短句绝不写 40 字长定语从句。\n- 格式准则：复制到剪贴板的文本一律去除 # 与 ** 等 Markdown 标记符号，分段清晰即粘即用。"
+  },
+  {
+    "id": "std-file-over-db",
+    "kind": "架构准则",
+    "badge": "SOP · 铁律 03",
+    "demo": true,
+    "title": "文件即弹药（File-over-App 低摩擦沉淀标准）",
+    "summary": "所有个人思考、Skill 胶囊、Excalidraw 画布与红黑榜一律存成可读的 Markdown 与轻量 JSON 文件进 Git 仓库，零数据库绑架，十年后依然能直接打开。",
+    "when": "扩充个人知识库、新建工具或设计自动化流水线时遵守",
+    "snippet": "目录约定：\n- content/skills/*.md    → 独立可下载的真 SKILL.md 胶囊\n- content/depot/*.json   → 闪念判断、装备红黑榜、反差拆解与自媒体弹药\n- content/originals/*.md → 亲手做过的深度复盘长文\n- dist/context/*.txt     → 自动编译给不同角色 AI 喂料的纯净上下文包"
+  }
+]
