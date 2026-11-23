@@ -3265,3 +3265,28 @@
     syncSelectedTagsLine();
   }
 })();
+
+
+/* =============================================================================
+   V10 · UNIFIED READER LEFT-RAIL LIVE PROGRESS BAR
+   ============================================================================= */
+(function () {
+  const sheet = document.getElementById('reader-sheet');
+  const pctEl = document.getElementById('rail-progress-pct');
+  const fillEl = document.getElementById('rail-progress-fill');
+  if (!sheet || !pctEl || !fillEl) return;
+
+  function syncReaderProgress() {
+    const rect = sheet.getBoundingClientRect();
+    const viewH = window.innerHeight || document.documentElement.clientHeight;
+    const total = Math.max(1, rect.height - viewH * 0.55);
+    const passed = Math.min(total, Math.max(0, -rect.top + viewH * 0.28));
+    const pct = Math.round((passed / total) * 100);
+    pctEl.textContent = `${pct}%`;
+    fillEl.style.width = `${pct}%`;
+  }
+
+  syncReaderProgress();
+  window.addEventListener('scroll', syncReaderProgress, { passive: true });
+  window.addEventListener('resize', syncReaderProgress, { passive: true });
+})();
