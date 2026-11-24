@@ -245,6 +245,20 @@
       "whenToUse": "做 Agent 产品的主聊天界面、侧边 Copilot、页面里嵌的助手时，先用它搭结构和状态，再换成自己的视觉。"
     },
     {
+      "id": "v-agentic-ui",
+      "shelf": "design",
+      "kind": "agent-ui",
+      "kindLabel": "AI 与 Agent 界面",
+      "name": "Agentic UI",
+      "tag": "耐用的产品界面系统",
+      "url": "https://agenticui.dev",
+      "preview": "/previews/agentic-ui.jpg",
+      "swatches": ["#F4F8FC", "#FFFFFF", "#1C1C1E", "#2F6FED"],
+      "whyGood": "标注：这是给长期使用的产品界面准备的设计系统，不是一套聊天框。站点自己的说法是 “Agent ready design system for building scalable product experiences”。零件是状态（Active、In review、Pending、Blocked、New）、徽章、付款提醒、发票和转账步骤、付款表格。还在 beta。",
+      "borrow": ["状态、徽章、提醒、表格拆成能单用的零件，不要收成一整页海报", "一步任务写成先选谁、再核对、再发出，不要只留一个大按钮", "产品里要长期用的界面，和对话气泡分开收"],
+      "whenToUse": "做后台、账单、审批、设置这种要反复用的产品界面时，先看它怎么拆零件。"
+    },
+    {
       "id": "v-ant-design-x",
       "shelf": "design",
       "kind": "agent-ui",
