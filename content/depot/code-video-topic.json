@@ -1,0 +1,164 @@
+{
+  "monographSlug": "ai-code-video-handbook",
+  "skillSlug": "code-video-director",
+  "summary": "把「开场钩子、真实 UI 动态入镜、虚拟摄像机运镜、切镜弹簧节奏、五大主题母版、精准导演术语与标准提示词」收拢成一块干净不乱的随手速查专题。",
+  "effects": [
+    {
+      "group": "黄金开场 4 式（0–90 帧抓视线）",
+      "badge": "OPENING HOOK",
+      "title": "重字砸屏 + 荧光划线（Kinetic Stomp）",
+      "desc": "痛点短句按重音词拆开，配合 scale(1.18 → 1.0) 物理弹簧逐词砸屏，关键数字底部扫过一道高亮色条。",
+      "prompt": "开场前 90 帧采用 Kinetic Stomp 重字砸屏卡点：把痛点句按重音拆成 3 组大字重词块，每隔 14 帧带 TAP_SPRING（stiffness:320, damping:16）弹入，第 52 帧在核心关键词底部用 clip-path 从左向右扫出高亮荧光底条。"
+    },
+    {
+      "group": "黄金开场 4 式（0–90 帧抓视线）",
+      "badge": "OPENING HOOK",
+      "title": "前后反差滑杆擦除（Split Wipe Reveal）",
+      "desc": "先亮灰暗杂乱旧做法，第 40 帧发光分割线横扫全屏，瞬间揭晓干净克制的新界面，1.5 秒立住价值。",
+      "prompt": "开场采用 Split-Screen Wipe 前后反差擦除：底层放新方案高清组件，顶层叠灰暗旧方案并用 clipPath inset 动态裁切；第 36–72 帧让分割线带高阻尼弹簧从 15% 横扫至 100% 揭晓新界面。"
+    },
+    {
+      "group": "黄金开场 4 式（0–90 帧抓视线）",
+      "badge": "OPENING HOOK",
+      "title": "实时指令敲击唤醒（Live Prompt Wakeup）",
+      "desc": "居中极简输入框光标闪烁，高速敲入一句话指令，按下回车瞬间通过共享圆角变形直接撑开成完整工作台。",
+      "prompt": "开场采用 Live Prompt Wakeup：前 45 帧按帧号截取字符串模拟高速打字输入，第 50 帧回车键微缩回弹，第 54–84 帧执行 Match Cut 将输入框宽高圆角平滑插值撑大为主工作台窗口。"
+    },
+    {
+      "group": "黄金开场 4 式（0–90 帧抓视线）",
+      "badge": "OPENING HOOK",
+      "title": "暗角聚光灯特写（Vignette Spotlight）",
+      "desc": "背景压暗 70% 并轻度虚化，只留一束圆角柔光锁死核心指标或报错红框，摄像机同步推进 1.6x。",
+      "prompt": "采用 Vignette Spotlight 聚光开场：全屏底层挂载完整界面，第 15–45 帧叠加径向暗角遮罩将非焦点区域压暗至 30% 亮度，同时外层 CameraRig 平滑推进至 scale(1.6) 锁定目标卡片。"
+    },
+    {
+      "group": "真实动态入镜 5 式（正片杀手锏）",
+      "badge": "LIVE DYNAMIC",
+      "title": "100% 真实前端组件矢量直出",
+      "desc": "不贴模糊录屏图，直接把真实 React 卡片、代码高亮、流式打字气泡挂进画布，放大 3 倍依然锐利零锯齿。",
+      "prompt": "请直接用真实矢量 DOM/SVG 组件还原产品界面（外灰内白双层卡、1px 微边框、tabular-nums 数字），严禁使用静态位图贴图，确保摄像机推近至 2.2x 特写时边缘依然绝对锐利。"
+    },
+    {
+      "group": "真实动态入镜 5 式（正片杀手锏）",
+      "badge": "LIVE DYNAMIC",
+      "title": "贝塞尔拟真光标与点击波纹",
+      "desc": "弧线滑入 → 悬停高亮 → 按钮微缩按下 + 扩散涟漪 → 图标由 ✦ 丝滑变形为 ✓，零手抖。",
+      "prompt": "编排一颗高精度矢量光标（Choreographed Cursor）：沿二次贝塞尔弧线平滑移至目标按钮中心，停顿 6 帧后触发按钮 scale(0.95) 按压回弹与半透明圆环扩散波纹，同时按钮状态切换为已完成。"
+    },
+    {
+      "group": "真实动态入镜 5 式（正片杀手锏）",
+      "badge": "LIVE DYNAMIC",
+      "title": "里程表滚轮跳字与弹簧图表",
+      "desc": "KPI 数字按缓动飞速滚动定格，柱状图错峰拔起，架构连线沿 SVG 虚线跑起脉冲流光。",
+      "prompt": "指标展示采用动态数据生长：数字从 0 按 easeOut 曲线滚动定格并保留一位小数；对比柱状图每根错峰 5 帧（Stagger）带 CARD_SPRING 向上生长；连接线用 stroke-dashoffset 实现脉冲电流流动。"
+    },
+    {
+      "group": "真实动态入镜 5 式（正片杀手锏）",
+      "badge": "LIVE DYNAMIC",
+      "title": "3D 空间叠卡与等轴分层拆解",
+      "desc": "平面界面丝滑转入 perspective 三维视角，沿 Z 轴分层拉开投影，直观展示表层 UI 与底层引擎关系。",
+      "prompt": "在架构讲解段启用 3D Isometric Layering：容器开启 perspective(1200px)，在 35 帧内平滑旋转至 rotateX(18deg) rotateY(-16deg)，并将 UI 层、逻辑层、数据层三张卡片沿 translateZ 拉开 60px 间距与柔和投影。"
+    }
+  ],
+  "cameraMoves": [
+    {
+      "term": "Push-in · 推镜聚焦特写",
+      "spec": "scale(1.0 → 1.75) · CAMERA_SPRING (damping:26, stiffness:120)",
+      "when": "口播讲到具体按钮、某行关键代码或局部指标变化时，替观众完成视线聚焦，同时轻微压暗周围卡片。"
+    },
+    {
+      "term": "Pull-back Reveal · 拉镜揭晓全局",
+      "spec": "scale(2.0 → 1.0) · 先锁局部悬念，转折句拉出完整三栏系统",
+      "when": "适合从单点痛点过渡到「其实背后是一整套完整工作台」的豁然开朗时刻。"
+    },
+    {
+      "term": "Whip Pan · 0.25s 极速甩镜转场",
+      "spec": "14 帧内横/纵平移一整屏 + 速度峰值叠加水平模糊 filter: blur(8px)",
+      "when": "大章节切换（如从踩坑篇切入实操篇），音效提前 4 帧（J-Cut）切入，极其干脆。"
+    },
+    {
+      "term": "Tracking Shot · 滑轨阻尼跟拍",
+      "spec": "摄像机中心点滞后 6–8 帧平滑跟随光标或流程箭头移动",
+      "when": "演示 Step 1 → Step 2 → Step 3 连贯长流程，消除硬切跳转的割裂感。"
+    },
+    {
+      "term": "Match Cut · 共享圆角匹配变形",
+      "spec": "上一幕焦点框的 x/y/w/h/radius 直接插值变形为下一幕主容器",
+      "when": "输入框变画布、小徽章撑开成大看板，打造 Apple 宣传片同款「一镜到底」丝滑感。"
+    },
+    {
+      "term": "3 秒换气律 + 悬浮微呼吸（Pacing Law）",
+      "spec": "每 120–180 帧必有焦点变化 · 停留期叠加 Math.sin(frame/28)*3px 微浮动",
+      "when": "全局通用节奏铁律：绝不让画面完全死寂超过 3.5 秒，也绝不使用呆板的 linear 匀速。"
+    }
+  ],
+  "themes": [
+    {
+      "name": "01 · Keynote 纯白精密风",
+      "swatches": ["#F5F5F7", "#FFFFFF", "#0A0A0B", "#2563EB"],
+      "fit": "产品重磅发布、清爽 SaaS 功能演示",
+      "rule": "外灰内白双层卡 + 多层柔和漫射阴影 + 巨型黑体字距收紧 -0.03em"
+    },
+    {
+      "name": "02 · Obsidian 暗黑极客风",
+      "swatches": ["#090A0F", "#131620", "#F8FAFC", "#38BDF8"],
+      "fit": "AI Agent、CLI 编码工具、硬核技术架构片",
+      "rule": "1px 银白顶光微边框 + 代码语法高亮 + 克制冰蓝/翠绿状态点"
+    },
+    {
+      "name": "03 · Paper 纸感手绘拆解风",
+      "swatches": ["#FAF8F4", "#FFF3BF", "#1E293B", "#EA580C"],
+      "fit": "知识博主口播配片、概念推演、白板流升级版",
+      "rule": "细圆点网格底 + 2px 硬边手绘感卡片 + SVG 路径动态画圈与箭头"
+    },
+    {
+      "name": "04 · Hardware 工业仪器风",
+      "swatches": ["#E5E5E5", "#18181B", "#111111", "#FF4F00"],
+      "fit": "模型跑分对比、硬核评测、快节奏卡点大片",
+      "rule": "等宽编号角标（SCENE 01 // 60FPS）+ 十字刻度线 + 信号橙单点高亮"
+    },
+    {
+      "name": "05 · Reel 竖屏高能卡点风",
+      "swatches": ["#0D0F14", "#191D28", "#FFFFFF", "#F59E0B"],
+      "fit": "小红书 / 视频号 / Shorts 9:16 竖屏干货",
+      "rule": "上下预留 16% 防遮挡安全区 + 视觉锁中轴 + 逐词跟随胶囊大字幕"
+    }
+  ],
+  "glossary": [
+    { "en": "Sequence", "zh": "帧序列片段", "tip": "按起始帧 from 与持续帧 duration 切分独立镜头幕" },
+    { "en": "Deterministic Frame", "zh": "纯帧号确定性", "tip": "禁用 CSS transition/setTimeout，全靠 frame 函数算样式防闪屏" },
+    { "en": "Camera Rig", "zh": "虚拟摄像机容器", "tip": "包裹全场统一做推拉摇移，不让子元素满屏乱飞" },
+    { "en": "Spring Physics", "zh": "物理弹簧阻尼", "tip": "用 stiffness/damping/mass 替代生硬的线性匀速移动" },
+    { "en": "Extrapolate Clamp", "zh": "插值边界钳制", "tip": "到达目标帧后锁死数值，防止卡片继续飞出画布" },
+    { "en": "Stagger Delay", "zh": "错峰阶梯入场", "tip": "列表每项按 index * 4 帧依次启动，建立顺滑秩序感" },
+    { "en": "Kinetic Typography", "zh": "动力学排印", "tip": "按词切分弹入、遮罩上浮与荧光底条横扫的节奏字幕" },
+    { "en": "Match Cut", "zh": "共享几何匹配转场", "tip": "上一幕小框直接无缝撑开变成下一幕主窗口" },
+    { "en": "Whip Pan", "zh": "极速甩镜", "tip": "0.25 秒高速横移叠方向模糊，踩鼓点切换篇章" },
+    { "en": "Vignette Spotlight", "zh": "暗角压暗聚光", "tip": "四周压暗 70%，强行把观众视线锁在唯一焦点卡上" },
+    { "en": "Stroke-Dashoffset", "zh": "矢量路径自绘", "tip": "让箭头、连线和重点红圈像真手画一样生长出来" },
+    { "en": "Safe Area", "zh": "画幅防遮挡安全区", "tip": "四周留 10%（竖屏底部留 18%）防止被平台按钮挡字" }
+  ],
+  "standardPrompts": [
+    {
+      "id": "cvp-storyboard",
+      "step": "第 1 步 · 先定分镜",
+      "title": "口播稿 / 文章转「帧级导演分镜单」指令",
+      "desc": "严禁让 AI 上来闷头写几百行代码！先用这段指令把文稿拆成带精确帧号、景别与运镜术语的分镜表。",
+      "text": "任务：我要用代码制作一支 60fps 的高质感短片（画幅 1920x1080 横屏，或 1080x1920 竖屏）。请先不要写代码，先把下面的内容拆成一份「帧级导演分镜单」。\n\n视觉主题：Keynote 纯白精密风（画布 #F5F5F7，卡片 #FFFFFF，主字 #0A0A0B，强调色 #2563EB；严禁蓝紫霓虹渐变与 Emoji 图标）。\n\n请按以下结构输出每一幕（每幕 150–240 帧）：\n1. 幕号与精确帧区间（如 Scene 01 · 0–150 帧）\n2. 对应口播句子与重音卡点词\n3. 唯一视觉焦点效果（从「重字砸屏卡点 / 前后反差滑杆 / 真实 UI 组件挂载 / 贝塞尔光标点击 / 弹簧数据跳表 / 3D 透视叠卡」中选，卡片内文字不超过 15 字）\n4. 虚拟摄像机运镜术语（明确标出 Push-in 推镜、Pull-back 拉镜、Whip Pan 甩镜或 Match Cut 匹配变形）\n\n输出分镜单后停下等我确认，确认后再写代码。\n\n原始内容：\n[粘贴你的口播稿或核心卖点]"
+    },
+    {
+      "id": "cvp-guardrail",
+      "step": "第 2 步 · 确定性写码",
+      "title": "代码视频生成「6 条工程硬护栏」指令",
+      "desc": "分镜确认后贴入这段规范，彻底杜绝导出 MP4 闪屏、元素飞出画布、文字太小和匀速 PPT 感。",
+      "text": "请按已确认的分镜单编写完整视频代码，并严格遵守以下 6 条工程硬红线：\n\n1. 纯帧号确定性渲染（最高红线）：严禁使用 CSS transition、CSS animation、setTimeout 或无种子的 Math.random()。一切位移、缩放、透明度与数字变化必须 100% 由当前帧 frame 通过 spring() 或 interpolate() 算出。\n2. 边界钳制：所有 interpolate 必须显式设置 extrapolateLeft: 'clamp' 与 extrapolateRight: 'clamp'。\n3. 顶层主题与三级物理弹簧：先定义 THEME 四色常量与三套弹簧预设——CAMERA_SPRING（damping:26, stiffness:120 沉稳运镜）、CARD_SPRING（damping:20, stiffness:210 清脆入场）、TAP_SPRING（damping:16, stiffness:320 点击回弹），严禁 linear 匀速位移。\n4. 虚拟摄像机容器：用外层 CameraRig 统一控制 scale 推拉、translate 平移与微幅悬浮呼吸，不要让子元素满屏乱飞。\n5. 视频级字阶与安全区：四周留足 10% Safe Area 内边距；字号比普通网页放大 1.5 倍以上，数字开启 tabular-nums，功能图标一律用统一线宽几何 SVG。\n6. 按幕模块化：每一幕拆成独立组件并在主时间轴用 Sequence 串联。"
+    },
+    {
+      "id": "cvp-polish",
+      "step": "第 3 步 · 单幕精修",
+      "title": "急救调优：把平淡画面升级出「导演运镜感」",
+      "desc": "某一幕看着像静态幻灯片时，单独把这一幕丢给 AI 做「交互细节 + 推镜聚光 + 错峰」三连升级。",
+      "text": "当前这一幕视觉上偏平淡，像静态 PPT。请只针对这一幕做三处导演级质感升级：\n\n1. 注入真实动态过程：不要直接摆出结果态——前 25 帧让主卡片带 CARD_SPRING 浮现，第 35–65 帧引入一颗沿贝塞尔弧线移动的矢量光标点击核心按钮（含 scale 0.95 回弹波纹与状态切换，或让指标数字滚动跳变）。\n2. 补齐推镜与暗角聚光：动作发生时让 CameraRig 从 scale(1.0) 平滑推进至 scale(1.45) 锁定操作区，并将非焦点背景卡片透明度压低至 0.55。\n3. 错峰韵律：并排子项按 index * 4 帧做 Stagger 错峰入场，末尾预留 15 帧收束衔接下一幕。"
+    }
+  ]
+}

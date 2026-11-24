@@ -3297,3 +3297,95 @@
   window.addEventListener('scroll', syncReaderProgress, { passive: true });
   window.addEventListener('resize', syncReaderProgress, { passive: true });
 })();
+
+
+/* =============================================================================
+   V11 · CODE-VIDEO MINI-TOPIC SUBTABS, GENERIC [data-copy] & PROSE CODE COPY
+   ============================================================================= */
+(function () {
+  async function writeClip(text) {
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch (e) {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand('copy'); } catch (err) {}
+      document.body.removeChild(ta);
+    }
+  }
+
+  function popToast(msg) {
+    const t = document.getElementById('orbit-toast');
+    if (!t) return;
+    t.textContent = msg;
+    t.hidden = false;
+    t.style.animation = 'none';
+    void t.offsetWidth;
+    t.style.animation = '';
+    setTimeout(() => { t.hidden = true; }, 2300);
+  }
+
+  // 1. Sub-tabs inside AI Code-Video Special Topic (/originals?tab=code-video)
+  const cvTabs = document.querySelectorAll('[data-cv-subtab]');
+  const cvPanels = document.querySelectorAll('[data-cv-subpanel]');
+  if (cvTabs.length) {
+    cvTabs.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const key = btn.getAttribute('data-cv-subtab');
+        cvTabs.forEach((b) => {
+          const on = b === btn;
+          b.classList.toggle('is-active', on);
+          b.setAttribute('aria-selected', on ? 'true' : 'false');
+        });
+        cvPanels.forEach((p) => {
+          p.hidden = p.getAttribute('data-cv-subpanel') !== key;
+        });
+      });
+    });
+  }
+
+  // 2. Delegated [data-copy] for non-cmd buttons (Topic cards, Standards, Signals, Teardowns)
+  document.addEventListener('click', async (e) => {
+    const btn = e.target.closest('[data-copy]:not(.copy-cmd-btn):not(#wb-copy-btn)');
+    if (!btn) return;
+    const text = btn.getAttribute('data-copy');
+    if (!text) return;
+    await writeClip(text);
+    const lbl = btn.querySelector('.btn-label');
+    if (lbl) {
+      const prev = lbl.textContent;
+      btn.classList.add('is-done');
+      lbl.textContent = '已复制';
+      setTimeout(() => {
+        btn.classList.remove('is-done');
+        lbl.textContent = prev;
+      }, 1500);
+    }
+    popToast('✦ 已复制纯文本内容，可直接粘贴给 AI');
+  });
+
+  // 3. One-click copy button on reader prose codeblocks (/read/*)
+  document.querySelectorAll('.chapter-prose pre').forEach((pre) => {
+    const code = pre.querySelector('code');
+    if (!code || pre.parentElement?.classList.contains('prose-code-wrap')) return;
+    const wrap = document.createElement('div');
+    wrap.className = 'prose-code-wrap';
+    pre.parentNode.insertBefore(wrap, pre);
+    wrap.appendChild(pre);
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'prose-copy-btn';
+    btn.textContent = '复制';
+    btn.addEventListener('click', async () => {
+      await writeClip(code.textContent || '');
+      btn.textContent = '✓ 已复制';
+      popToast('✦ 已复制这段代码 / 标准提示词');
+      setTimeout(() => { btn.textContent = '复制'; }, 1500);
+    });
+    wrap.appendChild(btn);
+  });
+})();
