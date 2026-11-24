@@ -1,20 +1,21 @@
 ---
 slug: ai-code-video-handbook
 kind: original
-lane: made
-category: 个人沉淀 · AI 代码视频专题
-chapter: Monograph 01
-title: AI 代码视频制作全栈手册：开场钩子、真实动态、运镜节奏与标准化提示词
-subtitle: 为什么光换强模型还做不出高级成片？把不同开场白、真实前端组件入镜、虚拟摄像机运镜、切镜节奏、主题母版、导演术语词典与硬性工程约束一次性沉淀成标准体系。
+portal: ai-coding
+section: practice
+category: 实践与思考 · 从 0 到 1 代码视频
+chapter: Practice 01
+title: 从 0 到 1 用 AI 写代码做视频：开场白、真实动态、运镜节奏与提示词全复盘
+subtitle: 为什么光换强模型还做不出高级成片？从零拆解怎么用 AI 的代码生成能力拍出工作室级 60fps 视频——涵盖不同开场钩子、把真实动态放进视频、切镜运镜节奏、术语词典与三步标准提示词。
 access: free
 date: 2026.11.24
-readingTime: 约 16 分钟深度沉淀
+readingTime: 约 16 分钟阅读
 audioDuration: 15:20
 pairedSkill: "code-video-director"
-relatedSlugs: iso-explode-film,tobi-claude-studio-design,karpathy-nozelcode-ai-system
-summary: 专门给未来的自己与 AI 留的一份「代码拍视频」标准作业书：涵盖 4 类前 3 秒开场、5 类真实动态交互入镜、6 种虚拟摄像机运镜、5 套主题母版、12 个精准导演术语与 3 套直拷提示词。
-studioNoteTitle: 个人沉淀初衷 · 不靠抽盲盒，把「怎么用代码拍出好视频」定成可复用的硬标准
-studioNoteBody: 用扩散大模型生视频适合拍风景和人物氛围，但一旦涉及精准中文排版、真实产品 UI 交互、数据图表生长和丝滑推拉运镜，代码驱动视频（如 Remotion / Canvas / WebGL 帧渲染，也就是我们在孵化的 FrameScript 方向）才是降维打击。以前不知道怎么稳定让 AI 写出高级成片，是因为缺了「精准术语 + 物理节奏标准 + 确定性编码红线」。这篇把所有散落的实战认知收拢在一处，随时翻查、随时复制喂给 AI。
+relatedSlugs: spec-code-video-standard,thinking-prompt-precision,spec-ui-aesthetic
+summary: 从 0 到 1 用 AI 生成代码做视频的完整实践复盘：涵盖 4 类前 3 秒开场白、5 类真实动态交互入镜、6 种虚拟摄像机运镜、12 个精准导演术语与 3 套直拷标准提示词。
+studioNoteTitle: 实践复盘 · 把「从 0 到 1 怎么用代码拍好一支视频」彻底摸透留给未来的自己
+studioNoteBody: 用扩散大模型生视频适合拍风景和人物氛围，但一旦涉及精准中文排版、真实产品 UI 交互、数据图表生长和丝滑推拉运镜，代码驱动视频（如 Remotion / Canvas 帧序列，也是我们在孵化的 FrameScript 方向）才是降维打击。这篇把开场效果、真实动态、运镜节奏与提示词写法一次性讲透。
 ---
 
 做产品演示片、功能发布视频或硬核知识可视化时，很多人都有过同一种挫败感：明明用了当下最聪明的编程大模型，对它说「帮我用代码写一段超帅的产品介绍视频」，结果跑出来的画面却像上世纪的死板 PPT——字糊在一团、匀速平移毫无质感、切镜生硬得像断电，甚至导出 MP4 时还疯狂闪屏掉帧。

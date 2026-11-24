@@ -5,6 +5,7 @@ import { ROOT_DIR, loadAllSiteData } from './lib/content-loader.mjs';
 import {
   renderHomePage,
   renderCatalogPage,
+  renderAiCodingPage,
   renderCreatorPage,
   renderProductsPage,
   renderEcosystemPage,
@@ -207,6 +208,7 @@ const server = http.createServer(async (req, res) => {
     if (pathname === '/vault.json') return sendJson(res, buildVaultExport(data));
     if (pathname === '/') return sendHtml(res, renderHomePage(data));
     if (pathname === '/originals' || pathname === '/depot') return sendHtml(res, renderCatalogPage(data, 'originals'));
+    if (pathname === '/originals/ai-coding') return sendHtml(res, renderAiCodingPage(data));
     if (pathname === '/creator') return sendHtml(res, renderCreatorPage(data));
     if (pathname === '/curated') return sendHtml(res, renderCatalogPage(data, 'curated'));
     if (pathname === '/products') return sendHtml(res, renderProductsPage(data));

@@ -4,6 +4,7 @@ import { ROOT_DIR, loadAllSiteData } from '../lib/content-loader.mjs';
 import {
   renderHomePage,
   renderCatalogPage,
+  renderAiCodingPage,
   renderCreatorPage,
   renderProductsPage,
   renderEcosystemPage,
@@ -31,6 +32,7 @@ fs.cpSync(PUBLIC_DIR, DIST_DIR, { recursive: true });
 const data = loadAllSiteData();
 writeRoute('/', renderHomePage(data));
 writeRoute('/originals', renderCatalogPage(data, 'originals'));
+writeRoute('/originals/ai-coding', renderAiCodingPage(data));
 writeRoute('/creator', renderCreatorPage(data));
 writeRoute('/curated', renderCatalogPage(data, 'curated'));
 writeRoute('/products', renderProductsPage(data));
