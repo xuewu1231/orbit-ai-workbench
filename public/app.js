@@ -1091,8 +1091,12 @@
   if (vaultSearch) vaultSearch.addEventListener('input', (e) => { vaultQuery = e.target.value.trim().toLowerCase(); applyVault(); });
   const vaultParams = new URLSearchParams(window.location.search);
   const urlShelf = vaultParams.get('shelf');
+  const onCompoundSites = /\/(ecosystem|vault)$/.test(location.pathname.replace(/\/$/, ''));
   if (urlShelf === 'toolkit') {
     window.location.replace((window.__BASE_PATH__ || '') + '/kit');
+  }
+  if (onCompoundSites && (urlShelf === 'learning' || location.hash === '#shelf-learning')) {
+    window.location.replace((window.__BASE_PATH__ || '') + '/learning');
   }
   const urlLane = vaultParams.get('lane');
   if (urlShelf && document.querySelector(`[data-shelf-filter="${urlShelf}"]`)) activeShelf = urlShelf;
