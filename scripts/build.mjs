@@ -7,6 +7,7 @@ import {
   renderCreatorPage,
   renderProductsPage,
   renderEcosystemPage,
+  renderKitPage,
   renderReaderPage,
   renderLlmsTxt,
   renderRoleContextTxt,
@@ -33,6 +34,7 @@ writeRoute('/creator', renderCreatorPage(data));
 writeRoute('/curated', renderCatalogPage(data, 'curated'));
 writeRoute('/products', renderProductsPage(data));
 writeRoute('/ecosystem', renderEcosystemPage(data));
+writeRoute('/kit', renderKitPage(data));
 for (const article of data.allArticles) writeRoute(`/read/${article.slug}`, renderReaderPage(data, article));
 
 fs.writeFileSync(path.join(DIST_DIR, 'llms.txt'), renderLlmsTxt(data), 'utf8');

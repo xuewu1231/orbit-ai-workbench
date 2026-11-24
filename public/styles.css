@@ -2168,6 +2168,7 @@ html[data-theme="dark"] .vault-card[data-vault-kind="style"] .lane-pill { backgr
   border: 1px solid var(--border-subtle);
 }
 
+.pill-tabs a.pill-tab { text-decoration: none; }
 .pill-tab {
   padding: 6px 14px;
   border-radius: 999px;
