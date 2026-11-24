@@ -466,7 +466,7 @@ html[data-theme="dark"] .orbit-toast {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 2px;
+  gap: 0;
   min-width: 0;
   overflow-x: auto;
   scrollbar-width: none;
@@ -478,8 +478,8 @@ html[data-theme="dark"] .orbit-toast {
   display: inline-flex;
   align-items: center;
   flex: 0 0 auto;
-  gap: 6px;
-  padding: 7px 10px;
+  gap: 5px;
+  padding: 7px 4px;
   border-radius: 999px;
   font-size: 13.5px;
   font-weight: 500;
@@ -4782,7 +4782,7 @@ html[data-theme="dark"] .plastic-read mark { background: rgba(251, 146, 60, 0.2)
 .nav-links a {
   display: inline-flex;
   align-items: center;
-  gap: 7px;
+  gap: 4px;
 }
 .nav-ico {
   display: inline-grid;
