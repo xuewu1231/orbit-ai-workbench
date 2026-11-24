@@ -1092,7 +1092,7 @@
   const vaultParams = new URLSearchParams(window.location.search);
   const urlShelf = vaultParams.get('shelf');
   if (urlShelf === 'toolkit') {
-    window.location.replace((window.__BASE_PATH__ || '') + '/originals?tab=kit');
+    window.location.replace((window.__BASE_PATH__ || '') + '/kit');
   }
   const urlLane = vaultParams.get('lane');
   if (urlShelf && document.querySelector(`[data-shelf-filter="${urlShelf}"]`)) activeShelf = urlShelf;

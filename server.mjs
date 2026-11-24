@@ -8,6 +8,7 @@ import {
   renderCreatorPage,
   renderProductsPage,
   renderEcosystemPage,
+  renderKitPage,
   renderReaderPage,
   renderLlmsTxt,
   renderRoleContextTxt,
@@ -209,6 +210,7 @@ const server = http.createServer(async (req, res) => {
     if (pathname === '/curated') return sendHtml(res, renderCatalogPage(data, 'curated'));
     if (pathname === '/products') return sendHtml(res, renderProductsPage(data));
     if (pathname === '/ecosystem' || pathname === '/vault') return sendHtml(res, renderEcosystemPage(data));
+    if (pathname === '/kit') return sendHtml(res, renderKitPage(data));
 
     if (pathname.startsWith('/read/')) {
       const article = data.bySlug.get(decodeURIComponent(pathname.slice('/read/'.length)));
