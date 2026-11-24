@@ -17,7 +17,7 @@ sourceUrl: https://x.com/addyosmani/status/2122590683055993308
 coverAccent: pine
 coverSymbol: check
 pairedSkill: ""
-relatedSlugs: lauren-tan-grok-garden,pm-tech-stack,iso-explode-film
+relatedSlugs: anthropic-teams-claude-code,pm-tech-stack,lauren-tan-grok-garden
 summary: 验收不是多写几条提示。端到端先跑通，属性测试抓人想不到的边，迁移用旧系统当对照。失败三次还过不了，就停下来找人。
 studioNoteTitle: 我们的实战笔记 · 台上能跑完，才算这件小工具做完
 studioNoteBody: 他写的验收，落到我们这页就是：小工具要在浏览器里真的走一遍，不是看截图觉得像。交接单里的「已验证」一格，对应他说的那条停手线：自己修了几轮还失败，就交给人，不要再空转。原文在文末。
