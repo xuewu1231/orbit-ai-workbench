@@ -1091,6 +1091,9 @@
   if (vaultSearch) vaultSearch.addEventListener('input', (e) => { vaultQuery = e.target.value.trim().toLowerCase(); applyVault(); });
   const vaultParams = new URLSearchParams(window.location.search);
   const urlShelf = vaultParams.get('shelf');
+  if (urlShelf === 'toolkit') {
+    window.location.replace((window.__BASE_PATH__ || '') + '/originals?tab=kit');
+  }
   const urlLane = vaultParams.get('lane');
   if (urlShelf && document.querySelector(`[data-shelf-filter="${urlShelf}"]`)) activeShelf = urlShelf;
   if (urlLane && document.querySelector(`[data-lane-filter="${urlLane}"]`)) activeLane = urlLane;
@@ -2051,11 +2054,11 @@
 
   if (presetComboBtn) {
     presetComboBtn.addEventListener('click', () => {
-      ['v-skimbly', 'v-motion-primitives', 'v-skill-clean-ui'].forEach((id) => {
+      ['v-agentic-ui', 'v-skimbly', 'v-motion-primitives'].forEach((id) => {
         if (vaultMap[id]) pickedIds.add(id);
       });
       syncComposerUI();
-      showToast('✦ 已载入推荐三件套（版式 + 动效 + 反塑料规范），看屏幕底部拼装台');
+      showToast('✦ 已载入三个网站（Agentic UI + 版式 + 动效），看屏幕底部拼装台');
     });
   }
 
