@@ -2,14 +2,14 @@
 slug: same-landing-page
 kind: seen
 title: 让 Claude 做落地页，得到的总是同一张脸
-subtitle: Tobi 这条长帖已经写成下面的文章。留在帖子里，是因为当时是刷到的。
+subtitle: Tobi 这条长帖，后来写成了更完整的一篇。这篇只留当时为什么停下来。
 access: free
 date: 2026.11.22
 readingTime: 约 4 分钟
 originalAuthor: Tobi
 originalOrg: X · @tobiadonadon_
 sourceUrl: https://x.com/tobiadonadon_/status/2124269680122638822
-summary: 页面不丑，是每个选择都停在默认值上。长的那篇在文章堆里，这篇只记当时为什么停下来。
+summary: 页面不丑，是每个选择都停在默认值上。完整的那篇也在这一页里，这篇只记当时为什么停下来。
 relatedSlugs: tobi-claude-studio-design
 ---
 
@@ -23,8 +23,6 @@ Tobi 发的是一篇 X 长文，题目是 How to Make Claude Design Like a Real 
 
 ## 读完留下的
 
-这三句已经写进文章堆里的[那一篇](/read/tobi-claude-studio-design)，图和目录都在那边。帖子还留在这里，是因为我是刷到它才停下来的，不是因为要把它再写一遍。
-
-看见这一页分两格，就是为了这种情况。刷到的东西先停在帖子里。哪一篇后来被拆开、配了图、值得按目录重读，就在下面占一张纸。两边都指向同一个人、同一条链接，不合成一篇，也不删掉当时看见的那一下。
+这三句在[那一篇](/read/tobi-claude-studio-design)里展开了，图和目录都在那边。这篇还留着，是因为我是刷到它才停下来的，不是因为要把它再写一遍。两篇都在这一页里，按时间排着，不合成一篇。
 
 和这个站直接有关的是：复利系统里那些网站，就是「给模型一点可看的东西」。Tobi 把这件事做成了能装上的 MCP。网站还在复利系统里。装上再跑的那一份，等真的接进日常写页面，再收进工具那一半。
