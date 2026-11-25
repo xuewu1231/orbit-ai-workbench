@@ -956,37 +956,211 @@
       applyPress();
     });
   });
-  const seenHits = document.querySelectorAll('.seen-hit');
+  const seenList = $('seen-list');
+  const seenHits = seenList ? [...seenList.querySelectorAll('.seen-hit')] : [];
   const seenEmpty = $('seen-empty');
-  const seenTagTabs = document.querySelectorAll('[data-seen-tag]');
+  const seenTags = $('seen-tags');
+  const seenEdit = $('seen-edit');
+  const seenReset = $('seen-reset');
+  const seenHint = $('seen-edit-hint');
+  const seenRoom = document.querySelector('.seen-room');
   const seenParams = new URLSearchParams(window.location.search);
   let seenTag = seenParams.get('tag') || 'all';
-  if (seenTag !== 'all' && !document.querySelector(`[data-seen-tag="${seenTag}"]`)) seenTag = 'all';
+  const SEEN_KEY = 'orbit-seen-tags';
+  let seenDefaults = { colors: {}, pieces: {} };
+  const seenDefaultEl = $('seen-defaults');
+  if (seenDefaultEl) {
+    try { seenDefaults = JSON.parse(seenDefaultEl.textContent); } catch (err) { seenDefaults = { colors: {}, pieces: {} }; }
+  }
+  const seenColors = {};
+  const escSeen = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const tagsOf = (el) => (el.getAttribute('data-tags') || '').split(',').filter(Boolean);
+  function seenColor(tag) {
+    if (seenColors[tag]) return seenColors[tag];
+    if (seenDefaults.colors[tag]) return seenDefaults.colors[tag];
+    let hue = 0;
+    for (const ch of String(tag)) hue = (hue * 33 + ch.codePointAt(0)) % 360;
+    const sat = 0.62;
+    const light = 0.42;
+    const a = sat * Math.min(light, 1 - light);
+    const f = (n) => {
+      const k = (n + hue / 30) % 12;
+      const c = light - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+      return Math.round(255 * c).toString(16).padStart(2, '0');
+    };
+    return `#${f(0)}${f(8)}${f(4)}`;
+  }
+  function paintCard(card) {
+    const box = card.querySelector('.post-tags');
+    if (!box) return;
+    const form = box.querySelector('.tag-add');
+    box.querySelectorAll('.post-tag').forEach((node) => node.remove());
+    tagsOf(card).forEach((tag) => {
+      const chip = document.createElement('span');
+      chip.className = 'post-tag';
+      chip.dataset.tag = tag;
+      chip.style.setProperty('--tag', seenColor(tag));
+      chip.innerHTML = `<button type="button" class="tag-name">${escSeen(tag)}</button><button type="button" class="tag-x" aria-label="去掉${escSeen(tag)}">×</button>`;
+      box.insertBefore(chip, form);
+    });
+  }
+  function seenCounts() {
+    const counts = new Map();
+    seenHits.forEach((el) => tagsOf(el).forEach((tag) => counts.set(tag, (counts.get(tag) || 0) + 1)));
+    return counts;
+  }
+  function renderSeenRail() {
+    if (!seenTags) return;
+    const counts = seenCounts();
+    const pref = ['表达', '学习', 'Agent', '设计', '判断', '自媒体', '产品', '代码'];
+    const rest = [...counts.keys()].filter((tag) => !pref.includes(tag)).sort((a, b) => a.localeCompare(b, 'zh'));
+    const tags = [...pref.filter((tag) => counts.has(tag)), ...rest];
+    const allOn = seenTag === 'all';
+    seenTags.innerHTML = `<span class="seen-tag is-all${allOn ? ' is-active' : ''}" data-seen-tag="all" aria-selected="${allOn}"><button type="button" class="seen-tag-name">全部</button> <span class="lane-count">${seenHits.length}</span></span>${tags
+      .map((tag) => {
+        const color = seenColor(tag);
+        const on = tag === seenTag;
+        return `<span class="seen-tag${on ? ' is-active' : ''}" data-seen-tag="${escSeen(tag)}" data-tag="${escSeen(tag)}" style="--tag:${color}" aria-selected="${on}"><i class="tag-dot" aria-hidden="true"></i><label class="tag-swatch"><input type="color" value="${color}" data-color-for="${escSeen(tag)}" aria-label="改${escSeen(tag)}的颜色"></label><button type="button" class="seen-tag-name">${escSeen(tag)}</button> <span class="lane-count">${counts.get(tag)}</span></span>`;
+      })
+      .join('')}`;
+  }
+  function applySeenColor(tag, color) {
+    seenColors[tag] = color;
+    const sel = CSS.escape(tag);
+    document.querySelectorAll(`[data-tag="${sel}"]`).forEach((el) => el.style.setProperty('--tag', color));
+    const input = document.querySelector(`[data-color-for="${sel}"]`);
+    if (input && input.value.toLowerCase() !== color.toLowerCase()) input.value = color;
+  }
+  function saveSeen() {
+    const bySlug = {};
+    let dirty = false;
+    seenHits.forEach((card) => {
+      const slug = card.getAttribute('data-slug');
+      if (!slug) return;
+      const tags = tagsOf(card);
+      const orig = seenDefaults.pieces[slug] || [];
+      if (tags.join('\n') !== orig.join('\n')) {
+        bySlug[slug] = tags;
+        dirty = true;
+      }
+    });
+    const colors = {};
+    Object.entries(seenColors).forEach(([tag, color]) => {
+      if (color !== seenDefaults.colors[tag]) {
+        colors[tag] = color;
+        dirty = true;
+      }
+    });
+    if (!dirty) localStorage.removeItem(SEEN_KEY);
+    else localStorage.setItem(SEEN_KEY, JSON.stringify({ colors, bySlug }));
+  }
+  function loadSeen() {
+    let saved = null;
+    try { saved = JSON.parse(localStorage.getItem(SEEN_KEY) || 'null'); } catch (err) { saved = null; }
+    if (!saved) return;
+    Object.assign(seenColors, saved.colors || {});
+    Object.entries(saved.bySlug || {}).forEach(([slug, tags]) => {
+      if (!Array.isArray(tags)) return;
+      const card = seenList.querySelector(`[data-slug="${CSS.escape(slug)}"]`);
+      if (!card) return;
+      card.setAttribute('data-tags', tags.map((tag) => String(tag).trim()).filter(Boolean).join(','));
+      paintCard(card);
+    });
+    Object.entries(seenColors).forEach(([tag, color]) => applySeenColor(tag, color));
+    renderSeenRail();
+  }
+  function selectSeenTag(next) {
+    seenTag = next || 'all';
+    const url = new URL(window.location.href);
+    if (seenTag === 'all') url.searchParams.delete('tag');
+    else url.searchParams.set('tag', seenTag);
+    history.replaceState(null, '', url);
+    applySeen();
+  }
   function applySeen() {
     seenHits.forEach((el) => {
-      const tags = (el.getAttribute('data-tags') || '').split(',').filter(Boolean);
+      const tags = tagsOf(el);
+      const blob = `${el.getAttribute('data-search') || ''} ${tags.join(' ')}`.toLowerCase();
       const okTag = seenTag === 'all' || tags.includes(seenTag);
-      const okQ = !curQuery || (el.getAttribute('data-search') || '').toLowerCase().includes(curQuery);
+      const okQ = !curQuery || blob.includes(curQuery);
       el.hidden = !(okTag && okQ);
     });
-    if (seenEmpty) {
-      const any = [...seenHits].some((el) => !el.hidden);
-      seenEmpty.hidden = any;
-    }
-    if (seenTagTabs.length) markTabs(seenTagTabs, 'data-seen-tag', seenTag);
-  }
-  seenTagTabs.forEach((tab) => {
-    tab.addEventListener('click', () => {
-      click(980);
-      seenTag = tab.getAttribute('data-seen-tag') || 'all';
-      const url = new URL(window.location.href);
-      if (seenTag === 'all') url.searchParams.delete('tag');
-      else url.searchParams.set('tag', seenTag);
-      history.replaceState(null, '', url);
-      applySeen();
+    if (seenEmpty) seenEmpty.hidden = seenHits.some((el) => !el.hidden);
+    document.querySelectorAll('[data-seen-tag]').forEach((tab) => {
+      const on = tab.getAttribute('data-seen-tag') === seenTag;
+      tab.classList.toggle('is-active', on);
+      tab.setAttribute('aria-selected', on ? 'true' : 'false');
     });
-  });
-  if (seenHits.length) applySeen();
+  }
+  if (seenList) {
+    loadSeen();
+    if (seenTag !== 'all' && !document.querySelector(`[data-seen-tag="${CSS.escape(seenTag)}"]`)) seenTag = 'all';
+    seenTags.addEventListener('click', (e) => {
+      if (e.target.closest('input, label')) return;
+      const tab = e.target.closest('[data-seen-tag]');
+      if (!tab) return;
+      click(980);
+      selectSeenTag(tab.getAttribute('data-seen-tag') || 'all');
+    });
+    seenTags.addEventListener('input', (e) => {
+      const input = e.target.closest('input[type="color"]');
+      if (!input) return;
+      applySeenColor(input.getAttribute('data-color-for'), input.value);
+      saveSeen();
+    });
+    seenList.addEventListener('click', (e) => {
+      const card = e.target.closest('.post-card');
+      if (!card) return;
+      const remove = e.target.closest('.tag-x');
+      const name = e.target.closest('.tag-name');
+      if (remove) {
+        const tag = remove.closest('.post-tag').dataset.tag;
+        card.setAttribute('data-tags', tagsOf(card).filter((item) => item !== tag).join(','));
+        if (seenTag === tag && !seenHits.some((el) => tagsOf(el).includes(tag))) seenTag = 'all';
+        paintCard(card);
+        renderSeenRail();
+        saveSeen();
+        applySeen();
+        return;
+      }
+      if (name) {
+        click(980);
+        selectSeenTag(name.closest('.post-tag').dataset.tag);
+      }
+    });
+    seenList.addEventListener('submit', (e) => {
+      const form = e.target.closest('.tag-add');
+      if (!form) return;
+      e.preventDefault();
+      const card = form.closest('.post-card');
+      const input = form.querySelector('input');
+      const tag = input.value.trim().replace(/[,，"'<>]/g, '');
+      input.value = '';
+      if (!tag || tag === '全部' || tagsOf(card).includes(tag)) return;
+      card.setAttribute('data-tags', [...tagsOf(card), tag].join(','));
+      paintCard(card);
+      renderSeenRail();
+      saveSeen();
+      applySeen();
+      const again = card.querySelector('.tag-add input');
+      if (again) again.focus();
+    });
+    if (seenEdit && seenRoom) {
+      seenEdit.addEventListener('click', () => {
+        const on = seenRoom.classList.toggle('is-editing');
+        seenEdit.textContent = on ? '完成' : '调整标签';
+        if (seenHint) seenHint.hidden = !on;
+        if (seenReset) seenReset.hidden = !on;
+      });
+    }
+    if (seenReset) {
+      seenReset.addEventListener('click', () => {
+        localStorage.removeItem(SEEN_KEY);
+        window.location.reload();
+      });
+    }
+    applySeen();
+  }
   if (catalogSearch) {
     catalogSearch.addEventListener('input', (e) => {
       curQuery = e.target.value.trim().toLowerCase();
