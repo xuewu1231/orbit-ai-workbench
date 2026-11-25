@@ -39,6 +39,79 @@ const SITES = [
   ['grokbot-guide', 'https://grokbotguide.pages.dev'],
   ['weilanx', 'https://weilanx.com/about'],
   ['weilanx-works', 'https://pages.weilanx.com/works/'],
+  ['ant-design-x', 'https://x.ant.design/components/bubble', 280],
+  ['ai-sdk-ui', 'https://elements.ai-sdk.dev/components/conversation', 220, '', 2200],
+  [
+    'construct-design',
+    'https://www.tobiadonadon.com/projects/construct/design',
+    720,
+    `(() => {
+      const tab = [...document.querySelectorAll('a,button')].find((n) => /^components$/i.test((n.textContent || '').trim()));
+      if (tab) tab.click();
+    })()`,
+  ],
+  ['uiball-ldrs', 'https://uiball.com/ldrs', 1180],
+  [
+    'css-loaders',
+    'https://css-loaders.com',
+    0,
+    `(() => {
+      const style = document.createElement('style');
+      style.textContent = 'body:before, body:after { display: none !important; content: none !important; -webkit-mask: none !important; }';
+      document.head.appendChild(style);
+      document.querySelectorAll('#carbonads,.carbon-wrap,[id*="carbon"]').forEach((el) => el.remove());
+    })()`,
+  ],
+  ['pqoqubbw-icons', 'https://icons.pqoqubbw.dev', 560],
+  [
+    'phosphor-icons',
+    'https://phosphoricons.com',
+    1280,
+    `(() => {
+      for (const el of [...document.querySelectorAll('div,section,aside')]) {
+        const text = el.innerText || '';
+        if ((/renaming icons/i.test(text) || /processing donations/i.test(text)) && text.length < 420) el.remove();
+      }
+    })()`,
+  ],
+  ['origin-ui', 'https://originui.com', 420],
+  ['godly', 'https://godly.website', 160],
+  ['calltoinspiration', 'https://calltoinspiration.com', 160],
+  ['raycast', 'https://www.raycast.com', 0],
+  ['resend', 'https://resend.com', 0],
+  [
+    'fey',
+    'https://web.archive.org/web/20240503173927/https://www.fey.com/',
+    0,
+    `(() => {
+      document.getElementById('wm-ipp-base')?.remove();
+      document.querySelector('#wm-ipp')?.remove();
+      const imgs = [...document.images].filter((node) => /watchlist/i.test(node.alt || ''));
+      const img = imgs[0];
+      if (!img) return;
+      for (const other of imgs.slice(1)) other.style.display = 'none';
+      for (const el of document.querySelectorAll('body *')) el.style.visibility = 'hidden';
+      let node = img;
+      while (node) {
+        node.style.visibility = 'visible';
+        node = node.parentElement;
+      }
+      img.scrollIntoView({ block: 'center', inline: 'start' });
+    })()`,
+    4500,
+  ],
+  ['paper-shaders', 'https://shaders.paper.design', 200],
+  ['cobe-globe', 'https://cobe.vercel.app', 80],
+  ['unicorn-studio', 'https://www.unicorn.studio', 80],
+  ['bentogrids', 'https://bentogrids.com', 200],
+  ['tremor', 'https://www.tremor.so/docs/visualizations/area-chart', 160],
+  ['observable-plot', 'https://observablehq.github.io/plot/', 360],
+  ['evil-charts', 'https://evilcharts.com', 280],
+  ['radix-colors', 'https://www.radix-ui.com/colors', 220],
+  ['fontshare', 'https://www.fontshare.com', 80],
+  ['utopia-fluid', 'https://utopia.fyi', 80],
+  ['cult-ui', 'https://www.cult-ui.com/docs/components/dynamic-island', 180],
+  ['animations-dev', 'https://animations.dev', 80],
 ];
 
 function sleep(ms) {
@@ -116,12 +189,23 @@ function connect(wsUrl) {
   return { ready, send, once, close: () => ws.close() };
 }
 
-async function captureOne(browser, name, url) {
+async function captureOne(browser, name, url, scrollY = 0, prep = '', extraWait = 0) {
   const outPath = path.join(OUT_DIR, `${name}.jpg`);
   const { targetId } = await browser.send('Target.createTarget', { url: 'about:blank' });
   const { sessionId } = await browser.send('Target.attachToTarget', { targetId, flatten: true });
   try {
     await browser.send('Page.enable', {}, sessionId);
+    await browser.send('Network.enable', {}, sessionId);
+    await browser.send(
+      'Network.setUserAgentOverride',
+      {
+        userAgent:
+          'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
+        acceptLanguage: 'en-US,en;q=0.9',
+        platform: 'MacIntel',
+      },
+      sessionId,
+    );
     await browser.send(
       'Emulation.setDeviceMetricsOverride',
       { width: 1200, height: 750, deviceScaleFactor: 1, mobile: false },
@@ -134,7 +218,15 @@ async function captureOne(browser, name, url) {
     } catch {
       /* capture whatever painted */
     }
-    await sleep(name === 'weilanx' ? 5200 : 1400);
+    await sleep((name === 'weilanx' ? 5200 : 1600) + (Number(extraWait) || 0));
+    if (prep) {
+      await browser.send('Runtime.evaluate', { expression: prep }, sessionId);
+      await sleep(name === 'fey' ? 2000 : 900);
+    }
+    if (scrollY) {
+      await browser.send('Runtime.evaluate', { expression: `window.scrollTo(0, ${Number(scrollY) || 0})` }, sessionId);
+      await sleep(name === 'fey' ? 2200 : 500);
+    }
     const shot = await browser.send(
       'Page.captureScreenshot',
       { format: 'jpeg', quality: 68, fromSurface: true, captureBeyondViewport: false },
@@ -159,6 +251,7 @@ const chrome = spawn(
     '--disable-dev-shm-usage',
     '--hide-scrollbars',
     '--ignore-certificate-errors',
+    '--user-data-dir=/tmp/chrome-preview-capture',
     `--remote-debugging-port=${PORT}`,
     '--window-size=1200,750',
     'about:blank',
@@ -172,10 +265,10 @@ try {
   const browser = connect(version.webSocketDebuggerUrl);
   await browser.ready;
   const only = process.argv.slice(2);
-  for (const [name, url] of SITES) {
+  for (const [name, url, scrollY, prep, extraWait] of SITES) {
     if (only.length && !only.includes(name)) continue;
     try {
-      await captureOne(browser, name, url);
+      await captureOne(browser, name, url, scrollY, prep, extraWait);
     } catch (err) {
       failed += 1;
       console.error(`fail ${name}: ${err.message}`);
