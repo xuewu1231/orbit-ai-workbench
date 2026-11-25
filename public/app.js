@@ -956,10 +956,28 @@
       applyPress();
     });
   });
+  const seenHits = document.querySelectorAll('.seen-hit');
+  const seenBlocks = document.querySelectorAll('[data-seen-block]');
+  const seenEmpty = $('seen-empty');
+  function applySeen() {
+    seenHits.forEach((el) => {
+      const ok = !curQuery || (el.getAttribute('data-search') || '').toLowerCase().includes(curQuery);
+      el.hidden = !ok;
+    });
+    seenBlocks.forEach((block) => {
+      const any = [...block.querySelectorAll('.seen-hit')].some((el) => !el.hidden);
+      block.hidden = Boolean(curQuery) && !any;
+    });
+    if (seenEmpty) {
+      const any = [...seenHits].some((el) => !el.hidden);
+      seenEmpty.hidden = any;
+    }
+  }
   if (catalogSearch) {
     catalogSearch.addEventListener('input', (e) => {
       curQuery = e.target.value.trim().toLowerCase();
-      if (pressShelves.length) applyPress();
+      if (seenHits.length) applySeen();
+      else if (pressShelves.length) applyPress();
       else applyCatalog();
     });
   }
