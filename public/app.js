@@ -973,6 +973,8 @@
     try { seenDefaults = JSON.parse(seenDefaultEl.textContent); } catch (err) { seenDefaults = { colors: {}, pieces: {} }; }
   }
   const seenColors = {};
+  let seenExtra = new Set();
+  let seenDropped = new Set();
   const escSeen = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const tagsOf = (el) => (el.getAttribute('data-tags') || '').split(',').filter(Boolean);
   function seenColor(tag) {
@@ -993,10 +995,15 @@
   const seenEditors = () => [...document.querySelectorAll('.post-card.seen-hit[data-slug], [data-piece][data-slug]')];
   function knownTags() {
     const pref = ['表达', '学习', 'Agent', '设计', '判断', '自媒体', '产品', '代码'];
-    const set = new Set(pref);
-    Object.keys(seenDefaults.colors || {}).forEach((tag) => set.add(tag));
-    Object.keys(seenColors).forEach((tag) => set.add(tag));
-    seenEditors().forEach((el) => tagsOf(el).forEach((tag) => set.add(tag)));
+    const set = new Set();
+    const keep = (tag) => {
+      if (tag && tag !== '全部' && !seenDropped.has(tag)) set.add(tag);
+    };
+    pref.forEach(keep);
+    Object.keys(seenDefaults.colors || {}).forEach(keep);
+    seenExtra.forEach(keep);
+    Object.keys(seenColors).forEach(keep);
+    seenEditors().forEach((el) => tagsOf(el).forEach(keep));
     const rest = [...set].filter((tag) => !pref.includes(tag)).sort((a, b) => a.localeCompare(b, 'zh'));
     return [...pref.filter((tag) => set.has(tag)), ...rest];
   }
@@ -1055,17 +1062,15 @@
   function renderSeenRail() {
     if (!seenTags) return;
     const counts = seenCounts();
-    const pref = ['表达', '学习', 'Agent', '设计', '判断', '自媒体', '产品', '代码'];
-    const rest = [...counts.keys()].filter((tag) => !pref.includes(tag)).sort((a, b) => a.localeCompare(b, 'zh'));
-    const tags = [...pref.filter((tag) => counts.has(tag)), ...rest];
+    const tags = knownTags();
     const allOn = seenTag === 'all';
     seenTags.innerHTML = `<span class="seen-tag is-all${allOn ? ' is-active' : ''}" data-seen-tag="all" aria-selected="${allOn}"><button type="button" class="seen-tag-name">全部</button> <span class="lane-count">${seenHits.length}</span></span>${tags
       .map((tag) => {
         const color = seenColor(tag);
         const on = tag === seenTag;
-        return `<span class="seen-tag${on ? ' is-active' : ''}" data-seen-tag="${escSeen(tag)}" data-tag="${escSeen(tag)}" style="--tag:${color}" aria-selected="${on}"><i class="tag-dot" aria-hidden="true"></i><button type="button" class="seen-tag-name">${escSeen(tag)}</button> <span class="lane-count">${counts.get(tag)}</span></span>`;
+        return `<span class="seen-tag${on ? ' is-active' : ''}" data-seen-tag="${escSeen(tag)}" data-tag="${escSeen(tag)}" style="--tag:${color}" aria-selected="${on}"><i class="tag-dot" aria-hidden="true"></i><button type="button" class="seen-tag-name">${escSeen(tag)}</button> <span class="lane-count">${counts.get(tag) || 0}</span><button type="button" class="tag-x" data-drop-tag="${escSeen(tag)}" aria-label="删掉标签${escSeen(tag)}">×</button></span>`;
       })
-      .join('')}`;
+      .join('')}<form class="tag-add rail-new"><input type="text" maxlength="16" placeholder="新标签" aria-label="添加一个新标签" list="seen-tag-list" /></form>`;
   }
   function applySeenColor(tag, color) {
     seenColors[tag] = color;
@@ -1078,7 +1083,7 @@
     try {
       const raw = JSON.parse(localStorage.getItem(SEEN_KEY) || 'null');
       if (!raw || typeof raw !== 'object') return { colors: {}, bySlug: {} };
-      return { colors: raw.colors || {}, bySlug: raw.bySlug || {} };
+      return { colors: raw.colors || {}, bySlug: raw.bySlug || {}, extra: raw.extra, dropped: raw.dropped };
     } catch (err) {
       return { colors: {}, bySlug: {} };
     }
@@ -1099,12 +1104,17 @@
       if (!color || color === seenDefaults.colors[tag]) delete colors[tag];
       else colors[tag] = color;
     });
-    if (!Object.keys(bySlug).length && !Object.keys(colors).length) localStorage.removeItem(SEEN_KEY);
-    else localStorage.setItem(SEEN_KEY, JSON.stringify({ colors, bySlug }));
+    seenDropped.forEach((tag) => delete colors[tag]);
+    const extra = [...seenExtra].filter((tag) => !seenDropped.has(tag) && !seenDefaults.colors[tag]);
+    const dropped = [...seenDropped];
+    if (!Object.keys(bySlug).length && !Object.keys(colors).length && !extra.length && !dropped.length) localStorage.removeItem(SEEN_KEY);
+    else localStorage.setItem(SEEN_KEY, JSON.stringify({ colors, bySlug, extra, dropped }));
     refreshTagList();
   }
   function loadSeen() {
     const saved = readSavedSeen();
+    seenExtra = new Set(Array.isArray(saved.extra) ? saved.extra : []);
+    seenDropped = new Set(Array.isArray(saved.dropped) ? saved.dropped : []);
     Object.assign(seenColors, saved.colors || {});
     Object.entries(saved.bySlug || {}).forEach(([slug, tags]) => {
       if (!Array.isArray(tags)) return;
@@ -1172,9 +1182,47 @@
     });
     seenList.classList.add('is-packed');
   }
+  function cleanTag(raw) {
+    return String(raw || '').trim().replace(/[,，"'<>]/g, '');
+  }
+  function rememberTag(tag) {
+    seenDropped.delete(tag);
+    if (!seenDefaults.colors[tag]) seenExtra.add(tag);
+  }
+  function dropTag(tag) {
+    if (!tag || tag === '全部') return;
+    seenDropped.add(tag);
+    seenExtra.delete(tag);
+    delete seenColors[tag];
+    const was = seenTag === tag;
+    if (was) seenTag = 'all';
+    document.querySelectorAll('[data-slug]').forEach((el) => {
+      const next = tagsOf(el).filter((item) => item !== tag);
+      if (next.join('\n') === tagsOf(el).join('\n')) return;
+      el.setAttribute('data-tags', next.join(','));
+      if (el.querySelector('.post-tags')) paintCard(el);
+      else if (el.classList.contains('post-row')) paintQuiet(el);
+    });
+    seenEditors().forEach((el) => paintSuggest(el));
+    renderSeenRail();
+    saveSeen();
+    if (!seenList) return;
+    if (was) selectSeenTag('all');
+    else applySeen();
+  }
+  function createTag(raw) {
+    const tag = cleanTag(raw);
+    if (!tag || tag === '全部') return false;
+    rememberTag(tag);
+    renderSeenRail();
+    seenEditors().forEach((card) => paintSuggest(card));
+    saveSeen();
+    return true;
+  }
   function addTag(card, raw) {
-    const tag = String(raw || '').trim().replace(/[,，"'<>]/g, '');
+    const tag = cleanTag(raw);
     if (!tag || tag === '全部' || tagsOf(card).includes(tag)) return false;
+    rememberTag(tag);
     card.setAttribute('data-tags', [...tagsOf(card), tag].join(','));
     paintCard(card);
     renderSeenRail();
@@ -1198,7 +1246,12 @@
     if (seenList && seenTag !== 'all' && !document.querySelector(`[data-seen-tag="${CSS.escape(seenTag)}"]`)) seenTag = 'all';
     if (seenTags) {
       seenTags.addEventListener('click', (e) => {
-        if (e.target.closest('input, label')) return;
+        const drop = e.target.closest('[data-drop-tag]');
+        if (drop) {
+          dropTag(drop.getAttribute('data-drop-tag'));
+          return;
+        }
+        if (e.target.closest('input, label, .tag-x')) return;
         const tab = e.target.closest('[data-seen-tag]');
         if (!tab) return;
         click(980);
@@ -1245,10 +1298,14 @@
     document.addEventListener('submit', (e) => {
       const form = e.target.closest('.tag-add');
       if (!form) return;
-      const card = form.closest('.post-card.seen-hit, [data-piece]');
-      if (!card) return;
       e.preventDefault();
       const input = form.querySelector('input');
+      const card = form.closest('.post-card.seen-hit, [data-piece]');
+      if (!card) {
+        createTag(input.value);
+        input.value = '';
+        return;
+      }
       const added = addTag(card, input.value);
       input.value = '';
       if (added) {
@@ -1259,8 +1316,7 @@
     if (seenEdit && seenRoom) {
       seenEdit.addEventListener('click', () => {
         const on = seenRoom.classList.toggle('is-editing');
-        seenEdit.textContent = on ? '完成' : '改每篇的标签';
-        if (seenHint) seenHint.hidden = !on;
+        seenEdit.textContent = on ? '完成' : '改颜色';
         if (seenReset) seenReset.hidden = !on;
         if (on) seenEditors().forEach((card) => paintSuggest(card));
         packSeen();
@@ -1274,13 +1330,11 @@
     }
     const readerEdit = $('reader-tag-edit');
     const readerPiece = document.querySelector('[data-piece]');
-    const readerHint = $('reader-tag-hint');
     const readerReset = $('reader-tag-reset');
     if (readerEdit && readerPiece) {
       readerEdit.addEventListener('click', () => {
         const on = readerPiece.classList.toggle('is-editing');
-        readerEdit.textContent = on ? '完成' : '改这篇的标签';
-        if (readerHint) readerHint.hidden = !on;
+        readerEdit.textContent = on ? '完成' : '改颜色';
         if (readerReset) readerReset.hidden = !on;
         if (on) paintSuggest(readerPiece);
       });
@@ -1288,7 +1342,7 @@
     if (readerReset && readerPiece) {
       readerReset.addEventListener('click', () => {
         const slug = readerPiece.getAttribute('data-slug');
-        const orig = seenDefaults.pieces[slug] || [];
+        const orig = (seenDefaults.pieces[slug] || []).filter((tag) => !seenDropped.has(tag));
         readerPiece.setAttribute('data-tags', orig.join(','));
         paintCard(readerPiece);
         saveSeen();
