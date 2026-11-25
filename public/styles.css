@@ -8771,14 +8771,33 @@ html[data-theme="dark"] .banned-chips span {
   font-size: 13px;
   cursor: pointer;
 }
+.seen-edit {
+  padding: 5px 12px;
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  background: var(--bg-card);
+  color: var(--ink-primary);
+  font-weight: 650;
+}
+.seen-room.is-editing #seen-edit,
+.reader-piece.is-editing #reader-tag-edit {
+  background: var(--ink-primary);
+  color: var(--bg-card);
+  border-color: transparent;
+}
 .seen-edit:hover,
 .seen-reset:hover { color: var(--ink-primary); }
-.seen-edit-actions { display: flex; gap: 12px; padding-top: 4px; }
+.seen-room.is-editing #seen-edit:hover,
+.reader-piece.is-editing #reader-tag-edit:hover { color: var(--bg-card); }
+.seen-edit-actions { display: flex; align-items: center; gap: 12px; padding-top: 4px; }
 .seen-edit-hint {
+  display: none;
   margin: 8px 0 0;
   color: var(--ink-muted);
   font-size: 13px;
 }
+.seen-room.is-editing .seen-edit-hint,
+.reader-piece.is-editing .seen-edit-hint { display: block; }
 .seen-block { margin-top: 48px; }
 .seen-block-head {
   display: grid;
@@ -8904,13 +8923,15 @@ html[data-theme="dark"] .banned-chips span {
   cursor: pointer;
 }
 .tag-x {
-  display: inline;
+  display: none;
   width: 14px;
   margin-left: 2px;
   font-size: 14px;
   line-height: 1;
   opacity: 0.72;
 }
+.seen-room.is-editing .tag-x,
+.reader-piece.is-editing .tag-x { display: inline; }
 .tag-x:hover { opacity: 1; }
 .post-card {
   display: flex;
@@ -8959,16 +8980,21 @@ html[data-theme="dark"] .banned-chips span {
   margin-top: auto;
   padding: 8px 16px 14px;
 }
-.tag-add { display: block; }
+.tag-add { display: none; }
+.seen-room.is-editing .tag-add,
+.reader-piece.is-editing .tag-add { display: block; }
 .tag-suggest {
-  display: flex;
+  display: none;
   flex-wrap: wrap;
   align-items: center;
   gap: 6px;
   padding: 0 16px 12px;
 }
 .tag-suggest:empty { display: none !important; }
+.seen-room.is-editing .tag-suggest,
+.reader-piece.is-editing .tag-suggest { display: flex; }
 .seen-tags .rail-new { align-self: center; }
+.seen-room.is-editing .seen-tags .rail-new { display: inline-flex; }
 .seen-tags .rail-new input { width: 5.6em; background: var(--bg-card); }
 .tag-suggest > span { color: var(--ink-muted); font-size: 12px; }
 .tag-suggest-btn {
