@@ -21,6 +21,9 @@ relatedSlugs: claude-code-verification,karpathy-nozelcode-ai-system,pm-ai-full-c
 summary: Anthropic 在 2025 年 7 月问了自己公司里的人，Claude Code 平时被拿来干什么。这篇按六件具体的事重讲：看仓库、写测试、查故障、做原型、收文档、做小工具。
 studioNoteTitle: 我们的实战笔记 · 用法在这篇，做完的标准在另一篇
 studioNoteBody: 原文是官方介绍，这篇没有搬过来，按他们讲到的事用白话重说了一遍。文里的倍数和时间都是他们自己说的。想看写完以后怎么算做完，接着读《Claude Code 团队怎么验收》。一边是各工种拿它干什么，一边是改动要有能再跑一遍的证据。
+cover: /covers/anthropic-teams-claude-code.jpg
+tags: Agent
+order: 12
 ---
 
 Anthropic 在 2025 年 7 月坐下来问了自己公司里的人：你们平时到底拿 Claude Code 干什么。原文是一篇官方介绍，语气偏整齐。下面不跟着它的句子走，按他们讲到的事，用能看懂的话重说一遍。

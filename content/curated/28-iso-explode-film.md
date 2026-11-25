@@ -21,6 +21,9 @@ relatedSlugs: lauren-tan-grok-garden,dan-koe-ai-business-2027,claude-code-verifi
 summary: 扩散模型擅长人和风景。文字、图表和精密结构，他改走代码渲染。Skill 叫 iso-explode-film，九步里有两步要人拍板。试跑数字是作者自己报的。
 studioNoteTitle: 我们的实战笔记 · 规矩写进流程，模型才不用每次重新审美
 studioNoteBody: 他每踩一个坑就写进 Skill：看不见的零件删掉，穿模逐帧查，先分层再炸开。这和「把纠正变成检查」是同一类做法，只是用在片子上。仓库链接在文末，微信正文没有把地址放出来。
+cover: /covers/iso-explode-film.jpg
+tags: 代码,自媒体
+order: 18
 ---
 
 甲维斯机在微信上发了这篇。他做的不是再用扩散模型生一条视频，而是让模型写代码，代码跑完就是成片。产品发布片、标志、界面动效、信息图、科普和三维场景，他都算在这条路上。人和风景，生视频模型更熟；文字、图表和精密结构容易乱，也更贵。代码这条路反过来：每个细节是算出来的，不满意就改那一行。

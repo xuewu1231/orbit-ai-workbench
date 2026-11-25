@@ -11,6 +11,9 @@ originalOrg: X · @lannieFaFa
 sourceUrl: https://x.com/lannieFaFa/status/2124418341410668703
 summary: 先跑通最小的一轮，再用自己的话讲给别人，专练会出错的那段，并且给自己找反馈。
 relatedSlugs: express-in-weeks,four-layer-cognition
+cover: /covers/learn-anything-loop.jpg
+tags: 学习
+order: 2
 ---
 
 原帖正文只有一句「一套足以让你精通任何东西的学习方法」，方法在七张截图里。下面按它的四步重写。

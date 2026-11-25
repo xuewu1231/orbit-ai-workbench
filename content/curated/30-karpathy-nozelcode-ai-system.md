@@ -21,6 +21,9 @@ relatedSlugs: pm-tech-stack,claude-code-verification,tobi-claude-studio-design
 summary: OpenAI 联合创始人 Andrej Karpathy 用 70 分钟纯桌面共享展示了他每天怎么真刀真枪用大模型。核心不在囤积几十个工具，而在吃透「1TB 有损压缩包」本质，把四支柱装进带闭环的系统里。
 studioNoteTitle: 我们的实战笔记 · 连 Karpathy 拆解大模型也是先画一张 Excalidraw 白板！
 studioNoteBody: 这篇精编自 roman（@Nozelcode）在 X 上高热刷屏的实操总结贴与随帖附带的 70 分钟屏幕实录。特别有共鸣的一个细节是：Karpathy 在视频里讲透大模型底层机制时，打开的正是 Excalidraw 手绘白板！我们把原帖提炼的「四大日常支柱」和「Harness / Loops / Graphs 三大进阶原语」结合屏幕白板里的核心干货完整展开，做成一份随时能回查的实战指南。
+cover: /covers/karpathy-nozelcode-ai-system.jpg
+tags: Agent
+order: 11
 ---
 
 大多数人之所以没能榨出大模型真正的潜力，往往不是因为工具装得太少，恰恰是因为**把简单的事情搞得太复杂，却在最核心的上下文与工作流上偷了懒**。
