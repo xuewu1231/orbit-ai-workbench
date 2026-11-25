@@ -22,6 +22,9 @@ relatedSlugs: pm-ai-full-cycle,claude-code-verification
 summary: 我们常常听说人的一生都在为自己的认知买单，那么什么是认知，如何提升它？从一元、二元、多元到系统认知的四层进阶。
 studioNoteTitle: 读前说明 · 原文长图照录，配四层认知结构图
 studioNoteBody: 原文发在四张长图里，这里按原句完整照录（二元这一层开头有几句未拍进原图，正文从看得见的那一句接上），并在「四层放在一起」一节附上结构示意，方便对照回查。
+cover: /covers/four-layer-cognition.jpg
+tags: 判断
+order: 10
 ---
 
 ## 什么是认知

@@ -21,6 +21,9 @@ relatedSlugs: claude-code-verification,iso-explode-film,pm-tech-stack
 summary: 她把信任放成一座倒金字塔：代码库和静态检查在下，验证在中，文字指令在最上。杂草会被下一个 agent 当成规矩抄走。数字是她当场说的。
 studioNoteTitle: 我们的实战笔记 · 和验收那本是同一件事，她把顺序说得更硬
 studioNoteBody: 修一次错，就把它变成代码里的一条检查，而不是再往说明里加一行。上一本写的是 Claude Code 团队怎么验收，这一本是 Grok Bot 这边先修花园、再谈自动化。微信是中文译稿，演讲视频在文末。
+cover: /covers/lauren-tan-grok-garden.jpg
+tags: 代码
+order: 17
 ---
 
 Lauren Tan 自称 Potato，头衔是 SpaceXSI 首席工程师，做的产品是 Grok Bot。2026 年 11 月 11 日，她在旧金山的 AI Engineer Code Summit 讲了 *All Code Is Slop (Except Mine)*。视频在 [YouTube](https://www.youtube.com/watch?v=O_zcc6Xl12g)，大会页在 [ai.engineer](https://ai.engineer/code/2026/talks/lauren-tan)。下面按这场的顺序写完：信任放在哪一层，代码库为什么是花园，禁令怎么写进框架，评审改成看什么，以及她当场报的速度。

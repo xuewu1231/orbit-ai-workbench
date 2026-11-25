@@ -957,22 +957,36 @@
     });
   });
   const seenHits = document.querySelectorAll('.seen-hit');
-  const seenBlocks = document.querySelectorAll('[data-seen-block]');
   const seenEmpty = $('seen-empty');
+  const seenTagTabs = document.querySelectorAll('[data-seen-tag]');
+  const seenParams = new URLSearchParams(window.location.search);
+  let seenTag = seenParams.get('tag') || 'all';
+  if (seenTag !== 'all' && !document.querySelector(`[data-seen-tag="${seenTag}"]`)) seenTag = 'all';
   function applySeen() {
     seenHits.forEach((el) => {
-      const ok = !curQuery || (el.getAttribute('data-search') || '').toLowerCase().includes(curQuery);
-      el.hidden = !ok;
-    });
-    seenBlocks.forEach((block) => {
-      const any = [...block.querySelectorAll('.seen-hit')].some((el) => !el.hidden);
-      block.hidden = Boolean(curQuery) && !any;
+      const tags = (el.getAttribute('data-tags') || '').split(',').filter(Boolean);
+      const okTag = seenTag === 'all' || tags.includes(seenTag);
+      const okQ = !curQuery || (el.getAttribute('data-search') || '').toLowerCase().includes(curQuery);
+      el.hidden = !(okTag && okQ);
     });
     if (seenEmpty) {
       const any = [...seenHits].some((el) => !el.hidden);
       seenEmpty.hidden = any;
     }
+    if (seenTagTabs.length) markTabs(seenTagTabs, 'data-seen-tag', seenTag);
   }
+  seenTagTabs.forEach((tab) => {
+    tab.addEventListener('click', () => {
+      click(980);
+      seenTag = tab.getAttribute('data-seen-tag') || 'all';
+      const url = new URL(window.location.href);
+      if (seenTag === 'all') url.searchParams.delete('tag');
+      else url.searchParams.set('tag', seenTag);
+      history.replaceState(null, '', url);
+      applySeen();
+    });
+  });
+  if (seenHits.length) applySeen();
   if (catalogSearch) {
     catalogSearch.addEventListener('input', (e) => {
       curQuery = e.target.value.trim().toLowerCase();

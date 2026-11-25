@@ -11,6 +11,9 @@ originalOrg: X · @jackklqu
 sourceUrl: https://x.com/jackklqu/status/2123763290904105037
 summary: 先站稳自己的位置，别急着给人下定义。帖子后半把人情写成算计，那部分不留。
 relatedSlugs: express-in-weeks
+cover: /covers/tianya-circles.jpg
+tags: 判断
+order: 8
 ---
 
 原帖写「早年天涯神贴，把人情世故讲得透透的」，九张图是一篇很长的旧文。作者没有署名。我按它的脉络重写有用的部分，并把不该学的部分指出来。不把整篇操作手册抄下来。

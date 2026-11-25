@@ -11,6 +11,9 @@ originalOrg: X · @aresotik 转发
 sourceUrl: https://x.com/aresotik/status/2124157077035892761
 summary: 别把蠢事做得更快。先自己用透，再写清角色，把数据和例子留下，并让结果改下一次。
 relatedSlugs: dan-koe-ai-business-2027,learn-anything-loop
+cover: /covers/martell-five-shifts.jpg
+tags: 产品
+order: 9
 ---
 
 ares 这条是西班牙文，大意是：一个给很多创始人做过顾问的人，用 9 分钟讲 2027 年钱在哪，没有垫话，而且免费。片子里的人是 Dan Martell。他站在白板前，先写下「做 AI 生意的心态」，然后一层一层往下写。下面按这个顺序用中文说完。数字是他嘴里的客户，不是承诺。

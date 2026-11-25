@@ -21,6 +21,9 @@ relatedSlugs: iso-explode-film,karpathy-nozelcode-ai-system,pm-tech-stack
 summary: 让 Claude 一分钟出落地页很容易，但每次都会得到同一张脸。Tobi 用 268 件手写设计与一套 MCP 设计指南证明：先给模型看真想法与设计准则，再动手写代码。
 studioNoteTitle: 我们的实战笔记 · 这篇把「为什么 AI 写网页总有股模板味」彻底点透了
 studioNoteBody: Tobi 这篇 X 长文和我们工作台正在做的「百宝箱审美喂料 + 反塑料护栏」简直不谋而合！他一针见血地指出：光对模型喊「不要普通、要高级感」，它只会矫枉过正生成另一套千篇一律的极简时钟页。真正管用的是「一眼认出四大默认套路脸 + 挑一个能让朋友记住的标志动作 + 竞品换标测试」。Construct Design 也已同步收录进本站实战百宝箱。
+cover: /covers/tobi-claude-studio-design.jpg
+tags: 设计
+order: 6
 ---
 
 现在的 Claude 几乎什么前端页面都能一分钟给你搭出来。你敲一句「帮我的品牌工作室写一个超棒的落地页」，六十秒后就能跑起来。

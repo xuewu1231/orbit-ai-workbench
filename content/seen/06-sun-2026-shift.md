@@ -10,6 +10,9 @@ originalAuthor: cc319
 originalOrg: X · @jackklqu
 sourceUrl: https://x.com/jackklqu/status/2124276680013369781
 summary: 成熟平台的顶点，往往是下一个东西发芽的时候。其余的数字和命运感，先放下。
+cover: /covers/sun-2026-shift.jpg
+tags: 判断
+order: 7
 ---
 
 原帖标题是「孙宇晨：别不信，这批人将被时代淘汰」。正文在五张图里，是转述，不是孙宇晨账号上的原文。下面先按帖子自己的说法写，再写我留下来的判断。

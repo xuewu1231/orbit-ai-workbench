@@ -21,6 +21,9 @@ relatedSlugs: pm-ai-full-cycle,karpathy-nozelcode-ai-system,claude-code-verifica
 summary: 转型 AI 产品不必把 CUDA 和反向传播推导一遍。顺着一次请求的五层路径，抓牢「改变产品取舍、成本总账与交互兜底」的六块硬知识，用带对照数据的实践验收。
 studioNoteTitle: 读前导读 · 学一项技术，唯一标尺是「它改不改你手头的决定」
 studioNoteBody: 很多产品经理补技术课容易陷入两个极端：要么死磕背诵 Transformer 矩阵公式却依然不会选模型，要么只会当复读机把问题全甩给研发。基于奔跑的大毛腿这篇高口碑长文，我们把每一层「PM 到底该问哪几个具体指标、哪里直接放手交给工程」彻底摊开，补齐了三张架构决策图与两张对照速查表。
+cover: /covers/pm-tech-stack.jpg
+tags: 产品
+order: 16
 ---
 
 转型或深耕 AI 产品时，最让人焦虑的往往是那张长得看不见头的技能树：从 GPU 显存带宽、预训练语料清洗、LoRA 微调，一路排到向量数据库、vLLM 推理加速、MCP 协议与多智能体编排。全学根本不现实，完全不懂又会在需求评审时丧失判断力。
