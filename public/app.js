@@ -1248,7 +1248,10 @@
       seenTags.addEventListener('click', (e) => {
         const drop = e.target.closest('[data-drop-tag]');
         if (drop) {
-          dropTag(drop.getAttribute('data-drop-tag'));
+          if (!seenRoom.classList.contains('is-editing')) return;
+          const tag = drop.getAttribute('data-drop-tag');
+          if (!window.confirm(`删掉标签「${tag}」？每一篇上的这个标签都会拿掉。`)) return;
+          dropTag(tag);
           return;
         }
         if (e.target.closest('input, label, .tag-x')) return;
@@ -1271,11 +1274,13 @@
       const editing = card.closest('.seen-room.is-editing, .reader-piece.is-editing');
       const addBtn = e.target.closest('[data-add-tag]');
       if (addBtn && addBtn.closest('.tag-suggest')) {
+        if (!editing) return;
         addTag(card, addBtn.getAttribute('data-add-tag'));
         return;
       }
       const remove = e.target.closest('.tag-x');
       if (remove) {
+        if (!editing) return;
         const tag = remove.closest('.post-tag').dataset.tag;
         card.setAttribute('data-tags', tagsOf(card).filter((item) => item !== tag).join(','));
         if (seenList && seenTag === tag && !seenHits.some((el) => tagsOf(el).includes(tag))) seenTag = 'all';
@@ -1302,10 +1307,12 @@
       const input = form.querySelector('input');
       const card = form.closest('.post-card.seen-hit, [data-piece]');
       if (!card) {
+        if (!seenRoom || !seenRoom.classList.contains('is-editing')) return;
         createTag(input.value);
         input.value = '';
         return;
       }
+      if (!card.closest('.seen-room.is-editing, .reader-piece.is-editing')) return;
       const added = addTag(card, input.value);
       input.value = '';
       if (added) {
@@ -1316,7 +1323,7 @@
     if (seenEdit && seenRoom) {
       seenEdit.addEventListener('click', () => {
         const on = seenRoom.classList.toggle('is-editing');
-        seenEdit.textContent = on ? '完成' : '改颜色';
+        seenEdit.textContent = on ? '完成' : '管理标签';
         if (seenReset) seenReset.hidden = !on;
         if (on) seenEditors().forEach((card) => paintSuggest(card));
         packSeen();
@@ -1334,7 +1341,7 @@
     if (readerEdit && readerPiece) {
       readerEdit.addEventListener('click', () => {
         const on = readerPiece.classList.toggle('is-editing');
-        readerEdit.textContent = on ? '完成' : '改颜色';
+        readerEdit.textContent = on ? '完成' : '管理这篇';
         if (readerReset) readerReset.hidden = !on;
         if (on) paintSuggest(readerPiece);
       });
