@@ -1091,8 +1091,48 @@
       tab.classList.toggle('is-active', on);
       tab.setAttribute('aria-selected', on ? 'true' : 'false');
     });
+    packSeen();
+  }
+  function packSeen() {
+    if (!seenList) return;
+    const n = window.matchMedia('(max-width: 800px)').matches ? 1 : 2;
+    let cols = [...seenList.querySelectorAll(':scope > .seen-col')];
+    if (cols.length !== n) {
+      cols.forEach((col) => {
+        while (col.firstChild) seenList.appendChild(col.firstChild);
+        col.remove();
+      });
+      cols = [];
+      for (let i = 0; i < n; i += 1) {
+        const col = document.createElement('div');
+        col.className = 'seen-col';
+        seenList.appendChild(col);
+        cols.push(col);
+      }
+    }
+    const heights = cols.map(() => 0);
+    [...seenHits].sort((a, b) => Number(a.dataset.pack) - Number(b.dataset.pack)).forEach((card) => {
+      if (card.hidden) {
+        cols[0].appendChild(card);
+        return;
+      }
+      let idx = 0;
+      for (let i = 1; i < n; i += 1) if (heights[i] < heights[idx]) idx = i;
+      cols[idx].appendChild(card);
+      heights[idx] += card.offsetHeight + 10;
+    });
+    seenList.classList.add('is-packed');
   }
   if (seenList) {
+    seenHits.forEach((card, i) => { card.dataset.pack = String(i); });
+    seenList.querySelectorAll('img.post-cover').forEach((img) => {
+      if (!img.complete) img.addEventListener('load', () => packSeen(), { once: true });
+    });
+    let packTimer = 0;
+    window.addEventListener('resize', () => {
+      clearTimeout(packTimer);
+      packTimer = setTimeout(packSeen, 80);
+    });
     loadSeen();
     if (seenTag !== 'all' && !document.querySelector(`[data-seen-tag="${CSS.escape(seenTag)}"]`)) seenTag = 'all';
     seenTags.addEventListener('click', (e) => {
@@ -1151,6 +1191,7 @@
         seenEdit.textContent = on ? '完成' : '调整标签';
         if (seenHint) seenHint.hidden = !on;
         if (seenReset) seenReset.hidden = !on;
+        packSeen();
       });
     }
     if (seenReset) {
