@@ -8134,12 +8134,16 @@ html[data-theme="dark"] .banned-chips span {
 .reader-page-root .doc-cover {
   display: block;
   width: calc(100% + 104px);
-  height: 240px;
+  height: auto;
   margin: -42px -52px 26px;
-  object-fit: cover;
+  object-fit: contain;
   object-position: center top;
   border-radius: 27px 27px 0 0;
   background: var(--bg-subtle);
+}
+.reader-page-root .doc-cover.is-slice {
+  height: 520px;
+  object-fit: cover;
 }
 
 .reader-page-root .reader-hero {
@@ -8407,10 +8411,10 @@ html[data-theme="dark"] .banned-chips span {
   }
   .reader-page-root .doc-cover {
     width: calc(100% + 40px);
-    height: 180px;
     margin: -24px -20px 18px;
     border-radius: 18px 18px 0 0;
   }
+  .reader-page-root .doc-cover.is-slice { height: 320px; }
 }
 
 /* ==========================================================================
@@ -8802,6 +8806,7 @@ html[data-theme="dark"] .banned-chips span {
   gap: 22px 20px;
   margin-top: 28px;
   border-top: none;
+  align-items: start;
 }
 .post-row {
   display: grid;
@@ -8907,9 +8912,16 @@ html[data-theme="dark"] .banned-chips span {
 }
 #seen-list .post-cover {
   width: 100%;
-  height: 204px;
+  height: auto;
   border: none;
   border-radius: 0;
+  background: var(--bg-subtle);
+}
+#seen-list .post-cover.is-full { object-fit: contain; }
+#seen-list .post-cover.is-slice {
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  object-position: center top;
 }
 .post-card .post-main { padding: 14px 16px 8px; }
 .post-card .post-keep {
@@ -9015,7 +9027,7 @@ html[data-theme="dark"] .banned-chips span {
 .seen-empty { margin-top: 24px; color: var(--ink-muted); }
 @media (max-width: 800px) {
   #seen-list.post-list { grid-template-columns: 1fr; }
-  #seen-list .post-cover { height: 188px; }
+  #seen-list .post-cover.is-slice { aspect-ratio: 16 / 10; }
 }
 @media (max-width: 720px) {
   .seen-block-head { grid-template-columns: 1fr; gap: 6px; }

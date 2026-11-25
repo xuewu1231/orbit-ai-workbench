@@ -11,6 +11,7 @@ import {
   renderKitPage,
   renderLearningPage,
   renderReaderPage,
+  renderSiteDataJs,
   renderLlmsTxt,
   renderRoleContextTxt,
   buildVaultExport,
@@ -41,6 +42,7 @@ writeRoute('/kit', renderKitPage(data));
 writeRoute('/learning', renderLearningPage(data));
 for (const article of data.allArticles) writeRoute(`/read/${article.slug}`, renderReaderPage(data, article));
 
+fs.writeFileSync(path.join(DIST_DIR, 'site-data.js'), renderSiteDataJs(data), 'utf8');
 fs.writeFileSync(path.join(DIST_DIR, 'llms.txt'), renderLlmsTxt(data), 'utf8');
 fs.writeFileSync(path.join(DIST_DIR, 'vault.json'), JSON.stringify(buildVaultExport(data), null, 2), 'utf8');
 
