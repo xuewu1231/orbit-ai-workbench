@@ -33,5 +33,7 @@ jobs:
         with:
           path: dist
           include-hidden-files: true
+      - name: Wait until the artifact can be found
+        run: sleep 12
       - id: deployment
         uses: actions/deploy-pages@v4
