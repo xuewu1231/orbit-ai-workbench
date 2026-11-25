@@ -990,19 +990,62 @@
     };
     return `#${f(0)}${f(8)}${f(4)}`;
   }
+  const seenEditors = () => [...document.querySelectorAll('.post-card.seen-hit[data-slug], [data-piece][data-slug]')];
+  function knownTags() {
+    const pref = ['表达', '学习', 'Agent', '设计', '判断', '自媒体', '产品', '代码'];
+    const set = new Set(pref);
+    Object.keys(seenDefaults.colors || {}).forEach((tag) => set.add(tag));
+    Object.keys(seenColors).forEach((tag) => set.add(tag));
+    seenEditors().forEach((el) => tagsOf(el).forEach((tag) => set.add(tag)));
+    const rest = [...set].filter((tag) => !pref.includes(tag)).sort((a, b) => a.localeCompare(b, 'zh'));
+    return [...pref.filter((tag) => set.has(tag)), ...rest];
+  }
+  function refreshTagList() {
+    let list = $('seen-tag-list');
+    if (!list) {
+      list = document.createElement('datalist');
+      list.id = 'seen-tag-list';
+      document.body.appendChild(list);
+    }
+    list.innerHTML = knownTags().map((tag) => `<option value="${escSeen(tag)}"></option>`).join('');
+  }
+  function paintSuggest(card) {
+    const box = card.querySelector('.tag-suggest');
+    if (!box) return;
+    const have = new Set(tagsOf(card));
+    const missing = knownTags().filter((tag) => !have.has(tag));
+    box.innerHTML = missing.length
+      ? `<span>加到这篇</span>${missing.map((tag) => `<button type="button" class="tag-suggest-btn" data-add-tag="${escSeen(tag)}" style="--tag:${seenColor(tag)}">${escSeen(tag)}</button>`).join('')}`
+      : '';
+  }
+  function paintQuiet(row) {
+    const foot = row.querySelector('.post-foot');
+    if (!foot) return;
+    foot.querySelectorAll('.post-tag').forEach((node) => node.remove());
+    tagsOf(row).forEach((tag) => {
+      const chip = document.createElement('span');
+      chip.className = 'post-tag is-quiet';
+      chip.dataset.tag = tag;
+      chip.style.setProperty('--tag', seenColor(tag));
+      chip.textContent = tag;
+      foot.appendChild(chip);
+    });
+  }
   function paintCard(card) {
     const box = card.querySelector('.post-tags');
     if (!box) return;
     const form = box.querySelector('.tag-add');
     box.querySelectorAll('.post-tag').forEach((node) => node.remove());
     tagsOf(card).forEach((tag) => {
+      const color = seenColor(tag);
       const chip = document.createElement('span');
       chip.className = 'post-tag';
       chip.dataset.tag = tag;
-      chip.style.setProperty('--tag', seenColor(tag));
-      chip.innerHTML = `<button type="button" class="tag-name">${escSeen(tag)}</button><button type="button" class="tag-x" aria-label="去掉${escSeen(tag)}">×</button>`;
+      chip.style.setProperty('--tag', color);
+      chip.innerHTML = `<label class="tag-swatch"><input type="color" value="${color}" data-color-for="${escSeen(tag)}" aria-label="改${escSeen(tag)}的颜色"></label><button type="button" class="tag-name">${escSeen(tag)}</button><button type="button" class="tag-x" aria-label="从这篇拿掉${escSeen(tag)}">×</button>`;
       box.insertBefore(chip, form);
     });
+    paintSuggest(card);
   }
   function seenCounts() {
     const counts = new Map();
@@ -1020,7 +1063,7 @@
       .map((tag) => {
         const color = seenColor(tag);
         const on = tag === seenTag;
-        return `<span class="seen-tag${on ? ' is-active' : ''}" data-seen-tag="${escSeen(tag)}" data-tag="${escSeen(tag)}" style="--tag:${color}" aria-selected="${on}"><i class="tag-dot" aria-hidden="true"></i><label class="tag-swatch"><input type="color" value="${color}" data-color-for="${escSeen(tag)}" aria-label="改${escSeen(tag)}的颜色"></label><button type="button" class="seen-tag-name">${escSeen(tag)}</button> <span class="lane-count">${counts.get(tag)}</span></span>`;
+        return `<span class="seen-tag${on ? ' is-active' : ''}" data-seen-tag="${escSeen(tag)}" data-tag="${escSeen(tag)}" style="--tag:${color}" aria-selected="${on}"><i class="tag-dot" aria-hidden="true"></i><button type="button" class="seen-tag-name">${escSeen(tag)}</button> <span class="lane-count">${counts.get(tag)}</span></span>`;
       })
       .join('')}`;
   }
@@ -1031,43 +1074,49 @@
     const input = document.querySelector(`[data-color-for="${sel}"]`);
     if (input && input.value.toLowerCase() !== color.toLowerCase()) input.value = color;
   }
+  function readSavedSeen() {
+    try {
+      const raw = JSON.parse(localStorage.getItem(SEEN_KEY) || 'null');
+      if (!raw || typeof raw !== 'object') return { colors: {}, bySlug: {} };
+      return { colors: raw.colors || {}, bySlug: raw.bySlug || {} };
+    } catch (err) {
+      return { colors: {}, bySlug: {} };
+    }
+  }
   function saveSeen() {
-    const bySlug = {};
-    let dirty = false;
-    seenHits.forEach((card) => {
+    const prev = readSavedSeen();
+    const bySlug = { ...prev.bySlug };
+    seenEditors().forEach((card) => {
       const slug = card.getAttribute('data-slug');
       if (!slug) return;
       const tags = tagsOf(card);
       const orig = seenDefaults.pieces[slug] || [];
-      if (tags.join('\n') !== orig.join('\n')) {
-        bySlug[slug] = tags;
-        dirty = true;
-      }
+      if (tags.join('\n') === orig.join('\n')) delete bySlug[slug];
+      else bySlug[slug] = tags;
     });
-    const colors = {};
+    const colors = { ...prev.colors };
     Object.entries(seenColors).forEach(([tag, color]) => {
-      if (color !== seenDefaults.colors[tag]) {
-        colors[tag] = color;
-        dirty = true;
-      }
+      if (!color || color === seenDefaults.colors[tag]) delete colors[tag];
+      else colors[tag] = color;
     });
-    if (!dirty) localStorage.removeItem(SEEN_KEY);
+    if (!Object.keys(bySlug).length && !Object.keys(colors).length) localStorage.removeItem(SEEN_KEY);
     else localStorage.setItem(SEEN_KEY, JSON.stringify({ colors, bySlug }));
+    refreshTagList();
   }
   function loadSeen() {
-    let saved = null;
-    try { saved = JSON.parse(localStorage.getItem(SEEN_KEY) || 'null'); } catch (err) { saved = null; }
-    if (!saved) return;
+    const saved = readSavedSeen();
     Object.assign(seenColors, saved.colors || {});
     Object.entries(saved.bySlug || {}).forEach(([slug, tags]) => {
       if (!Array.isArray(tags)) return;
-      const card = seenList.querySelector(`[data-slug="${CSS.escape(slug)}"]`);
-      if (!card) return;
-      card.setAttribute('data-tags', tags.map((tag) => String(tag).trim()).filter(Boolean).join(','));
-      paintCard(card);
+      const clean = tags.map((tag) => String(tag).trim()).filter(Boolean).join(',');
+      document.querySelectorAll(`[data-slug="${CSS.escape(slug)}"]`).forEach((el) => el.setAttribute('data-tags', clean));
     });
-    Object.entries(seenColors).forEach(([tag, color]) => applySeenColor(tag, color));
+    seenEditors().forEach((el) => {
+      if (el.querySelector('.post-tags')) paintCard(el);
+    });
+    document.querySelectorAll('.post-row[data-slug]').forEach((row) => paintQuiet(row));
     renderSeenRail();
+    refreshTagList();
   }
   function selectSeenTag(next) {
     seenTag = next || 'all';
@@ -1123,6 +1172,16 @@
     });
     seenList.classList.add('is-packed');
   }
+  function addTag(card, raw) {
+    const tag = String(raw || '').trim().replace(/[,，"'<>]/g, '');
+    if (!tag || tag === '全部' || tagsOf(card).includes(tag)) return false;
+    card.setAttribute('data-tags', [...tagsOf(card), tag].join(','));
+    paintCard(card);
+    renderSeenRail();
+    saveSeen();
+    if (seenList) applySeen();
+    return true;
+  }
   if (seenList) {
     seenHits.forEach((card, i) => { card.dataset.pack = String(i); });
     seenList.querySelectorAll('img.post-cover').forEach((img) => {
@@ -1133,74 +1192,109 @@
       clearTimeout(packTimer);
       packTimer = setTimeout(packSeen, 80);
     });
+  }
+  if (seenList || document.querySelector('[data-piece]')) {
     loadSeen();
-    if (seenTag !== 'all' && !document.querySelector(`[data-seen-tag="${CSS.escape(seenTag)}"]`)) seenTag = 'all';
-    seenTags.addEventListener('click', (e) => {
-      if (e.target.closest('input, label')) return;
-      const tab = e.target.closest('[data-seen-tag]');
-      if (!tab) return;
-      click(980);
-      selectSeenTag(tab.getAttribute('data-seen-tag') || 'all');
-    });
-    seenTags.addEventListener('input', (e) => {
-      const input = e.target.closest('input[type="color"]');
+    if (seenList && seenTag !== 'all' && !document.querySelector(`[data-seen-tag="${CSS.escape(seenTag)}"]`)) seenTag = 'all';
+    if (seenTags) {
+      seenTags.addEventListener('click', (e) => {
+        if (e.target.closest('input, label')) return;
+        const tab = e.target.closest('[data-seen-tag]');
+        if (!tab) return;
+        click(980);
+        selectSeenTag(tab.getAttribute('data-seen-tag') || 'all');
+      });
+    }
+    document.addEventListener('input', (e) => {
+      const input = e.target.closest('.post-tag input[type="color"][data-color-for]');
       if (!input) return;
       applySeenColor(input.getAttribute('data-color-for'), input.value);
+      seenEditors().forEach((card) => paintSuggest(card));
       saveSeen();
     });
-    seenList.addEventListener('click', (e) => {
-      const card = e.target.closest('.post-card');
+    document.addEventListener('click', (e) => {
+      const card = e.target.closest('.post-card.seen-hit, [data-piece]');
       if (!card) return;
+      const editing = card.closest('.seen-room.is-editing, .reader-piece.is-editing');
+      const addBtn = e.target.closest('[data-add-tag]');
+      if (addBtn && addBtn.closest('.tag-suggest')) {
+        addTag(card, addBtn.getAttribute('data-add-tag'));
+        return;
+      }
       const remove = e.target.closest('.tag-x');
-      const name = e.target.closest('.tag-name');
       if (remove) {
         const tag = remove.closest('.post-tag').dataset.tag;
         card.setAttribute('data-tags', tagsOf(card).filter((item) => item !== tag).join(','));
-        if (seenTag === tag && !seenHits.some((el) => tagsOf(el).includes(tag))) seenTag = 'all';
+        if (seenList && seenTag === tag && !seenHits.some((el) => tagsOf(el).includes(tag))) seenTag = 'all';
         paintCard(card);
         renderSeenRail();
         saveSeen();
-        applySeen();
+        if (seenList) applySeen();
         return;
       }
-      if (name) {
-        click(980);
-        selectSeenTag(name.closest('.post-tag').dataset.tag);
+      const name = e.target.closest('.tag-name');
+      if (!name || editing) return;
+      const tag = name.closest('.post-tag').dataset.tag;
+      if (card.hasAttribute('data-piece')) {
+        window.location.href = `${window.__BASE_PATH__ || ''}/curated?tag=${encodeURIComponent(tag)}`;
+        return;
       }
+      click(980);
+      selectSeenTag(tag);
     });
-    seenList.addEventListener('submit', (e) => {
+    document.addEventListener('submit', (e) => {
       const form = e.target.closest('.tag-add');
       if (!form) return;
+      const card = form.closest('.post-card.seen-hit, [data-piece]');
+      if (!card) return;
       e.preventDefault();
-      const card = form.closest('.post-card');
       const input = form.querySelector('input');
-      const tag = input.value.trim().replace(/[,，"'<>]/g, '');
+      const added = addTag(card, input.value);
       input.value = '';
-      if (!tag || tag === '全部' || tagsOf(card).includes(tag)) return;
-      card.setAttribute('data-tags', [...tagsOf(card), tag].join(','));
-      paintCard(card);
-      renderSeenRail();
-      saveSeen();
-      applySeen();
-      const again = card.querySelector('.tag-add input');
-      if (again) again.focus();
+      if (added) {
+        const again = card.querySelector('.tag-add input');
+        if (again) again.focus();
+      }
     });
     if (seenEdit && seenRoom) {
       seenEdit.addEventListener('click', () => {
         const on = seenRoom.classList.toggle('is-editing');
-        seenEdit.textContent = on ? '完成' : '调整标签';
+        seenEdit.textContent = on ? '完成' : '改每篇的标签';
         if (seenHint) seenHint.hidden = !on;
         if (seenReset) seenReset.hidden = !on;
+        if (on) seenEditors().forEach((card) => paintSuggest(card));
         packSeen();
       });
     }
-    if (seenReset) {
+    if (seenReset && seenList) {
       seenReset.addEventListener('click', () => {
         localStorage.removeItem(SEEN_KEY);
         window.location.reload();
       });
     }
-    applySeen();
+    const readerEdit = $('reader-tag-edit');
+    const readerPiece = document.querySelector('[data-piece]');
+    const readerHint = $('reader-tag-hint');
+    const readerReset = $('reader-tag-reset');
+    if (readerEdit && readerPiece) {
+      readerEdit.addEventListener('click', () => {
+        const on = readerPiece.classList.toggle('is-editing');
+        readerEdit.textContent = on ? '完成' : '改这篇的标签';
+        if (readerHint) readerHint.hidden = !on;
+        if (readerReset) readerReset.hidden = !on;
+        if (on) paintSuggest(readerPiece);
+      });
+    }
+    if (readerReset && readerPiece) {
+      readerReset.addEventListener('click', () => {
+        const slug = readerPiece.getAttribute('data-slug');
+        const orig = seenDefaults.pieces[slug] || [];
+        readerPiece.setAttribute('data-tags', orig.join(','));
+        paintCard(readerPiece);
+        saveSeen();
+      });
+    }
+    if (seenList) applySeen();
   }
   if (catalogSearch) {
     catalogSearch.addEventListener('input', (e) => {
