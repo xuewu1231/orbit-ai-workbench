@@ -1709,9 +1709,9 @@ html[data-theme="dark"] .moon-svg { display: none; }
 
 .mark-stage {
   display: grid;
-  grid-template-columns: minmax(0, 1.45fr) minmax(0, 0.85fr);
+  grid-template-columns: minmax(0, 1.62fr) minmax(240px, 0.78fr);
   gap: 14px;
-  align-items: start;
+  align-items: stretch;
   margin-top: 10px;
   padding: 16px;
   border-radius: 26px;
@@ -1720,15 +1720,24 @@ html[data-theme="dark"] .moon-svg { display: none; }
     #121214;
 }
 .mark-stage[data-mark-count="1"] { grid-template-columns: 1fr; }
-.mark-stage[data-mark-count="2"] { align-items: start; }
 .mark-side {
   display: grid;
+  grid-auto-rows: 1fr;
   gap: 14px;
   min-width: 0;
-  align-content: start;
+  min-height: 100%;
 }
-.mark-stage[data-mark-count="4"] .mark-side { grid-template-columns: 1fr 1fr; }
-.mark-stage[data-mark-count="4"] .mark-side > .mark-card:first-child { grid-column: 1 / -1; }
+.mark-side .mark-card {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  height: 100%;
+}
+.mark-side .mark-shot {
+  flex: 1 1 auto;
+  aspect-ratio: auto;
+  min-height: 0;
+}
 .mark-stage .mark-card.is-lead .mark-shot { aspect-ratio: 16 / 10; }
 .mark-shot::before {
   content: "";
@@ -2654,7 +2663,8 @@ html[data-theme="dark"] .vault-card[data-vault-kind="style"] .lane-pill { backgr
   .mark-stage[data-mark-count="4"] .mark-card.is-lead { display: block; height: auto; }
   .mark-stage[data-mark-count="3"] .mark-card.is-lead .mark-shot,
   .mark-stage[data-mark-count="4"] .mark-card.is-lead .mark-shot { aspect-ratio: 16 / 10; flex: none; min-height: 0; height: auto; }
-  .mark-side { grid-template-columns: 1fr 1fr; }
+  .mark-side { grid-template-columns: 1fr 1fr; grid-auto-rows: auto; min-height: 0; }
+  .mark-side .mark-shot { aspect-ratio: 16 / 10; flex: none; height: auto; }
   .mark-stage[data-mark-count="4"] .mark-side > .mark-card:first-child { grid-column: 1 / -1; }
   .reader-inner { padding: 8px 0 16px; }
   .navbar-inner {
@@ -2861,9 +2871,9 @@ html[data-theme="dark"] .tile-rose { background: rgba(236, 72, 153, 0.15); color
 .toolbar-row .lane-rail { margin: 0; width: auto; flex: 1 1 280px; }
 .lane-head {
   display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 18px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
   margin: 4px 0 14px;
 }
 .lane-kicker {
@@ -2882,7 +2892,7 @@ html[data-theme="dark"] .tile-rose { background: rgba(236, 72, 153, 0.15); color
 }
 .lane-head p {
   margin: 0;
-  max-width: 420px;
+  max-width: 46em;
   color: var(--ink-secondary);
   font-size: 13.5px;
   line-height: 1.45;
@@ -5261,9 +5271,10 @@ html[data-theme="dark"] .want-btn.is-voted {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: space-between;
-  gap: 12px;
+  justify-content: flex-start;
+  gap: 10px;
 }
+.inner-page-hero .clean-search { width: 240px; max-width: 100%; }
 .vh-right-tools {
   display: flex;
   align-items: center;
@@ -5611,13 +5622,11 @@ html[data-theme="dark"] .want-btn.is-voted {
   margin-top: 28px;
   padding: 28px;
   border-radius: 28px;
-  background:
-    radial-gradient(520px circle at 100% 0%, rgba(37, 99, 235, 0.1), transparent 65%),
-    var(--bg-card);
-  border: 1px solid var(--border-strong);
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
   box-shadow: var(--shadow-card);
   display: grid;
-  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1.5fr) minmax(240px, 0.72fr);
   gap: 28px;
   align-items: center;
 }
@@ -7164,9 +7173,9 @@ html[data-theme="dark"] .tds-tag.is-good { color: #6ee7b7; }
 
 .triangulator-grid {
   display: grid;
-  grid-template-columns: 1.25fr 0.95fr;
+  grid-template-columns: minmax(0, 1.5fr) minmax(220px, 0.7fr);
   gap: 22px;
-  align-items: stretch;
+  align-items: start;
 }
 .tri-topic-field {
   display: block;
@@ -8420,9 +8429,13 @@ html[data-theme="dark"] .banned-chips span {
 /* ==========================================================================
    V11 · CLEAN AMMUNITION DEPOT PORTAL (/originals & /originals/ai-coding)
    ========================================================================== */
-.depot-clean-root {
-  max-width: 920px;
+.depot-entry-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(260px, 0.8fr);
+  gap: 28px;
+  align-items: center;
 }
+.dec-lead { display: flex; flex-direction: column; gap: 18px; min-width: 0; }
 .depot-clean-hero {
   margin-bottom: 32px;
 }
@@ -8439,11 +8452,8 @@ html[data-theme="dark"] .banned-chips span {
   padding: 32px 34px;
   border-radius: 28px;
   background: var(--bg-card);
-  border: 1px solid var(--border-strong);
+  border: 1px solid var(--border-subtle);
   box-shadow: var(--shadow-card);
-  display: flex;
-  flex-direction: column;
-  gap: 22px;
 }
 .dec-top {
   display: flex;
@@ -8658,6 +8668,7 @@ html[data-theme="dark"] .banned-chips span {
 
 @media (max-width: 780px) {
   .depot-entry-card {
+    grid-template-columns: 1fr;
     padding: 22px 18px;
   }
   .dec-part-row {
@@ -8678,7 +8689,7 @@ html[data-theme="dark"] .banned-chips span {
 }
 
 /* 看见：两列大封面，标签自己改 */
-.inner-wrap.seen-room { max-width: 1180px; }
+.inner-wrap.seen-room { max-width: 1320px; }
 .seen-hero p { max-width: 40em; }
 .seen-search { margin-top: 18px; max-width: 280px; }
 .seen-tools {
