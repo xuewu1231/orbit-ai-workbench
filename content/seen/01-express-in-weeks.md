@@ -13,7 +13,7 @@ cover: /covers/express-in-weeks.jpg
 tags: 表达
 order: 1
 summary: 二十五条里，能练的是肚子里有货、开口前想清楚、说完能收回来。第 6 条在图的接缝处没拍全。
-relatedSlugs: learn-anything-loop
+relatedSlugs: how-to-articulate,learn-anything-loop
 ---
 
 原帖几乎没有正文。四张图是一份清单，题目写着「如何在短期内提高表达能力」，从 1 排到 25。图和图像接的地方，第 6 条没拍全，我没有补一句图上没有的话。下面按它自己的序号写，再用自己的话收一遍。
