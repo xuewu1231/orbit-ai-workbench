@@ -653,6 +653,20 @@
       "whenToUse": "做资源目录或灵感画廊，想让人扫一眼就认出每个站时。"
     },
     {
+      "id": "v-designeng",
+      "shelf": "design",
+      "kind": "gallery",
+      "kindLabel": "审美图鉴目录",
+      "name": "DesignEng",
+      "tag": "设计工程资源目录",
+      "url": "https://www.designeng.tools",
+      "preview": "/previews/designeng.jpg",
+      "swatches": ["#F4F4F5", "#FFFFFF", "#171717", "#111111"],
+      "whyGood": "标注：给设计工程收的一份目录，不是单个组件站。组件库、界面库、AI 工具、灵感站、课程、素材和值得跟的人，分栏放好。每条是一个站，点开去原处。",
+      "borrow": ["目录按拿去就能用的来分：组件、界面、灵感、学习、素材，不要堆成一长串链接", "一条只介绍一个站，配一句它是什么", "灵感和能装进项目的库分开，找的时候不混"],
+      "whenToUse": "开工前不知道该去哪个组件库、图标站或灵感墙的时候。"
+    },
+    {
       "id": "v-godly",
       "shelf": "design",
       "kind": "gallery",
@@ -779,6 +793,20 @@
       "whenToUse": "所有新 Web 产品的后台、表单、弹窗、命令面板打底。"
     },
     {
+      "id": "v-bluma",
+      "shelf": "design",
+      "kind": "ui-lib",
+      "kindLabel": "通用与拟物组件",
+      "name": "Bluma",
+      "tag": "说一句话长出组件",
+      "url": "https://bluma.design",
+      "preview": "/previews/bluma.jpg",
+      "swatches": ["#0C0C0E", "#171717", "#F5F5F4", "#3DDC84"],
+      "whyGood": "标注：对着它说要一个组件，它当场写出来，在真浏览器里搭好并测过。React 和 SwiftUI 都有。做好的零件可以交给 Claude Code、Codex 或 Cursor，按名字装进项目，再改文案、颜色、间距和它做什么。",
+      "borrow": ["组件先在真浏览器里能点、能改，再交给编码 Agent 装进项目", "改的是字、颜色、间距和动作，不要整页重画", "库里的零件可以悬停试玩，点开再拿走源码"],
+      "whenToUse": "已经知道要什么零件，想让它先长出来、再装进现有页面的时候。"
+    },
+    {
       "id": "v-tryspherium",
       "shelf": "design",
       "kind": "webgl-3d",
@@ -833,6 +861,20 @@
       "whyGood": "专为网页设计师打造的 WebGL 图层编排工具：把玻璃棱镜折射、景深模糊、流体光束与鼠标跟随视差叠成可交互首屏背景，导出一段轻量 JSON 即可嵌入。",
       "borrow": ["光影跟随鼠标做 5%–8% 微小位移即可，幅度大了会晕", "前景文字排版保持极度干净纯白，与背后的动态光学层形成动静反差", "移动端自动退化为静态高清帧保流畅"],
       "whenToUse": "筹备重磅新产品发布会首屏（Hero Section）需要镇场视觉时。"
+    },
+    {
+      "id": "v-wowww",
+      "shelf": "design",
+      "kind": "webgl-3d",
+      "kindLabel": "3D 空间与着色器",
+      "name": "wowww",
+      "tag": "会动、会玩的整站",
+      "url": "https://wowww.art",
+      "preview": "/previews/wowww.jpg",
+      "swatches": ["#050505", "#111111", "#F7F7F7", "#C9D0D8"],
+      "whyGood": "标注：一家做「让人记住的网站」的工作室。落地页、商店、产品站和工具都做，签名是会动、会玩、会回应：交互 3D、网页小游戏、动效和着色器。同一拨人设计和写代码，用 Next.js 和 WebGL。页面上可以关掉动效，改成静止、普通滚动。",
+      "borrow": ["动效和 3D 只放在需要被记住的那一屏，正文仍能读", "给一个静止、少着色器的看页方式，给不想被晃到的人", "作品按网站、品牌、应用、动效分开讲，不要合成一句「我们什么都做」"],
+      "whenToUse": "要给产品站加一处真正会动的首屏，又怕整页都在晃的时候。"
     },
     {
       "id": "v-bentogrids",
@@ -1083,6 +1125,20 @@
       "whyGood": "Anthropic 工程团队浓缩一线客户经验写出的最清醒指南：先用最简单的单次调用，不够再用五种确定性 Workflow（串行链、路由、并行、协调-工人、评估-优化循环），万不得已最后才上自主 Agent。",
       "borrow": ["能用固定步骤 Workflow 搞定的事，绝不盲目上不可控的重型 Agent 框架", "把大精力花在打磨工具接口文档（ACI · Agent-Computer Interface）而非堆砌提示词", "用独立的 Evaluator 循环守住输出质量下限"],
       "whenToUse": "做新 AI 功能架构评审、决定该用工作流还是自治 Agent 时的定海神针。"
+    },
+    {
+      "id": "v-agent-use-cases",
+      "shelf": "learning",
+      "kind": "guide",
+      "kindLabel": "学习指南",
+      "name": "Agent Use Cases",
+      "tag": "别人真在用 Agent 做的事",
+      "url": "https://agentusecases.ai",
+      "preview": "/previews/agent-use-cases.jpg",
+      "swatches": ["#F6F5F2", "#FFFFFF", "#171717", "#111111"],
+      "whyGood": "每天从网上扫来的 Agent 用法。每条是一件真事：谁用什么工具、做成了什么，提示词就跟在旁边。不是功能清单，也不是模型评测。",
+      "borrow": ["一条用法写清人、工具和结果，不要只写「可以用 AI」", "提示词跟在事例旁边，看完就能拿走试", "按能做成的事来排，不要按模型名字来排"],
+      "whenToUse": "想找一件今天就能让 Agent 做的实事，或者给团队收集用法的时候。"
     },
     {
       "id": "v-skill-clean-ui",

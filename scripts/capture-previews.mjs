@@ -78,6 +78,18 @@ const SITES = [
   ['godly', 'https://godly.website', 160],
   ['calltoinspiration', 'https://calltoinspiration.com', 160],
   ['raycast', 'https://www.raycast.com', 0],
+  ['bluma', 'https://bluma.design', 0, '', 1800],
+  [
+    'designeng',
+    'https://www.designeng.tools',
+    280,
+    `(() => {
+      const btn = [...document.querySelectorAll('button')].find((b) => /decline/i.test(b.textContent || ''));
+      if (btn) btn.click();
+    })()`,
+  ],
+  ['wowww', 'https://wowww.art', 0, '', 2500],
+  ['agent-use-cases', 'https://agentusecases.ai', 0],
   ['resend', 'https://resend.com', 0],
   [
     'fey',
