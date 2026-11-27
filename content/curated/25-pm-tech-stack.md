@@ -17,7 +17,7 @@ sourceUrl: https://x.com/runmaotui/status/2120454874156749026
 coverAccent: slate
 coverSymbol: rings
 pairedSkill: "verify-before-done"
-relatedSlugs: pm-ai-full-cycle,karpathy-nozelcode-ai-system,claude-code-verification
+relatedSlugs: ai-pm-jobs-2026,pm-ai-full-cycle,karpathy-nozelcode-ai-system
 summary: 转型 AI 产品不必把 CUDA 和反向传播推导一遍。顺着一次请求的五层路径，抓牢「改变产品取舍、成本总账与交互兜底」的六块硬知识，用带对照数据的实践验收。
 studioNoteTitle: 读前导读 · 学一项技术，唯一标尺是「它改不改你手头的决定」
 studioNoteBody: 很多产品经理补技术课容易陷入两个极端：要么死磕背诵 Transformer 矩阵公式却依然不会选模型，要么只会当复读机把问题全甩给研发。基于奔跑的大毛腿这篇高口碑长文，我们把每一层「PM 到底该问哪几个具体指标、哪里直接放手交给工程」彻底摊开，补齐了三张架构决策图与两张对照速查表。

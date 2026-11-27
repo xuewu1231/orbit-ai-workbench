@@ -2591,6 +2591,12 @@ html[data-theme="dark"] .vault-card[data-vault-kind="style"] .lane-pill { backgr
 .sc-step { font-size: 11px; font-weight: 700; color: var(--blue); }
 .sandbox-card h4 { margin: 4px 0; font-size: 14px; }
 .sandbox-card p { margin: 0 !important; font-size: 12.5px; color: var(--ink-secondary); line-height: 1.5; }
+.pick-panel h3 { margin: 0 0 8px; font-size: 18px; line-height: 1.35; }
+.pick-kicker { margin: 0 0 6px !important; font-size: 12px; font-weight: 800; color: var(--blue); }
+.pick-panel > p { margin: 0 0 12px !important; font-size: 15px; line-height: 1.65; color: var(--ink-secondary); }
+.pick-example { padding: 12px 14px; border-radius: 14px; background: var(--bg-card); border: 1px solid var(--border-subtle); }
+.pick-example span { display: block; margin-bottom: 4px; font-size: 11px; font-weight: 800; color: var(--ink-muted); }
+.pick-example p { margin: 0 !important; font-size: 14px; line-height: 1.55; color: var(--ink-primary); }
 .palette-preview { padding: 20px; border-radius: 14px; }
 .palette-preview.mode-editorial { background: var(--bg-card); border: 1px solid var(--border-subtle); box-shadow: var(--shadow-card); }
 .palette-preview.mode-cliche { background: linear-gradient(135deg, #0b0726, #311073 55%, #0e3b7c); border: 1px solid #7c4dff; color: #f5f3ff; box-shadow: 0 0 24px rgba(124, 77, 255, 0.45); }

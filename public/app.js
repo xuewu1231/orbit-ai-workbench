@@ -1925,6 +1925,23 @@
         : '纯白内卡片嵌在浅灰外框里，只保留纯黑主按钮和一抹克制的蓝，低调但有质感。';
     });
   });
+
+  document.querySelectorAll('[data-sandbox="pick"]').forEach((box) => {
+    box.querySelectorAll('[data-pick]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        click(1120);
+        box.querySelectorAll('[data-pick]').forEach((other) => {
+          const on = other === btn;
+          other.classList.toggle('is-active', on);
+          other.setAttribute('aria-selected', on ? 'true' : 'false');
+        });
+        const id = btn.getAttribute('data-pick');
+        box.querySelectorAll('[data-panel]').forEach((panel) => {
+          panel.hidden = panel.getAttribute('data-panel') !== id;
+        });
+      });
+    });
+  });
 })();
 
 

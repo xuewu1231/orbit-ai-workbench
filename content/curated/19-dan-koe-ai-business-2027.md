@@ -17,16 +17,16 @@ sourceUrl: https://www.youtube.com/watch?v=zdshL1IcetU
 coverAccent: vermilion
 coverSymbol: compass
 pairedSkill: ""
-relatedSlugs: pm-ai-full-cycle,iso-explode-film,claude-code-verification
+relatedSlugs: one-hour-lifes-work,pm-ai-full-cycle,learn-to-earn
 summary: 他认定 2027 年一个人最值钱的，是抓住注意力。自己做，或替一到三个客户做创意。品牌、选题、成稿分成三份工作，AI 出草稿，人定方向。
 studioNoteTitle: 我们的实战笔记 · 信和视频是同一篇，架上只留这一本
-studioNoteBody: 视频标题就是「2027 年最赚钱的 AI 生意」。他给的两条路里，和第二条更近我们现在在做的：把定位、选题和能交出去的成品收在一处，而不是再堆一个代工号。数字是他的估计，不是我们的报价。原文视频和信件都在文末。
+studioNoteBody: 视频标题就是「2027 年最赚钱的 AI 生意」。他给的两条路里，和第二条更近我们现在在做的：把定位、选题和能交出去的成品收在一处，而不是再堆一个代工号。数字是他的估计，不是我们的报价。锦鲤同学把同一篇译成了中文，意思已在这一本里，不另收第二遍。原文视频、信件和译文都在文末。
 cover: /covers/dan-koe-ai-business-2027.jpg
 tags: 产品,自媒体
 order: 14
 ---
 
-Dan Koe 是做一人事业的创作者。2026 年 11 月，他把《The most lucrative AI business to start in 2027》讲成了一期 YouTube，同一篇也发在信里：[letters.thedankoe.com](https://letters.thedankoe.com/p/the-most-lucrative-ai-business-to)。下面按他讲的顺序写完：先是那门生意，再是一支创意团队里的三份工作，然后是怎么把一个人写成能用的材料，最后是第一个客户怎么来。数字是他的估计。
+Dan Koe 是做一人事业的创作者。2026 年 11 月，他把《The most lucrative AI business to start in 2027》讲成了一期 YouTube，同一篇也发在信里：[letters.thedankoe.com](https://letters.thedankoe.com/p/the-most-lucrative-ai-business-to)。锦鲤同学把这篇译成了中文：[2027 年最赚钱的 AI 创业方向](https://x.com/loi_jinli/status/2125488680613908950)。下面按他讲的顺序写完，不另收第二遍：先是那门生意，再是一支创意团队里的三份工作，然后是怎么把一个人写成能用的材料，最后是第一个客户怎么来。数字是他的估计。
 
 他的前提很短：东西再好，没人知道，就没人付钱。注意力有限，还会更贵。工作可能变少的时候，人通常有三条路：抱怨、再去学一门去找下一份工、或者自己做一门生意。他认为会有很多人走第三条，而第三条的入口是个人品牌。
 
@@ -49,6 +49,8 @@ Dan Koe 是做一人事业的创作者。2026 年 11 月，他把《The most luc
 第三份是把前两份写成能发的东西：帖子、视频脚本、文章、电子报，然后排期发出去。
 
 他觉得多数人失败，是因为只做了第三份。让模型没有方向地吐脚本，建不起关系。品牌几乎没人做，选题只有一部分人做。也有人看起来没做策略，比如 Naval，只是读、想、发。那是因为价值观已经在每条里，不是因为策略可以不存在。
+
+:::sandbox-creative-gap:::
 
 ## 他怎么把一个人做成能写的材料
 
