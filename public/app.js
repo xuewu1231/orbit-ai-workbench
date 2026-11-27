@@ -5071,11 +5071,17 @@
   const board = document.getElementById('memo-board');
   if (!board) return;
   const KEY = 'orbit-memos';
-  const list = board.querySelector('#memo-list');
+  const openList = board.querySelector('#memo-open');
+  const doneList = board.querySelector('#memo-done');
   const form = board.querySelector('#memo-form');
   const input = board.querySelector('#memo-input');
-  const empty = board.querySelector('#memo-empty');
+  const countEl = board.querySelector('#memo-count');
+  const doneWrap = board.querySelector('#memo-done-wrap');
+  const doneToggle = board.querySelector('#memo-done-toggle');
+  const donePanel = board.querySelector('#memo-done-panel');
+  const clearBtn = board.querySelector('#memo-clear');
   let items = [];
+  let doneOpen = false;
   try {
     const saved = JSON.parse(localStorage.getItem(KEY) || '[]');
     if (Array.isArray(saved)) items = saved.filter((item) => item && typeof item.text === 'string');
@@ -5085,65 +5091,73 @@
     try { localStorage.setItem(KEY, JSON.stringify(items)); } catch (e) {}
   };
 
-  const render = () => {
-    list.replaceChildren();
-    empty.hidden = items.length > 0;
-    for (const item of items) {
-      const li = document.createElement('li');
-      li.className = 'memo-item' + (item.done ? ' is-done' : '');
-      const check = document.createElement('button');
-      check.type = 'button';
-      check.className = 'memo-check';
-      check.setAttribute('aria-label', item.done ? '还原这一条' : '划掉这一条');
-      check.addEventListener('click', () => {
-        item.done = !item.done;
+  const row = (item) => {
+    const li = document.createElement('li');
+    li.className = 'memo-item' + (item.done ? ' is-done' : '');
+    const check = document.createElement('button');
+    check.type = 'button';
+    check.className = 'memo-check';
+    check.setAttribute('aria-label', item.done ? '还原这一条' : '划掉这一条');
+    check.addEventListener('click', () => {
+      item.done = !item.done;
+      save();
+      render();
+    });
+    const text = document.createElement('span');
+    text.className = 'memo-text';
+    text.textContent = item.text;
+    text.addEventListener('click', () => {
+      const field = document.createElement('input');
+      field.className = 'memo-edit';
+      field.value = item.text;
+      field.setAttribute('aria-label', '修改这一条');
+      text.replaceWith(field);
+      field.focus();
+      field.select();
+      let closed = false;
+      const commit = () => {
+        if (closed) return;
+        closed = true;
+        const next = field.value.trim();
+        if (next) item.text = next;
         save();
         render();
-      });
-      const text = document.createElement('span');
-      text.className = 'memo-text';
-      text.textContent = item.text;
-      text.addEventListener('click', () => {
-        const field = document.createElement('input');
-        field.className = 'memo-edit';
-        field.value = item.text;
-        field.setAttribute('aria-label', '修改这一条');
-        text.replaceWith(field);
-        field.focus();
-        field.select();
-        let closed = false;
-        const commit = () => {
-          if (closed) return;
+      };
+      field.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          commit();
+        } else if (e.key === 'Escape') {
           closed = true;
-          const next = field.value.trim();
-          if (next) item.text = next;
-          save();
           render();
-        };
-        field.addEventListener('keydown', (e) => {
-          if (e.key === 'Enter') {
-            e.preventDefault();
-            commit();
-          } else if (e.key === 'Escape') {
-            closed = true;
-            render();
-          }
-        });
-        field.addEventListener('blur', commit);
+        }
       });
-      const remove = document.createElement('button');
-      remove.type = 'button';
-      remove.className = 'memo-x';
-      remove.setAttribute('aria-label', '删掉这一条');
-      remove.textContent = '×';
-      remove.addEventListener('click', () => {
-        items = items.filter((row) => row.id !== item.id);
-        save();
-        render();
-      });
-      li.append(check, text, remove);
-      list.appendChild(li);
-    }
+      field.addEventListener('blur', commit);
+    });
+    const remove = document.createElement('button');
+    remove.type = 'button';
+    remove.className = 'memo-x';
+    remove.setAttribute('aria-label', '删掉这一条');
+    remove.textContent = '×';
+    remove.addEventListener('click', () => {
+      items = items.filter((entry) => entry.id !== item.id);
+      save();
+      render();
+    });
+    li.append(check, text, remove);
+    return li;
+  };
+
+  const render = () => {
+    const open = items.filter((item) => !item.done);
+    const done = items.filter((item) => item.done);
+    openList.replaceChildren(...open.map(row));
+    doneList.replaceChildren(...done.map(row));
+    countEl.textContent = open.length ? `还剩 ${open.length} 件` : '今天清完了';
+    doneWrap.hidden = done.length === 0;
+    doneToggle.textContent = `已完成 ${done.length}`;
+    doneToggle.setAttribute('aria-expanded', doneOpen ? 'true' : 'false');
+    donePanel.hidden = !doneOpen || done.length === 0;
   };
 
   form.addEventListener('submit', (e) => {
@@ -5152,6 +5166,16 @@
     if (!text) return;
     items.unshift({ id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6), text, done: false });
     input.value = '';
+    save();
+    render();
+  });
+  doneToggle.addEventListener('click', () => {
+    doneOpen = !doneOpen;
+    render();
+  });
+  clearBtn.addEventListener('click', () => {
+    items = items.filter((item) => !item.done);
+    doneOpen = false;
     save();
     render();
   });
