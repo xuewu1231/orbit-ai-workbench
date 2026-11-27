@@ -5067,7 +5067,98 @@
     },
   ];
 
-  document.querySelectorAll('[data-jargon-translator]').forEach((card) => {
+(function () {
+  const board = document.getElementById('memo-board');
+  if (!board) return;
+  const KEY = 'orbit-memos';
+  const list = board.querySelector('#memo-list');
+  const form = board.querySelector('#memo-form');
+  const input = board.querySelector('#memo-input');
+  const empty = board.querySelector('#memo-empty');
+  let items = [];
+  try {
+    const saved = JSON.parse(localStorage.getItem(KEY) || '[]');
+    if (Array.isArray(saved)) items = saved.filter((item) => item && typeof item.text === 'string');
+  } catch (e) {}
+
+  const save = () => {
+    try { localStorage.setItem(KEY, JSON.stringify(items)); } catch (e) {}
+  };
+
+  const render = () => {
+    list.replaceChildren();
+    empty.hidden = items.length > 0;
+    for (const item of items) {
+      const li = document.createElement('li');
+      li.className = 'memo-item' + (item.done ? ' is-done' : '');
+      const check = document.createElement('button');
+      check.type = 'button';
+      check.className = 'memo-check';
+      check.setAttribute('aria-label', item.done ? '还原这一条' : '划掉这一条');
+      check.addEventListener('click', () => {
+        item.done = !item.done;
+        save();
+        render();
+      });
+      const text = document.createElement('span');
+      text.className = 'memo-text';
+      text.textContent = item.text;
+      text.addEventListener('click', () => {
+        const field = document.createElement('input');
+        field.className = 'memo-edit';
+        field.value = item.text;
+        field.setAttribute('aria-label', '修改这一条');
+        text.replaceWith(field);
+        field.focus();
+        field.select();
+        let closed = false;
+        const commit = () => {
+          if (closed) return;
+          closed = true;
+          const next = field.value.trim();
+          if (next) item.text = next;
+          save();
+          render();
+        };
+        field.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            commit();
+          } else if (e.key === 'Escape') {
+            closed = true;
+            render();
+          }
+        });
+        field.addEventListener('blur', commit);
+      });
+      const remove = document.createElement('button');
+      remove.type = 'button';
+      remove.className = 'memo-x';
+      remove.setAttribute('aria-label', '删掉这一条');
+      remove.textContent = '×';
+      remove.addEventListener('click', () => {
+        items = items.filter((row) => row.id !== item.id);
+        save();
+        render();
+      });
+      li.append(check, text, remove);
+      list.appendChild(li);
+    }
+  };
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const text = input.value.trim();
+    if (!text) return;
+    items.unshift({ id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6), text, done: false });
+    input.value = '';
+    save();
+    render();
+  });
+  render();
+})();
+
+document.querySelectorAll('[data-jargon-translator]').forEach((card) => {
     const badEl = card.querySelector('[data-jt-bad]');
     const badNoteEl = card.querySelector('[data-jt-bad-note]');
     const goodEl = card.querySelector('[data-jt-good]');
