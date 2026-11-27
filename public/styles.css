@@ -2762,9 +2762,12 @@ html[data-theme="dark"] .vault-card[data-vault-kind="style"] .lane-pill { backgr
   .nav-links {
     grid-area: nav;
     justify-content: flex-start;
+    flex-wrap: wrap;
+    overflow: visible;
+    row-gap: 0;
     padding-bottom: 2px;
   }
-  .nav-links a { flex: 0 0 auto; min-width: max-content; padding: 7px 11px 11px; font-size: 15px; }
+  .nav-links a { flex: 0 0 auto; min-width: max-content; padding: 6px 8px 10px; font-size: 14.5px; gap: 5px; }
 }
 
 
@@ -5011,6 +5014,11 @@ html[data-theme="dark"] .plastic-read mark { background: rgba(251, 146, 60, 0.2)
 .nav-links a.is-active .ni-spark {
   fill: var(--blue);
 }
+@media (max-width: 900px) {
+  .nav-ico,
+  .nav-ico svg { width: 16px; height: 16px; }
+  .nav-links a::after { left: 29px; right: 8px; bottom: 4px; }
+}
 
 /* 3. Navbar Action Controls (Sound Spectrum, Theme Morph, Lang Flip, Collect) */
 .sound-toggle-btn,
@@ -6262,6 +6270,10 @@ html[data-theme="dark"] .want-btn.is-voted {
   .monograph-inner {
     grid-template-columns: 1fr;
   }
+  .fs-spotlight,
+  .fs-left,
+  .fs-right,
+  .fs-code-box { min-width: 0; max-width: 100%; }
   .fs-scene-tabs {
     grid-template-columns: 1fr;
   }
@@ -10604,4 +10616,34 @@ html[data-theme="dark"] .banned-chips span {
   .jt-panes,
   .tri-seq-nav { grid-template-columns: 1fr; }
   .tri-seq-card.is-next { text-align: left; }
+  .reader-page-root.is-tri-pilot { width: min(100%, calc(100vw - 16px)); }
+  .tri-topbar { margin: 8px 0 12px; padding: 8px; gap: 8px; }
+  .tri-panel-switches { width: 100%; display: grid; grid-template-columns: 1fr 1fr; }
+  .tri-pane-btn[data-tri-focus] { display: none; }
+  .tri-pane-btn { justify-content: center; padding: 8px 10px; }
+  .is-tri-pilot .tri-sheet-inner { padding: 16px 14px 32px; }
+  .reader-page-root .reader-hero h1 { font-size: 24px; }
+  .reader-page-root.is-tri-pilot .reader-hero > :not(.doc-cover):not(.doc-cover-frame) { padding-right: 0; }
+  .is-tri-pilot .doc-cover,
+  .is-tri-pilot .doc-cover.is-slice { max-height: 168px; height: auto; }
+  .stage-wrap, .logo-wall { padding-left: 16px; padding-right: 16px; overflow: hidden; }
+  .depot-pulse-bar { max-width: calc(100vw - 32px); }
+  .dp-items { flex-wrap: wrap; }
+  .is-tri-pilot[data-left="open"] .tri-rail-left,
+  .is-tri-pilot[data-right="open"] .tri-rail-right {
+    position: fixed;
+    z-index: 55;
+    left: 10px;
+    right: 10px;
+    top: auto;
+    bottom: 16px;
+    max-height: min(68vh, 520px);
+    overflow: auto;
+    margin: 0;
+    padding: 8px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: 18px;
+    box-shadow: var(--shadow-float);
+  }
 }
