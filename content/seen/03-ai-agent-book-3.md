@@ -20,6 +20,8 @@ relatedSlugs: anthropic-teams-claude-code,karpathy-nozelcode-ai-system
 
 我没有把 3.0 全书读完。下面两块都来自他自己写在帖子里的话：一块是十章各自在干什么，一块是 3.0 改了什么。我按能再读的方式重写，不把目录再贴一遍。
 
+:::diagram-agent-harness-formula:::
+
 ## 十章各自在干什么
 
 **第 1 章，先把公式立住。** 从「模型自己就是 Agent」这种说法出发，改成 Agent 等于模型、上下文、工具。然后把力气指到模型外面：计划怎么拆、工具怎么接、失败了怎么停、人什么时候必须介入。这些合在一起，就是他说的 Harness。模型会换，这一层不会跟着广告一起过时。

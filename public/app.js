@@ -4863,3 +4863,225 @@
   renderAllOnce();
   requestAnimationFrame(loop);
 })();
+
+
+/* =============================================================================
+   V15 · UNIFIED 3-COLUMN COLLAPSIBLE READER & INTERACTIVE JARGON TRANSLATOR
+   ============================================================================= */
+(function () {
+  const triRoot = document.getElementById('tri-reader-root');
+  const sheet = document.getElementById('reader-sheet');
+  const resetBtn = document.getElementById('tri-reset-display');
+  const hairlineFill = document.getElementById('tri-hairline-fill');
+  const remainEl = document.getElementById('rail-remain-time');
+  const STORE_KEY = 'orbit-tri-reader-prefs-v2';
+
+  if (triRoot && sheet) {
+    const isNarrow = window.matchMedia('(max-width: 1120px)').matches;
+    const DEFAULTS = {
+      left: isNarrow ? 'closed' : 'open',
+      right: isNarrow ? 'closed' : 'open',
+      font: 'sans',
+      size: 'md',
+      leading: 'normal',
+      measure: 'normal',
+    };
+    let state = { ...DEFAULTS };
+    try {
+      const saved = JSON.parse(localStorage.getItem(STORE_KEY) || 'null');
+      if (saved && typeof saved === 'object') {
+        state = {
+          ...state,
+          font: saved.font || state.font,
+          size: saved.size || state.size,
+          leading: saved.leading || state.leading,
+          measure: saved.measure || state.measure,
+          ...(isNarrow ? {} : { left: saved.left || state.left, right: saved.right || state.right }),
+        };
+      }
+    } catch (e) {}
+
+    function save() {
+      try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch (e) {}
+    }
+
+    function applyState() {
+      triRoot.setAttribute('data-left', state.left);
+      triRoot.setAttribute('data-right', state.right);
+      sheet.setAttribute('data-font', state.font);
+      sheet.setAttribute('data-size', state.size);
+      sheet.setAttribute('data-leading', state.leading);
+      sheet.setAttribute('data-measure', state.measure);
+
+      const bothClosed = state.left === 'closed' && state.right === 'closed';
+      document.querySelectorAll('.tri-pane-btn[data-tri-toggle="left"]').forEach((b) =>
+        b.classList.toggle('is-on', state.left === 'open')
+      );
+      document.querySelectorAll('.tri-pane-btn[data-tri-toggle="right"]').forEach((b) =>
+        b.classList.toggle('is-on', state.right === 'open')
+      );
+      document.querySelectorAll('[data-tri-focus]').forEach((b) => {
+        b.classList.toggle('is-on', bothClosed);
+        const lbl = b.querySelector('[data-tri-focus-label]');
+        if (lbl) lbl.textContent = bothClosed ? '退出专注' : '专注居中';
+      });
+
+      ['font', 'size', 'leading', 'measure'].forEach((attr) => {
+        document.querySelectorAll(`[data-${attr}]`).forEach((btn) => {
+          btn.classList.toggle('is-active', btn.getAttribute(`data-${attr}`) === state[attr]);
+        });
+      });
+
+      if (resetBtn) {
+        const customized =
+          state.font !== 'sans' || state.size !== 'md' || state.leading !== 'normal' || state.measure !== 'normal';
+        resetBtn.hidden = !customized;
+      }
+
+      // Trigger canvas resize if any interactive canvas exists inside article
+      window.dispatchEvent(new Event('resize'));
+    }
+
+    function syncHairlineAndRemain() {
+      const rect = sheet.getBoundingClientRect();
+      const viewH = window.innerHeight || document.documentElement.clientHeight;
+      const total = Math.max(1, rect.height - viewH * 0.55);
+      const passed = Math.min(total, Math.max(0, -rect.top + viewH * 0.28));
+      const ratio = passed / total;
+      const pct = Math.round(ratio * 100);
+      if (hairlineFill) hairlineFill.style.width = `${pct}%`;
+      if (remainEl) {
+        const totalMins = Number(remainEl.getAttribute('data-total-mins')) || 8;
+        if (pct >= 96) {
+          remainEl.textContent = '已读至文末 ✓';
+        } else {
+          const leftMins = Math.max(1, Math.ceil(totalMins * (1 - ratio)));
+          remainEl.textContent = pct <= 3 ? `全文约 ${totalMins} 分钟` : `还剩约 ${leftMins} 分钟`;
+        }
+      }
+    }
+
+    window.addEventListener('scroll', syncHairlineAndRemain, { passive: true });
+    window.addEventListener('resize', syncHairlineAndRemain, { passive: true });
+
+    document.addEventListener('click', async (e) => {
+      const sideBtn = e.target.closest('[data-tri-toggle]');
+      if (sideBtn) {
+        const side = sideBtn.getAttribute('data-tri-toggle');
+        if (side === 'left' || side === 'right') {
+          state[side] = state[side] === 'open' ? 'closed' : 'open';
+          applyState();
+          save();
+        }
+        return;
+      }
+      const focusBtn = e.target.closest('[data-tri-focus]');
+      if (focusBtn) {
+        const bothClosed = state.left === 'closed' && state.right === 'closed';
+        state.left = bothClosed ? 'open' : 'closed';
+        state.right = bothClosed ? 'open' : 'closed';
+        applyState();
+        save();
+        return;
+      }
+      if (resetBtn && e.target.closest('#tri-reset-display')) {
+        state.font = 'sans';
+        state.size = 'md';
+        state.leading = 'normal';
+        state.measure = 'normal';
+        applyState();
+        save();
+        return;
+      }
+      const copyUrlBtn = e.target.closest('[data-copy-page-url]');
+      if (copyUrlBtn) {
+        try { await navigator.clipboard.writeText(window.location.href); } catch (err) {}
+        const toastEl = document.getElementById('orbit-toast');
+        if (toastEl) {
+          toastEl.textContent = '✦ 已复制本文链接';
+          toastEl.hidden = false;
+          setTimeout(() => { toastEl.hidden = true; }, 2000);
+        }
+        return;
+      }
+      const tocLink = e.target.closest('.tri-toc-list a');
+      if (tocLink && window.matchMedia('(max-width: 1120px)').matches) {
+        state.left = 'closed';
+        applyState();
+      }
+      for (const attr of ['font', 'size', 'leading', 'measure']) {
+        const optBtn = e.target.closest(`[data-${attr}]`);
+        if (optBtn && triRoot.contains(optBtn)) {
+          state[attr] = optBtn.getAttribute(`data-${attr}`);
+          applyState();
+          save();
+          return;
+        }
+      }
+    });
+
+    window.addEventListener('keydown', (e) => {
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      const tag = (e.target && e.target.tagName) || '';
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || (e.target && e.target.isContentEditable)) return;
+      if (e.key === '[') {
+        state.left = state.left === 'open' ? 'closed' : 'open';
+        applyState();
+        save();
+      } else if (e.key === ']') {
+        state.right = state.right === 'open' ? 'closed' : 'open';
+        applyState();
+        save();
+      } else if (e.key === '\\') {
+        const bothClosed = state.left === 'closed' && state.right === 'closed';
+        state.left = bothClosed ? 'open' : 'closed';
+        state.right = bothClosed ? 'open' : 'closed';
+        applyState();
+        save();
+      }
+    });
+
+    applyState();
+    syncHairlineAndRemain();
+  }
+
+  /* Interactive 3-Scenario Jargon vs Plain Clarity Switcher */
+  const JT_SCENARIOS = [
+    {
+      bad: '「我们这个新协议基于异步拜占庭容错共识与跨链原子交换原语，重构了去信任化流动性层……」',
+      badNote: '听众反应：端着早上的咖啡越听越不信，心里只想念安静。',
+      good: '「两个人不用找银行或中间人担保，就能直接在网上把各自手里的东西安全换过来，谁也骗不了谁。」',
+      goodNote: '听众反应：三秒钟听懂这件事到底有什么用，立刻愿意接着往下聊。',
+    },
+    {
+      bad: '「本季度我们通过全链路智能化触点矩阵赋能业务抓手，打通了私域转化生态的协同闭环。」',
+      badNote: '听众反应：每个字都认识，连在一起不知道你到底干成了什么，只觉得心虚。',
+      good: '「以前客服回一个询盘要翻三张表花 10 分钟，现在点一下自动带出历史报价，30 秒就能回完。」',
+      goodNote: '听众反应：画面感极强，价值和省下的时间清清楚楚，当场点头。',
+    },
+    {
+      bad: '「所谓费曼学习法，本质上是一种基于认知建构主义的高阶元认知输出倒逼输入机制。」',
+      badNote: '听众反应：拿新术语去解释旧术语，连自己都没真正消化透。',
+      good: '「假装对面坐着一个十二岁小孩，不用任何行话给他讲明白；卡住讲不顺的地方，就是你自己还没真懂的裂缝。」',
+      goodNote: '听众反应：小孩子能懂，大人更懂，而且马上就能照着做。',
+    },
+  ];
+
+  document.querySelectorAll('[data-jargon-translator]').forEach((card) => {
+    const badEl = card.querySelector('[data-jt-bad]');
+    const badNoteEl = card.querySelector('[data-jt-bad-note]');
+    const goodEl = card.querySelector('[data-jt-good]');
+    const goodNoteEl = card.querySelector('[data-jt-good-note]');
+    card.addEventListener('click', (e) => {
+      const tab = e.target.closest('[data-jt-idx]');
+      if (!tab) return;
+      const idx = Number(tab.getAttribute('data-jt-idx')) || 0;
+      const item = JT_SCENARIOS[idx] || JT_SCENARIOS[0];
+      card.querySelectorAll('[data-jt-idx]').forEach((b) => b.classList.toggle('is-active', b === tab));
+      if (badEl) badEl.textContent = item.bad;
+      if (badNoteEl) badNoteEl.textContent = item.badNote;
+      if (goodEl) goodEl.textContent = item.good;
+      if (goodNoteEl) goodNoteEl.textContent = item.goodNote;
+    });
+  });
+})();

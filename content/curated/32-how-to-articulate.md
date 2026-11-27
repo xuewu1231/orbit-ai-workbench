@@ -1,5 +1,6 @@
 ---
 slug: how-to-articulate
+layout: studio-tri
 kind: curated
 publisher: cognition
 coverFace: band
@@ -44,6 +45,8 @@ Alexander（`@thegreeeeat`）在 2026 年 11 月 26 日发了一篇英文长文�
 
 他后来理解的说清楚，就是清楚本身。Winston 说的那三样本事，都从「清楚」上长出来。清楚长成之后，用的是平白的词。
 
+:::diagram-winston-priority:::
+
 ## 你怎么讲，就露出你懂多少
 
 面相是一种老说法：看一个人的脸，就推断他的性格。大体靠不住。他拿来打个比方。
@@ -78,6 +81,10 @@ Alexander（`@thegreeeeat`）在 2026 年 11 月 26 日发了一篇英文长文�
 
 > 重点：话清楚不清楚，是想得深不深的结果。词是最后才变顺的。
 
+:::diagram-clarity-curve:::
+
+:::interactive-jargon-translator:::
+
 ## 想清楚了，话才会自己变清楚
 
 把话说清楚，反过来也会逼你去想。想法往前的那几步，多半是你跟一个还带刺的念头死磕，把它磨成能说出口的样子。
@@ -103,6 +110,8 @@ Alexander（`@thegreeeeat`）在 2026 年 11 月 26 日发了一篇英文长文�
 这个世界这么看重钱，大家还是会向把话说顺了的人点头。大家敬的是自己把这件事做成的人。他的比方是：大家敬屠过龙的人。
 
 > 重点：先写下来，裂缝才会露出来。脑子里那一版总是更漂亮。纸上那一版，才是你真的懂了多少。
+
+:::diagram-thinking-on-paper:::
 
 ## 怎么练
 
