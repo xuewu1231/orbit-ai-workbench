@@ -2317,10 +2317,11 @@ html[data-theme="dark"] .vault-card[data-vault-kind="style"] .lane-pill { backgr
   letter-spacing: -0.01em;
   scroll-margin-top: 112px;
 }
-.doc-figure { margin: 8px 0 26px; }
+.doc-figure { margin: 8px 0 26px; width: 100%; max-width: 100%; min-width: 0; }
 .doc-figure img {
   display: block;
   width: 100%;
+  max-width: 100%;
   height: auto;
   border-radius: 14px;
   border: 1px solid var(--border-subtle);
@@ -8327,6 +8328,9 @@ html[data-theme="dark"] .banned-chips span {
   margin: 22px 0 26px;
   border-radius: 16px;
   overflow: hidden;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
   background: #0d1117;
   border: 1px solid #1e293b;
   color: #e2e8f0;
@@ -8347,6 +8351,7 @@ html[data-theme="dark"] .banned-chips span {
   margin: 0;
   padding: 16px 18px;
   overflow-x: auto;
+  max-width: 100%;
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: 13.5px;
   line-height: 1.65;
@@ -10476,9 +10481,10 @@ html[data-theme="dark"] .banned-chips span {
   .is-tri-pilot[data-left="closed"]:not([data-right="closed"]) .tri-stage-grid,
   .is-tri-pilot[data-right="closed"]:not([data-left="closed"]) .tri-stage-grid,
   .is-tri-pilot[data-left="closed"][data-right="closed"] .tri-stage-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
-  .tri-center-sheet { order: 2; }
+  .tri-center-sheet { order: 2; min-width: 0; }
+  .is-tri-pilot .tri-prose { min-width: 0; }
   .tri-rail-left { order: 1; position: static; max-height: none; }
   .tri-rail-right { order: 3; position: static; max-height: none; }
   .tri-edge-tab { display: none !important; }
