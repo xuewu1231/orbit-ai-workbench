@@ -3750,3 +3750,1099 @@
     popToast('✦ 已复制纯文本内容，可直接粘贴给 AI');
   });
 })();
+
+
+/* =============================================================================
+   V14 · CODE-VIDEO 5-SKIN DESIGN.MD STUDIO, 12-FX LIVE MATRIX & SPRING LAB
+   ============================================================================= */
+(function () {
+  const hasAnyWidget =
+    document.querySelector('[data-cv-skin-studio]') ||
+    document.querySelector('[data-cv-fx-canvas]') ||
+    document.querySelector('[data-cv-springs]') ||
+    document.querySelector('[data-cv-flipbook]');
+  if (!hasAnyWidget) return;
+
+  const SKINS = {
+    linear: {
+      num: '01',
+      name: 'Linear 暗黑精密风',
+      desc: '深曜石底布配极细点阵与高对比冷白巨字，仅在核心数字与印章处点缀 ≤7% 朱砂红或电光靛，彻底告别廉价霓虹发光框。',
+      bg: '#090A0F',
+      surface: '#141724',
+      fg: '#F4F4F6',
+      muted: '#8A8F98',
+      border: 'rgba(255,255,255,0.14)',
+      grid: 'rgba(255,255,255,0.05)',
+      marker: '#5E6AD2',
+      hero: '#FF381C',
+      invBg: '#F4F4F6',
+      invFg: '#090A0F',
+      roles: [
+        { role: '75% 画布底色', hex: '#090A0F' },
+        { role: '内嵌容器面', hex: '#141724' },
+        { role: '18% 主墨水字', hex: '#F4F4F6' },
+        { role: '≤7% 视觉锤色', hex: '#FF381C' },
+      ],
+    },
+    apple: {
+      num: '02',
+      name: 'Apple 纯白画廊风',
+      desc: '78% 纯净暖灰白画布 + 深炭黑紧凑无衬线大字 + 柔光漫射白卡，画面呼吸感极强，最适合产品发布与功能演示。',
+      bg: '#F5F5F7',
+      surface: '#FFFFFF',
+      fg: '#1D1D1F',
+      muted: '#86868B',
+      border: 'rgba(0,0,0,0.10)',
+      grid: 'rgba(0,0,0,0.04)',
+      marker: '#D5E8FF',
+      hero: '#0071E3',
+      invBg: '#1D1D1F',
+      invFg: '#F5F5F7',
+      roles: [
+        { role: '75% 画布底色', hex: '#F5F5F7' },
+        { role: '纯净内卡片', hex: '#FFFFFF' },
+        { role: '18% 深炭黑字', hex: '#1D1D1F' },
+        { role: '≤7% 科技蓝锤', hex: '#0071E3' },
+      ],
+    },
+    vox: {
+      num: '03',
+      name: 'Vox 暖纸社论科普风',
+      desc: '温暖米白纸张底布配粗墨黑印刷边框，用亮黄荧光马克笔横刷重点词、朱砂红盖结论章，天生自带深度纪录片质感。',
+      bg: '#F5F1E6',
+      surface: '#FFFFFF',
+      fg: '#111111',
+      muted: '#57534E',
+      border: '#111111',
+      grid: 'rgba(17,17,17,0.09)',
+      marker: '#FFE500',
+      hero: '#FF381C',
+      invBg: '#111111',
+      invFg: '#F5F1E6',
+      roles: [
+        { role: '75% 暖白纸底', hex: '#F5F1E6' },
+        { role: '18% 印刷重黑', hex: '#111111' },
+        { role: '荧光笔高亮', hex: '#FFE500' },
+        { role: '≤7% 朱砂红印', hex: '#FF381C' },
+      ],
+    },
+    industrial: {
+      num: '04',
+      name: 'Teenage 工业机械橙风',
+      desc: '哑光铝合金灰底配等宽技术刻度尺与高饱和安全橙（#FF5500），像精密合成器面板一样干脆利落，极客辨识度拉满。',
+      bg: '#ECEBE6',
+      surface: '#FAFAF7',
+      fg: '#141414',
+      muted: '#686660',
+      border: 'rgba(20,20,20,0.22)',
+      grid: 'rgba(20,20,20,0.08)',
+      marker: '#FFD4BF',
+      hero: '#FF5500',
+      invBg: '#141414',
+      invFg: '#ECEBE6',
+      roles: [
+        { role: '75% 铝合金灰', hex: '#ECEBE6' },
+        { role: '机械面板白', hex: '#FAFAF7' },
+        { role: '18% 蚀刻深黑', hex: '#141414' },
+        { role: '≤7% 工业安全橙', hex: '#FF5500' },
+      ],
+    },
+    cinema: {
+      num: '05',
+      name: 'Cinema 黑金聚光电影风',
+      desc: '暖调胶片暗场配香槟金（#D4AF37）核心数字与绯红印记，压暗四周噪点聚焦舞台中心，适合商业人物、逆袭故事与认知金句。',
+      bg: '#0B0A09',
+      surface: '#171513',
+      fg: '#FAF6EE',
+      muted: '#9C9488',
+      border: 'rgba(212,175,55,0.28)',
+      grid: 'rgba(250,246,238,0.045)',
+      marker: 'rgba(212,175,55,0.28)',
+      hero: '#D4AF37',
+      invBg: '#FAF6EE',
+      invFg: '#0B0A09',
+      roles: [
+        { role: '75% 胶片暗底', hex: '#0B0A09' },
+        { role: '暗金暖衬底', hex: '#171513' },
+        { role: '18% 暖象牙字', hex: '#FAF6EE' },
+        { role: '≤7% 香槟金锤', hex: '#D4AF37' },
+      ],
+    },
+  };
+
+  const FX_PROMPTS = {
+    clash: '【01 左右反色对撞】开场前 3 秒将 1920x1080 画布沿 14° 斜线一分为二，左半屏深底砸入正面指标，右半屏浅底对撞砸入反差痛点，两屏在 t=0.28s 交汇瞬间触发 6px 衰减震动。',
+    stomp: '【02 大字砸下+荧光笔划线】核心关键词采用 180px 字重 900 大字，从 scale(1.38) 经弹簧在 0.32s 内干脆落下；停稳 0.08s 后从左向右快速刷满底部亮色横条。',
+    rip: '【03 划掉常见误区】先摆出大众常见错误想法卡片，t=0.9s 时用 10px 斜向红线在 0.16s 内划穿推走，原地弹出真正的反常识结论大字。',
+    lock: '【04 压暗四周+给第 3 点上锁】四周叠加 75% 径向压暗聚焦中心，错峰 4 帧依次弹出 3 张要点卡，随后微推第 3 张并扣上悬念锁留到结尾揭晓。',
+    macro: '【05 先放大看细节再拉远下结论】外层套 CameraRig：前 2.0s 以 scale(2.4) 特写聚焦在模拟聊天窗口的关键消息上；转折处用 0.48s 高阻尼弹簧拉回 scale(1.0) 全景并盖下结论方印。',
+    portal: '【06 穿过圆孔进入下一章】换大章节时先用 0.14s 微退至 scale(0.92) 蓄力，随后锁定数字「0」或圆环中心，0.52s 加速放大至 scale(15) 穿过圆孔无缝切入反色新画面。',
+    whip: '【07 0.28s 快速横甩换页】转场控制在 16 帧（0.28s）：旧画面带水平速度残影线快速左移滑出，新画面紧贴右侧顺着惯性减速停稳。',
+    dive: '【08 往下深潜看底层】搭建上下双层纵向画布：上半层展示表面概念泡沫，摄像机顺着话音垂直下潜 1080px 穿过地平线与岩层，直抵地底核心数据。',
+    motif: '【09 同一个图形连续变形串起全片】选定同一根红色竖条「1」贯穿首尾，通过宽高与圆角插值在各章依次变形为：探地钻头 → 水平拦截红线 → 方印 → 结尾变回 1,000,000 领头的 1。',
+    laser: '【10 传送带+激光线拦截】画一条水平传送带让业务包裹向右滑行，上方立 3 道垂直红色激光线，违规包裹撞线瞬间闪红灯拦停。',
+    cursor: '【11 仿真鼠标点击+数字滚动】用纯时间函数驱动矢量鼠标沿微弯弧线滑到按钮中心，做 scale(0.92) 按下回弹与波纹，旁边核心指标开启 tabular-nums 按弹簧滚动跳升。',
+    physics: '【12 起跳微蹲蓄力+文字慢半拍】告别匀速平移：卡片起跳前先做 0.12s 往下微蹲 8px 蓄力，外框停稳瞬间内部文字延迟 40ms（2~3 帧）完成回弹。',
+  };
+
+  let activeSkinKey = 'linear';
+  const visibleElements = new Set();
+
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) visibleElements.add(entry.target);
+          else visibleElements.delete(entry.target);
+        });
+      },
+      { rootMargin: '180px 0px' }
+    );
+    document
+      .querySelectorAll('[data-cv-skin-canvas], [data-cv-fx-canvas], [data-cv-springs-canvas], [data-cv-flipbook-canvas]')
+      .forEach((el) => io.observe(el));
+  } else {
+    document
+      .querySelectorAll('[data-cv-skin-canvas], [data-cv-fx-canvas], [data-cv-springs-canvas], [data-cv-flipbook-canvas]')
+      .forEach((el) => visibleElements.add(el));
+  }
+
+  function showToast(msg) {
+    const toastEl = document.getElementById('orbit-toast');
+    if (!toastEl) return;
+    toastEl.textContent = msg;
+    toastEl.hidden = false;
+    clearTimeout(showToast._timer);
+    showToast._timer = setTimeout(() => {
+      toastEl.hidden = true;
+    }, 2200);
+  }
+
+  async function copyText(txt, msg) {
+    try {
+      await navigator.clipboard.writeText(txt);
+    } catch (e) {}
+    showToast(msg);
+  }
+
+  function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
+  function lerp(a, b, p) { return a + (b - a) * p; }
+  function easeOutQuint(x) { return 1 - Math.pow(1 - x, 5); }
+  function easeInCubic(x) { return x * x * x; }
+  function easeInOutQuint(x) { return x < 0.5 ? 16 * Math.pow(x, 5) : 1 - Math.pow(-2 * x + 2, 5) / 2; }
+  function easeOutBack(x) {
+    const c1 = 2.05, c3 = c1 + 1;
+    return 1 + c3 * Math.pow(x - 1, 3) + c1 * Math.pow(x - 1, 2);
+  }
+  function evalSpring(t, omega, zeta) {
+    if (t <= 0) return 0;
+    if (zeta >= 1) return 1 - (1 + omega * t) * Math.exp(-omega * t);
+    const wd = omega * Math.sqrt(1 - zeta * zeta);
+    return 1 - Math.exp(-zeta * omega * t) * (Math.cos(wd * t) + (zeta / Math.sqrt(1 - zeta * zeta)) * Math.sin(wd * t));
+  }
+
+  function setupHiDPICanvas(canvas, logicalH) {
+    const rect = canvas.parentElement.getBoundingClientRect();
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const w = Math.max(260, Math.floor(rect.width));
+    if (canvas._lw !== w || canvas._lh !== logicalH) {
+      canvas._lw = w;
+      canvas._lh = logicalH;
+      canvas.width = Math.floor(w * dpr);
+      canvas.height = Math.floor(logicalH * dpr);
+      const ctx = canvas.getContext('2d');
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+    return { ctx: canvas.getContext('2d'), w, h: logicalH };
+  }
+
+  function paintBackdrop(ctx, w, h, s) {
+    ctx.fillStyle = s.bg;
+    ctx.fillRect(0, 0, w, h);
+    ctx.fillStyle = s.grid;
+    for (let x = 18; x < w; x += 22) {
+      for (let y = 18; y < h; y += 22) ctx.fillRect(x, y, 1.5, 1.5);
+    }
+  }
+
+  /* 1. Sync 5-Skin DESIGN.md Studio Inspector */
+  function syncSkinStudios() {
+    const s = SKINS[activeSkinKey] || SKINS.linear;
+    document.querySelectorAll('[data-cv-skin-select]').forEach((btn) => {
+      btn.classList.toggle('is-active', btn.getAttribute('data-cv-skin-select') === activeSkinKey);
+    });
+    document.querySelectorAll('[data-cv-skin-studio]').forEach((studio) => {
+      const titleEl = studio.querySelector('[data-cv-skin-title]');
+      const descEl = studio.querySelector('[data-cv-skin-desc]');
+      const ratioEl = studio.querySelector('[data-cv-ratio-bar]');
+      const swEl = studio.querySelector('[data-cv-swatches]');
+      if (titleEl) titleEl.textContent = `${s.num} · ${s.name}`;
+      if (descEl) descEl.textContent = s.desc;
+      if (ratioEl) {
+        const spans = ratioEl.querySelectorAll('span');
+        if (spans[0]) spans[0].style.background = s.bg;
+        if (spans[1]) spans[1].style.background = s.fg;
+        if (spans[2]) spans[2].style.background = s.hero;
+      }
+      if (swEl) {
+        swEl.innerHTML = s.roles
+          .map(
+            (r) => `
+          <button type="button" class="cv-swatch-chip" data-copy-hex="${r.hex}">
+            <span class="cv-sw-box" style="background:${r.hex}"></span>
+            <span class="cv-sw-meta"><small>${r.role}</small><code>${r.hex}</code></span>
+          </button>`
+          )
+          .join('');
+      }
+    });
+  }
+
+  document.addEventListener('click', (e) => {
+    const skinBtn = e.target.closest('[data-cv-skin-select]');
+    if (skinBtn) {
+      activeSkinKey = skinBtn.getAttribute('data-cv-skin-select') || 'linear';
+      syncSkinStudios();
+      renderAllOnce();
+      return;
+    }
+    const hexChip = e.target.closest('[data-copy-hex]');
+    if (hexChip) {
+      const hex = hexChip.getAttribute('data-copy-hex');
+      copyText(hex, `✦ 已复制色值 ${hex}`);
+      return;
+    }
+    const copySkinBtn = e.target.closest('[data-cv-copy-skin]');
+    if (copySkinBtn) {
+      const s = SKINS[activeSkinKey] || SKINS.linear;
+      const md = `# DESIGN.md · ${s.name}\n- Canvas: 1920x1080 @ 60fps, Safe Area >= 8%\n- 75% Canvas Background: ${s.bg}\n- Elevated Card Surface: ${s.surface}\n- 18% Primary Ink: ${s.fg} | Muted Secondary: ${s.muted}\n- <=7% Hero Visual Hammer: ${s.hero} | Highlight Bar: ${s.marker}\n- Video Type Scale: Hero Term 180px (weight 900, tracking -0.04em); Single-Focus Statement 84px (<=12 chars); Simulated UI 32px (tabular-nums).\n- Guardrails: Negative space >= 65%, zero dark neon glowing Bento boxes, zero colorful Emojis.`;
+      copyText(md, `✦ 已复制「${s.name}」完整 DESIGN.md，可直接喂给 AI`);
+      return;
+    }
+    const fxCopyBtn = e.target.closest('[data-cv-fx-copy]');
+    if (fxCopyBtn) {
+      const id = fxCopyBtn.getAttribute('data-cv-fx-copy');
+      const s = SKINS[activeSkinKey] || SKINS.linear;
+      const txt = `${FX_PROMPTS[id] || ''}\n配色基准：采用「${s.name}」（底色 ${s.bg} / 主字 ${s.fg} / 强调色 ${s.hero}），100% 由 prepareFrame(time) 纯函数加 clamp 钳制驱动。`;
+      copyText(txt, `✦ 已复制 ${id.toUpperCase()} 视效 + 当前色系指令`);
+    }
+  });
+
+  /* 2. Draw 16:9 Live DESIGN.md Skin Stage (5.4s 3-beat loop) */
+  function drawSkinStage(canvas, time) {
+    const { ctx, w, h } = setupHiDPICanvas(canvas, 300);
+    const s = SKINS[activeSkinKey] || SKINS.linear;
+    const dur = 5.4;
+    const t = time % dur;
+
+    if (t < 1.9) {
+      paintBackdrop(ctx, w, h, s);
+      // Top minimalist chapter rule
+      ctx.fillStyle = s.muted;
+      ctx.font = '700 11px ui-monospace, SFMono-Regular, monospace';
+      ctx.textAlign = 'left';
+      ctx.fillText(`CHAPTER 01 · ${s.name.toUpperCase()}`, 28, 30);
+      ctx.fillStyle = s.hero;
+      ctx.fillRect(28, 38, 68 * easeOutQuint(clamp(t / 0.4, 0, 1)), 3);
+
+      const pop = easeOutBack(clamp(t / 0.36, 0, 1));
+      const hl = easeOutQuint(clamp((t - 0.14) / 0.42, 0, 1));
+      ctx.save();
+      ctx.translate(w / 2, h / 2 + 4);
+      ctx.scale(1.26 - 0.26 * pop, 1.26 - 0.26 * pop);
+      ctx.fillStyle = s.marker;
+      ctx.fillRect(-146, 4, 292 * hl, 28);
+      ctx.fillStyle = s.fg;
+      ctx.font = '900 58px -apple-system, "PingFang SC", sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('泥坑嗅觉', 0, 0);
+      ctx.restore();
+
+      ctx.fillStyle = s.muted;
+      ctx.font = '700 12.5px -apple-system, "PingFang SC", sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('拍次 A · 75% 大留白 + 180px 满屏概念亮牌', w / 2, h - 22);
+    } else if (t < 3.8) {
+      paintBackdrop(ctx, w, h, s);
+      const loc = t - 1.9;
+      const pCard = easeOutBack(clamp(loc / 0.4, 0, 1));
+      const cw = Math.min(410, w - 56);
+      ctx.save();
+      ctx.translate(w / 2, h / 2 - 4);
+      ctx.scale(0.86 + 0.14 * pCard, 0.86 + 0.14 * pCard);
+      ctx.fillStyle = s.surface;
+      ctx.strokeStyle = s.border;
+      ctx.lineWidth = activeSkinKey === 'vox' ? 2.2 : 1.2;
+      ctx.beginPath();
+      ctx.roundRect(-cw / 2, -68, cw, 136, 16);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.fillStyle = s.muted;
+      ctx.font = '700 11.5px ui-monospace, SFMono-Regular, monospace';
+      ctx.textAlign = 'left';
+      ctx.fillText('LIVE METRIC · TABULAR-NUMS', -cw / 2 + 22, -38);
+
+      const mult = Math.round(1 + 999 * easeOutQuint(clamp((loc - 0.1) / 0.85, 0, 1)));
+      ctx.fillStyle = s.fg;
+      ctx.font = '900 46px ui-monospace, SFMono-Regular, monospace';
+      ctx.fillText(`×${mult}`, -cw / 2 + 22, 14);
+
+      const pStamp = easeOutBack(clamp((loc - 0.45) / 0.34, 0, 1));
+      if (pStamp > 0) {
+        ctx.save();
+        ctx.translate(cw / 2 - 78, 6);
+        ctx.scale(pStamp, pStamp);
+        ctx.fillStyle = s.hero;
+        ctx.beginPath();
+        ctx.roundRect(-54, -22, 108, 44, 9);
+        ctx.fill();
+        ctx.fillStyle = activeSkinKey === 'cinema' ? '#0B0A09' : '#FFFFFF';
+        ctx.font = '900 14px -apple-system, "PingFang SC", sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('出了事我扛', 0, 0);
+        ctx.restore();
+      }
+      ctx.restore();
+
+      ctx.fillStyle = s.muted;
+      ctx.font = '700 12.5px -apple-system, "PingFang SC", sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('拍次 B · 拟真界面卡片 + 等宽跳动指标 + ≤7% 视觉锤色', w / 2, h - 22);
+    } else {
+      const loc = t - 3.8;
+      ctx.fillStyle = s.invBg;
+      ctx.fillRect(0, 0, w, h);
+      const p = easeOutBack(clamp(loc / 0.36, 0, 1));
+      ctx.save();
+      ctx.translate(w / 2, h / 2 - 4);
+      ctx.scale(0.84 + 0.16 * p, 0.84 + 0.16 * p);
+      ctx.fillStyle = s.hero;
+      ctx.font = '900 54px ui-monospace, SFMono-Regular, monospace';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('1,000,000', 0, -10);
+      ctx.fillStyle = s.invFg;
+      ctx.font = '800 16px -apple-system, "PingFang SC", sans-serif';
+      ctx.fillText('拍次 C · 高潮章节一键底字反色，瞬间拉满呼吸反差', 0, 32);
+      ctx.restore();
+    }
+  }
+
+  /* 3. Draw 12 Distinct 60fps Video FX Canvases */
+  const fxStates = new Map();
+  document.querySelectorAll('[data-cv-fx-canvas]').forEach((cv) => {
+    fxStates.set(cv, { id: cv.getAttribute('data-cv-fx-canvas'), t: 0, speed: 1.0 });
+  });
+
+  document.addEventListener('click', (e) => {
+    const spBtn = e.target.closest('[data-cv-fx-speed]');
+    if (spBtn) {
+      const card = spBtn.closest('[data-cv-fx-card]');
+      const cv = card && card.querySelector('[data-cv-fx-canvas]');
+      const st = cv && fxStates.get(cv);
+      if (st) {
+        st.speed = st.speed === 1.0 ? 0.3 : 1.0;
+        spBtn.classList.toggle('is-slow', st.speed < 1);
+        spBtn.textContent = st.speed < 1 ? '0.3x 慢放中' : '1.0x 正常';
+      }
+      return;
+    }
+    const rpBtn = e.target.closest('[data-cv-fx-replay]');
+    if (rpBtn) {
+      const card = rpBtn.closest('[data-cv-fx-card]');
+      const cv = card && card.querySelector('[data-cv-fx-canvas]');
+      const st = cv && fxStates.get(cv);
+      if (st) st.t = 0;
+    }
+  });
+
+  function drawSingleFx(cv, st) {
+    const { ctx, w, h } = setupHiDPICanvas(cv, 184);
+    const s = SKINS[activeSkinKey] || SKINS.linear;
+    const id = st.id;
+    const t = st.t;
+
+    if (id === 'clash') {
+      const p = easeOutQuint(clamp(t / 0.34, 0, 1));
+      const shake = t > 0.3 && t < 0.56 ? Math.sin(t * 120) * 5 * (1 - (t - 0.3) / 0.26) : 0;
+      ctx.save();
+      ctx.translate(shake, 0);
+      ctx.fillStyle = s.bg;
+      ctx.fillRect(0, 0, w, h);
+      ctx.save();
+      ctx.beginPath();
+      const splitX = lerp(w + 40, w * 0.52, p);
+      ctx.moveTo(splitX + 24, 0);
+      ctx.lineTo(w, 0);
+      ctx.lineTo(w, h);
+      ctx.lineTo(splitX - 24, h);
+      ctx.closePath();
+      ctx.fillStyle = s.invBg;
+      ctx.fill();
+      ctx.restore();
+
+      ctx.fillStyle = s.fg;
+      ctx.font = '900 32px ui-monospace, SFMono-Regular, monospace';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('×10', w * 0.26 * p, h * 0.48);
+      ctx.font = '700 12px -apple-system, "PingFang SC", sans-serif';
+      ctx.fillStyle = s.muted;
+      ctx.fillText('身价暴涨', w * 0.26 * p, h * 0.68);
+
+      ctx.fillStyle = s.hero;
+      ctx.font = '900 32px ui-monospace, SFMono-Regular, monospace';
+      ctx.fillText('¥0', lerp(w + 60, w * 0.76, p), h * 0.48);
+      ctx.font = '700 12px -apple-system, "PingFang SC", sans-serif';
+      ctx.fillStyle = s.invFg;
+      ctx.fillText('加速归零', lerp(w + 60, w * 0.76, p), h * 0.68);
+      ctx.restore();
+    } else if (id === 'stomp') {
+      paintBackdrop(ctx, w, h, s);
+      const pop = easeOutBack(clamp((t - 0.15) / 0.34, 0, 1));
+      const bar = easeOutQuint(clamp((t - 0.38) / 0.36, 0, 1));
+      const sh = t > 0.36 && t < 0.56 ? Math.cos(t * 130) * 3.5 : 0;
+      ctx.save();
+      ctx.translate(w / 2, h / 2 + sh);
+      const sc = t < 0.15 ? 1.45 : lerp(1.45, 1.0, pop);
+      ctx.scale(sc, sc);
+      ctx.fillStyle = s.marker;
+      ctx.fillRect(-108, 4, 216 * bar, 22);
+      ctx.fillStyle = s.fg;
+      ctx.font = '900 40px -apple-system, "PingFang SC", sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      if (t >= 0.15) ctx.fillText('停止升级!', 0, 0);
+      ctx.restore();
+    } else if (id === 'rip') {
+      paintBackdrop(ctx, w, h, s);
+      if (t < 1.55) {
+        const slash = easeOutQuint(clamp((t - 0.85) / 0.22, 0, 1));
+        ctx.fillStyle = s.surface;
+        ctx.strokeStyle = s.border;
+        ctx.beginPath();
+        ctx.roundRect(w / 2 - 118, h / 2 - 36, 236, 72, 12);
+        ctx.fill();
+        ctx.stroke();
+        ctx.fillStyle = s.muted;
+        ctx.font = '700 15px -apple-system, "PingFang SC", sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('大众错觉：死等下一代大模型', w / 2, h / 2);
+        if (slash > 0) {
+          ctx.strokeStyle = s.hero;
+          ctx.lineWidth = 6;
+          ctx.beginPath();
+          ctx.moveTo(w / 2 - 126, h / 2 + 38);
+          ctx.lineTo(lerp(w / 2 - 126, w / 2 + 126, slash), lerp(h / 2 + 38, h / 2 - 38, slash));
+          ctx.stroke();
+        }
+      } else {
+        const p2 = easeOutBack(clamp((t - 1.55) / 0.36, 0, 1));
+        ctx.save();
+        ctx.translate(w / 2, h / 2);
+        ctx.scale(p2, p2);
+        ctx.fillStyle = s.hero;
+        ctx.font = '900 28px -apple-system, "PingFang SC", sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('现有算力够吃几十年！', 0, -4);
+        ctx.fillStyle = s.muted;
+        ctx.font = '700 12px -apple-system, "PingFang SC", sans-serif';
+        ctx.fillText('反常识暴论立住钩子', 0, 26);
+        ctx.restore();
+      }
+    } else if (id === 'lock') {
+      ctx.fillStyle = s.bg;
+      ctx.fillRect(0, 0, w, h);
+      const cw = Math.min(82, (w - 64) / 3);
+      ['01 泥坑', '02 红线', '03 ???'].forEach((label, idx) => {
+        const p = easeOutBack(clamp((t - 0.15 - idx * 0.14) / 0.35, 0, 1));
+        if (p <= 0) return;
+        const cx = w / 2 + (idx - 1) * (cw + 12);
+        ctx.save();
+        ctx.translate(cx, h / 2);
+        ctx.scale(p, p);
+        ctx.fillStyle = idx === 2 ? s.hero : s.surface;
+        ctx.strokeStyle = idx === 2 ? s.hero : s.border;
+        ctx.beginPath();
+        ctx.roundRect(-cw / 2, -40, cw, 80, 10);
+        ctx.fill();
+        ctx.stroke();
+        ctx.fillStyle = idx === 2 ? '#FFFFFF' : s.fg;
+        ctx.font = '800 13px -apple-system, "PingFang SC", sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(label, 0, idx === 2 ? 12 : 0);
+        if (idx === 2 && t > 1.0) {
+          ctx.strokeStyle = '#FFFFFF';
+          ctx.lineWidth = 2.4;
+          ctx.beginPath();
+          ctx.arc(0, -14, 7, Math.PI, 0);
+          ctx.stroke();
+          ctx.fillStyle = '#FFFFFF';
+          ctx.fillRect(-9, -14, 18, 13);
+        }
+        ctx.restore();
+      });
+    } else if (id === 'macro') {
+      paintBackdrop(ctx, w, h, s);
+      const pull = easeInOutQuint(clamp((t - 1.5) / 0.55, 0, 1));
+      const z = lerp(2.15, 1.0, pull);
+      const px = lerp(74, 0, pull);
+      ctx.save();
+      ctx.translate(w / 2 + px, h / 2);
+      ctx.scale(z, z);
+      ctx.fillStyle = s.surface;
+      ctx.strokeStyle = s.border;
+      ctx.beginPath();
+      ctx.roundRect(-142, -44, 178, 88, 10);
+      ctx.fill();
+      ctx.stroke();
+      ctx.fillStyle = s.muted;
+      ctx.font = '700 9.5px -apple-system, "PingFang SC", sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText('新加微信小号 · 零成交', -128, -24);
+      ctx.fillStyle = s.fg;
+      ctx.font = '800 13px -apple-system, "PingFang SC", sans-serif';
+      ctx.fillText('底价多少？留 500 台~', -128, 2);
+      ctx.fillStyle = s.hero;
+      ctx.font = '700 10px -apple-system, "PingFang SC", sans-serif';
+      ctx.fillText('AI 拟执行：锁死全部库存', -128, 24);
+
+      if (pull > 0.25) {
+        const sp = easeOutBack(clamp((t - 1.8) / 0.36, 0, 1));
+        ctx.save();
+        ctx.translate(92, 0);
+        ctx.scale(sp, sp);
+        ctx.fillStyle = s.hero;
+        ctx.beginPath();
+        ctx.roundRect(-48, -32, 96, 64, 9);
+        ctx.fill();
+        ctx.fillStyle = '#FFFFFF';
+        ctx.textAlign = 'center';
+        ctx.font = '900 13px -apple-system, "PingFang SC", sans-serif';
+        ctx.fillText('同行套价!', 0, -4);
+        ctx.font = '700 10px -apple-system, "PingFang SC", sans-serif';
+        ctx.fillText('急拉叫停', 0, 15);
+        ctx.restore();
+      }
+      ctx.restore();
+    } else if (id === 'portal') {
+      if (t < 1.75) {
+        paintBackdrop(ctx, w, h, s);
+        let sc = 1;
+        if (t > 0.7 && t < 1.02) sc = 1 - 0.09 * easeOutQuint((t - 0.7) / 0.32);
+        else if (t >= 1.02) sc = 0.91 + 14.5 * easeInCubic((t - 1.02) / 0.73);
+        ctx.save();
+        ctx.translate(w / 2, h / 2);
+        ctx.scale(sc, sc);
+        ctx.fillStyle = s.fg;
+        ctx.font = '900 28px -apple-system, "PingFang SC", sans-serif';
+        ctx.textAlign = 'right';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('归零 ¥', -14, 0);
+        ctx.strokeStyle = s.hero;
+        ctx.lineWidth = 6.5;
+        ctx.beginPath();
+        ctx.arc(12, 0, 18, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.restore();
+      } else {
+        ctx.fillStyle = s.invBg;
+        ctx.fillRect(0, 0, w, h);
+        const p = easeOutBack(clamp((t - 1.75) / 0.4, 0, 1));
+        ctx.save();
+        ctx.translate(w / 2, h / 2);
+        ctx.scale(0.65 + 0.35 * p, 0.65 + 0.35 * p);
+        ctx.fillStyle = s.invFg;
+        ctx.font = '900 26px -apple-system, "PingFang SC", sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('穿孔一镜到底换新章', 0, 0);
+        ctx.restore();
+      }
+    } else if (id === 'whip') {
+      paintBackdrop(ctx, w, h, s);
+      const wp = easeInOutQuint(clamp((t - 1.1) / 0.30, 0, 1));
+      const off = -w * wp;
+      ctx.save();
+      ctx.translate(off, 0);
+      ctx.fillStyle = s.fg;
+      ctx.font = '900 26px -apple-system, "PingFang SC", sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('旧章节：算力泡沫', w / 2, h / 2);
+
+      ctx.fillStyle = s.invBg;
+      ctx.fillRect(w, 0, w, h);
+      ctx.fillStyle = s.hero;
+      ctx.font = '900 28px -apple-system, "PingFang SC", sans-serif';
+      ctx.fillText('新章节：一线真金', w * 1.5, h / 2);
+      ctx.restore();
+
+      if (wp > 0.06 && wp < 0.94) {
+        ctx.fillStyle = s.hero;
+        for (let i = 0; i < 5; i++) {
+          ctx.fillRect(20 + i * 32, 34 + i * 28, 120, 3);
+        }
+      }
+    } else if (id === 'dive') {
+      paintBackdrop(ctx, w, h, s);
+      const dp = easeInOutQuint(clamp((t - 0.6) / 1.15, 0, 1));
+      const camY = -h * dp;
+      ctx.save();
+      ctx.translate(0, camY);
+      // Surface layer
+      ctx.strokeStyle = s.muted;
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(20, h * 0.72);
+      ctx.lineTo(w - 20, h * 0.72);
+      ctx.stroke();
+      ctx.fillStyle = s.muted;
+      ctx.font = '700 14px -apple-system, "PingFang SC", sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('地表之上：PPT 空心概念泡沫', w / 2, h * 0.42);
+
+      // Underground gold layer
+      ctx.fillStyle = s.surface;
+      ctx.fillRect(0, h, w, h);
+      ctx.fillStyle = s.hero;
+      ctx.font = '900 36px ui-monospace, SFMono-Regular, monospace';
+      ctx.fillText('$290亿 真金矿脉', w / 2, h * 1.48);
+      ctx.fillStyle = s.muted;
+      ctx.font = '700 12px -apple-system, "PingFang SC", sans-serif';
+      ctx.fillText('垂直钻透岩层 · 专属于一线泥坑数据', w / 2, h * 1.72);
+      ctx.restore();
+    } else if (id === 'motif') {
+      paintBackdrop(ctx, w, h, s);
+      const cx = w / 2, cy = h / 2 - 8;
+      let bw = 16, bh = 68, bx = cx, by = cy, cap = '① 探地钻头';
+      if (t < 0.9) {
+        by = lerp(cy - 8, cy + 14, easeOutQuint(t / 0.9));
+      } else if (t < 1.8) {
+        const p = easeInOutQuint((t - 0.9) / 0.45);
+        bw = lerp(16, 196, p);
+        bh = lerp(68, 9, p);
+        cap = '② 旋转 90° 变激光红线';
+      } else if (t < 2.7) {
+        const p = easeOutBack(clamp((t - 1.8) / 0.45, 0, 1));
+        bw = lerp(196, 94, p);
+        bh = lerp(9, 48, p);
+        cap = '③ 收拢重锤变扛雷方印';
+      } else {
+        const p = easeInOutQuint(clamp((t - 2.7) / 0.45, 0, 1));
+        bx = lerp(cx, cx - 78, p);
+        bw = lerp(94, 16, p);
+        bh = lerp(48, 64, p);
+        cap = '④ 归位立成 1,000,000 支柱';
+        if (p > 0.4) {
+          ctx.fillStyle = s.fg;
+          ctx.font = '900 30px ui-monospace, SFMono-Regular, monospace';
+          ctx.textAlign = 'left';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(',000,000', cx - 62, cy);
+        }
+      }
+      ctx.fillStyle = s.hero;
+      ctx.beginPath();
+      ctx.roundRect(bx - bw / 2, by - bh / 2, bw, bh, 5);
+      ctx.fill();
+      ctx.fillStyle = s.muted;
+      ctx.font = '700 11.5px -apple-system, "PingFang SC", sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(cap, cx, h - 18);
+    } else if (id === 'laser') {
+      paintBackdrop(ctx, w, h, s);
+      // Conveyor belt
+      ctx.strokeStyle = s.border;
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(20, h * 0.72);
+      ctx.lineTo(w - 20, h * 0.72);
+      ctx.stroke();
+
+      const laserX = w * 0.62;
+      ctx.strokeStyle = s.hero;
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      ctx.moveTo(laserX, 20);
+      ctx.lineTo(laserX, h * 0.72);
+      ctx.stroke();
+
+      const hitT = 1.35;
+      const boxX = t < hitT ? lerp(36, laserX - 24, t / hitT) : laserX - 24 - Math.sin((t - hitT) * 28) * 5 * Math.max(0, 1 - (t - hitT));
+      ctx.fillStyle = t >= hitT ? s.hero : s.surface;
+      ctx.strokeStyle = s.border;
+      ctx.beginPath();
+      ctx.roundRect(boxX - 24, h * 0.72 - 36, 48, 34, 6);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.fillStyle = t >= hitT ? s.hero : s.muted;
+      ctx.font = '800 12px -apple-system, "PingFang SC", sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(t >= hitT ? '✕ 越权承诺已被激光拦截！' : '待检回复滑向验收红线…', w / 2, h - 18);
+    } else if (id === 'cursor') {
+      paintBackdrop(ctx, w, h, s);
+      const clickT = 1.1;
+      const pressed = t > clickT && t < clickT + 0.22;
+      const btnSc = pressed ? 0.91 : 1.0;
+      ctx.save();
+      ctx.translate(w * 0.32, h * 0.5);
+      ctx.scale(btnSc, btnSc);
+      ctx.fillStyle = t > clickT ? s.hero : s.surface;
+      ctx.strokeStyle = s.border;
+      ctx.beginPath();
+      ctx.roundRect(-56, -22, 112, 44, 10);
+      ctx.fill();
+      ctx.stroke();
+      ctx.fillStyle = t > clickT ? '#FFFFFF' : s.fg;
+      ctx.font = '800 13px -apple-system, "PingFang SC", sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(t > clickT ? '✓ 已激活杠杆' : '点击部署 Skill', 0, 0);
+      ctx.restore();
+
+      // Bezier cursor
+      const cp = easeInOutQuint(clamp(t / clickT, 0, 1));
+      const cx = lerp(w * 0.10, w * 0.35, cp);
+      const cy = lerp(h * 0.84, h * 0.56, cp) - Math.sin(cp * Math.PI) * 26;
+      ctx.fillStyle = s.fg;
+      ctx.beginPath();
+      ctx.moveTo(cx, cy);
+      ctx.lineTo(cx + 12, cy + 5);
+      ctx.lineTo(cx + 5, cy + 13);
+      ctx.closePath();
+      ctx.fill();
+
+      if (t > clickT) {
+        const rp = clamp((t - clickT) / 0.55, 0, 1);
+        ctx.strokeStyle = s.hero;
+        ctx.globalAlpha = 1 - rp;
+        ctx.beginPath();
+        ctx.arc(w * 0.32, h * 0.5, 10 + 34 * rp, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.globalAlpha = 1;
+      }
+
+      const val = t < clickT ? 12 : Math.round(12 + 970 * easeOutQuint(clamp((t - clickT) / 1.1, 0, 1)));
+      ctx.fillStyle = s.fg;
+      ctx.font = '900 32px ui-monospace, SFMono-Regular, monospace';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(`${val}%`, w * 0.74, h * 0.5);
+    } else {
+      // physics
+      paintBackdrop(ctx, w, h, s);
+      ctx.strokeStyle = s.border;
+      ctx.beginPath();
+      ctx.moveTo(w / 2, 16);
+      ctx.lineTo(w / 2, h - 16);
+      ctx.stroke();
+
+      const lp = clamp((t - 0.3) / 0.6, 0, 1);
+      const ly = lerp(h * 0.72, h * 0.36, lp);
+      ctx.fillStyle = s.surface;
+      ctx.strokeStyle = s.border;
+      ctx.beginPath();
+      ctx.roundRect(w * 0.25 - 56, ly - 19, 112, 38, 8);
+      ctx.fill();
+      ctx.stroke();
+      ctx.fillStyle = s.muted;
+      ctx.font = '700 12px -apple-system, "PingFang SC", sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('✕ 匀速电梯', w * 0.25, ly);
+
+      let ry = h * 0.72, sx = 1, sy = 1;
+      if (t >= 0.16 && t < 0.34) {
+        const ap = easeOutQuint((t - 0.16) / 0.18);
+        ry = h * 0.72 + 10 * ap;
+        sx = 1 + 0.09 * ap;
+        sy = 1 - 0.09 * ap;
+      } else if (t >= 0.34) {
+        const sp = clamp((t - 0.34) / 0.58, 0, 1);
+        ry = lerp(h * 0.72 + 10, h * 0.36, easeOutBack(sp));
+      }
+      const tp = clamp((t - 0.39) / 0.62, 0, 1);
+      const lag = t >= 0.34 ? (lerp(h * 0.72 + 10, h * 0.36, easeOutBack(tp)) - ry) * 0.7 : 0;
+
+      ctx.save();
+      ctx.translate(w * 0.75, ry);
+      ctx.scale(sx, sy);
+      ctx.fillStyle = s.hero;
+      ctx.beginPath();
+      ctx.roundRect(-60, -20, 120, 40, 9);
+      ctx.fill();
+      ctx.fillStyle = '#FFFFFF';
+      ctx.font = '800 12.5px -apple-system, "PingFang SC", sans-serif';
+      ctx.fillText('✓ 蓄力+滞后', 0, lag);
+      ctx.restore();
+    }
+  }
+
+  /* 4. 4-Track Spring Physics Comparator */
+  const springStates = new Map();
+  document.querySelectorAll('[data-cv-springs]').forEach((box) => {
+    const cv = box.querySelector('[data-cv-springs-canvas]');
+    if (cv) springStates.set(cv, { t: 0, speed: 1.0 });
+  });
+
+  document.addEventListener('click', (e) => {
+    const spReplay = e.target.closest('[data-cv-sp-replay]');
+    if (spReplay) {
+      const box = spReplay.closest('[data-cv-springs]');
+      const cv = box && box.querySelector('[data-cv-springs-canvas]');
+      const st = cv && springStates.get(cv);
+      if (st) st.t = 0;
+      return;
+    }
+    const spSpeed = e.target.closest('[data-cv-sp-speed]');
+    if (spSpeed) {
+      const box = spSpeed.closest('[data-cv-springs]');
+      const cv = box && box.querySelector('[data-cv-springs-canvas]');
+      const st = cv && springStates.get(cv);
+      if (st) {
+        st.speed = st.speed === 1.0 ? 0.3 : 1.0;
+        spSpeed.textContent = `速度 ${st.speed.toFixed(1)}x`;
+      }
+      return;
+    }
+    const spCopy = e.target.closest('[data-cv-sp-copy]');
+    if (spCopy) {
+      copyText(
+        `export const CAMERA_SPRING = { stiffness: 150, damping: 26, mass: 1.1 }; // 沉稳推拉零回弹\nexport const CARD_SPRING   = { stiffness: 220, damping: 19, mass: 1.0 }; // 主体卡片清脆入场\nexport const TAP_SPRING    = { stiffness: 340, damping: 15, mass: 0.8 }; // 印章/按钮带蓄力脆弹`,
+        '✦ 已复制三档标准物理弹簧常量'
+      );
+    }
+  });
+
+  function drawSpringsLab(cv, st) {
+    const { ctx, w, h } = setupHiDPICanvas(cv, 228);
+    const s = SKINS[activeSkinKey] || SKINS.linear;
+    paintBackdrop(ctx, w, h, s);
+
+    const xStart = Math.min(210, w * 0.34);
+    const xEnd = w - 48;
+    // Target finish line
+    ctx.strokeStyle = s.border;
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath();
+    ctx.moveTo(xEnd, 18);
+    ctx.lineTo(xEnd, h - 18);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    const tracks = [
+      { name: '✕ linear 机械匀速', val: clamp((st.t - 0.2) / 0.7, 0, 1), col: s.muted },
+      { name: 'CAMERA (沉稳推拉)', val: evalSpring(st.t - 0.2, 11, 0.96), col: '#2563EB' },
+      { name: 'CARD (清脆微弹)', val: evalSpring(st.t - 0.2, 14.5, 0.64), col: '#10B981' },
+      {
+        name: 'TAP (蓄力下蹲脆弹)',
+        val: st.t < 0.2 ? -0.07 * easeOutQuint(st.t / 0.2) : evalSpring(st.t - 0.2, 18.5, 0.48),
+        col: s.hero,
+      },
+    ];
+
+    tracks.forEach((tr, idx) => {
+      const y = 36 + idx * 48;
+      ctx.fillStyle = s.fg;
+      ctx.font = '700 12px -apple-system, "PingFang SC", sans-serif';
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(tr.name, 18, y);
+
+      ctx.strokeStyle = s.border;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(xStart, y);
+      ctx.lineTo(xEnd, y);
+      ctx.stroke();
+
+      const px = lerp(xStart, xEnd, tr.val);
+      ctx.fillStyle = tr.col;
+      ctx.beginPath();
+      ctx.roundRect(px - 16, y - 12, 32, 24, 7);
+      ctx.fill();
+    });
+  }
+
+  /* 5. Interactive Flipbook & Flashlight Demo */
+  const fbStates = new Map();
+  document.querySelectorAll('[data-cv-flipbook]').forEach((box) => {
+    const cv = box.querySelector('[data-cv-flipbook-canvas]');
+    if (cv) {
+      fbStates.set(cv, {
+        box,
+        mode: 'flashlight',
+        playing: true,
+        t: 0,
+        rangeEl: box.querySelector('[data-cv-fb-range]'),
+        timeEl: box.querySelector('[data-cv-fb-time]'),
+        playBtn: box.querySelector('[data-cv-fb-play]'),
+      });
+    }
+  });
+
+  document.addEventListener('click', (e) => {
+    const modeBtn = e.target.closest('[data-cv-fb-mode]');
+    if (modeBtn) {
+      const box = modeBtn.closest('[data-cv-flipbook]');
+      const cv = box && box.querySelector('[data-cv-flipbook-canvas]');
+      const st = cv && fbStates.get(cv);
+      if (st) {
+        st.mode = modeBtn.getAttribute('data-cv-fb-mode') || 'flashlight';
+        st.t = 0;
+        box.querySelectorAll('[data-cv-fb-mode]').forEach((b) => b.classList.toggle('is-active', b === modeBtn));
+        drawFlipbook(cv, st);
+      }
+      return;
+    }
+    const playBtn = e.target.closest('[data-cv-fb-play]');
+    if (playBtn) {
+      const box = playBtn.closest('[data-cv-flipbook]');
+      const cv = box && box.querySelector('[data-cv-flipbook-canvas]');
+      const st = cv && fbStates.get(cv);
+      if (st) {
+        st.playing = !st.playing;
+        playBtn.textContent = st.playing ? '暂停' : '播放';
+      }
+    }
+  });
+
+  document.addEventListener('input', (e) => {
+    const range = e.target.closest('[data-cv-fb-range]');
+    if (!range) return;
+    const box = range.closest('[data-cv-flipbook]');
+    const cv = box && box.querySelector('[data-cv-flipbook-canvas]');
+    const st = cv && fbStates.get(cv);
+    if (st) {
+      st.playing = false;
+      if (st.playBtn) st.playBtn.textContent = '播放';
+      st.t = parseFloat(range.value) || 0;
+      if (st.timeEl) st.timeEl.textContent = `t = ${st.t.toFixed(2)}s (Frame ${String(Math.round(st.t * 60)).padStart(3, '0')})`;
+      drawFlipbook(cv, st);
+    }
+  });
+
+  function drawFlipbook(cv, st) {
+    const { ctx, w, h } = setupHiDPICanvas(cv, 248);
+    const s = SKINS[activeSkinKey] || SKINS.linear;
+    if (st.mode === 'bento') {
+      ctx.fillStyle = '#0D1017';
+      ctx.fillRect(0, 0, w, h);
+      ctx.fillStyle = '#FCA5A5';
+      ctx.font = '800 12.5px -apple-system, "PingFang SC", sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText('✕ 反面教材：同屏塞满双霓虹框 + 80 个小字静止不动，观众 2 秒划走', 22, 28);
+      const cw = (w - 58) / 2;
+      ctx.strokeStyle = 'rgba(239,68,68,0.55)';
+      ctx.fillStyle = 'rgba(239,68,68,0.08)';
+      ctx.beginPath(); ctx.roundRect(22, 44, cw, 176, 12); ctx.fill(); ctx.stroke();
+      ctx.strokeStyle = 'rgba(16,185,129,0.55)';
+      ctx.fillStyle = 'rgba(16,185,129,0.08)';
+      ctx.beginPath(); ctx.roundRect(36 + cw, 44, cw, 176, 12); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = '#CBD5E1';
+      ctx.font = '500 12px -apple-system, "PingFang SC", sans-serif';
+      ['MODULE 01 · 旧模式困境', '· 标准答案与题库快速贬值', '· 重复周报模板沦为免费算力', '· 缺乏真实业务场景壁垒'].forEach((ln, i) => ctx.fillText(ln, 36, 74 + i * 30));
+      ['MODULE 02 · 新时代破局', '· 深入一线泥坑采集非标数据', '· 制定高标准自动化验收红线', '· 关键节点签字拍板承担责任'].forEach((ln, i) => ctx.fillText(ln, 50 + cw, 74 + i * 30));
+      return;
+    }
+
+    paintBackdrop(ctx, w, h, s);
+    if (st.t < 2.1) {
+      const pop = easeOutBack(clamp(st.t / 0.38, 0, 1));
+      const bar = easeOutQuint(clamp((st.t - 0.15) / 0.42, 0, 1));
+      ctx.save();
+      ctx.translate(w / 2, h / 2 - 4);
+      ctx.scale(1.24 - 0.24 * pop, 1.24 - 0.24 * pop);
+      ctx.fillStyle = s.marker;
+      ctx.fillRect(-144, 4, 288 * bar, 26);
+      ctx.fillStyle = s.fg;
+      ctx.font = '900 52px -apple-system, "PingFang SC", sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('敢拍板兜底', 0, 0);
+      ctx.restore();
+      ctx.fillStyle = s.muted;
+      ctx.font = '700 12.5px -apple-system, "PingFang SC", sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('0.0s–2.1s · 关灯打手电筒：留白 75%，一秒只照亮 1 个核心词', w / 2, h - 20);
+    } else {
+      const loc = st.t - 2.1;
+      const num = Math.round(1 + 99 * easeOutQuint(clamp(loc / 0.8, 0, 1)));
+      const sc = 0.84 + 0.16 * easeOutBack(clamp(loc / 0.4, 0, 1));
+      ctx.save();
+      ctx.translate(w / 2, h / 2 - 8);
+      ctx.scale(sc, sc);
+      ctx.fillStyle = s.hero;
+      ctx.font = '900 68px ui-monospace, SFMono-Regular, monospace';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(`×${num}`, 0, 0);
+      ctx.restore();
+      ctx.fillStyle = s.muted;
+      ctx.font = '700 12.5px -apple-system, "PingFang SC", sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('2.1s–4.2s · 下一拍无缝切入单焦点数字视觉锤！', w / 2, h - 20);
+    }
+  }
+
+  let skinTime = 0;
+  function renderAllOnce() {
+    document.querySelectorAll('[data-cv-skin-canvas]').forEach((cv) => drawSkinStage(cv, skinTime));
+    fxStates.forEach((st, cv) => drawSingleFx(cv, st));
+    springStates.forEach((st, cv) => drawSpringsLab(cv, st));
+    fbStates.forEach((st, cv) => drawFlipbook(cv, st));
+  }
+
+  window.addEventListener('resize', () => {
+    document.querySelectorAll('[data-cv-skin-canvas], [data-cv-fx-canvas], [data-cv-springs-canvas], [data-cv-flipbook-canvas]').forEach((c) => {
+      c._lw = 0;
+    });
+    renderAllOnce();
+  }, { passive: true });
+
+  let lastTs = performance.now();
+  function loop(now) {
+    const dt = Math.min(0.05, (now - lastTs) / 1000);
+    lastTs = now;
+
+    skinTime += dt;
+    document.querySelectorAll('[data-cv-skin-canvas]').forEach((cv) => {
+      if (visibleElements.has(cv)) drawSkinStage(cv, skinTime);
+    });
+
+    fxStates.forEach((st, cv) => {
+      if (!visibleElements.has(cv)) return;
+      st.t = (st.t + dt * st.speed) % 3.4;
+      drawSingleFx(cv, st);
+    });
+
+    springStates.forEach((st, cv) => {
+      if (!visibleElements.has(cv)) return;
+      st.t = (st.t + dt * st.speed) % 2.8;
+      drawSpringsLab(cv, st);
+    });
+
+    fbStates.forEach((st, cv) => {
+      if (!visibleElements.has(cv) || !st.playing) return;
+      st.t = (st.t + dt) % 4.2;
+      if (st.rangeEl) st.rangeEl.value = st.t.toFixed(2);
+      if (st.timeEl) st.timeEl.textContent = `t = ${st.t.toFixed(2)}s (Frame ${String(Math.round(st.t * 60)).padStart(3, '0')})`;
+      drawFlipbook(cv, st);
+    });
+
+    requestAnimationFrame(loop);
+  }
+
+  syncSkinStudios();
+  renderAllOnce();
+  requestAnimationFrame(loop);
+})();

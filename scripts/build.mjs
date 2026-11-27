@@ -5,6 +5,7 @@ import {
   renderHomePage,
   renderCatalogPage,
   renderAiCodingPage,
+  renderCodeVideoPage,
   renderCreatorPage,
   renderProductsPage,
   renderEcosystemPage,
@@ -34,6 +35,8 @@ const data = loadAllSiteData();
 writeRoute('/', renderHomePage(data));
 writeRoute('/originals', renderCatalogPage(data, 'originals'));
 writeRoute('/originals/ai-coding', renderAiCodingPage(data));
+writeRoute('/originals/code-video', renderCodeVideoPage(data));
+writeRoute('/originals/motion-harness', renderCodeVideoPage(data));
 writeRoute('/creator', renderCreatorPage(data));
 writeRoute('/curated', renderCatalogPage(data, 'curated'));
 writeRoute('/products', renderProductsPage(data));
@@ -41,6 +44,16 @@ writeRoute('/ecosystem', renderEcosystemPage(data));
 writeRoute('/kit', renderKitPage(data));
 writeRoute('/learning', renderLearningPage(data));
 for (const article of data.allArticles) writeRoute(`/read/${article.slug}`, renderReaderPage(data, article));
+
+const specDoc = data.bySlug.get('spec-code-video-standard');
+const guideDoc = data.bySlug.get('ai-code-video-handbook');
+const skinDoc = data.bySlug.get('cv-design-md-and-skins');
+const fxDoc = data.bySlug.get('cv-live-fx-atlas');
+const pipeDoc = data.bySlug.get('cv-springs-and-pipeline');
+if (guideDoc) writeRoute('/read/mh-zero-to-one-guide', renderReaderPage(data, guideDoc));
+if (skinDoc || specDoc) writeRoute('/read/spec-video-design-md', renderReaderPage(data, skinDoc || specDoc));
+if (fxDoc || specDoc) writeRoute('/read/spec-video-motion-md', renderReaderPage(data, fxDoc || specDoc));
+if (pipeDoc || specDoc) writeRoute('/read/spec-video-pipeline-sop', renderReaderPage(data, pipeDoc || specDoc));
 
 fs.writeFileSync(path.join(DIST_DIR, 'site-data.js'), renderSiteDataJs(data), 'utf8');
 fs.writeFileSync(path.join(DIST_DIR, 'llms.txt'), renderLlmsTxt(data), 'utf8');

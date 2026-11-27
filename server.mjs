@@ -6,12 +6,14 @@ import {
   renderHomePage,
   renderCatalogPage,
   renderAiCodingPage,
+  renderCodeVideoPage,
   renderCreatorPage,
   renderProductsPage,
   renderEcosystemPage,
   renderKitPage,
   renderLearningPage,
   renderReaderPage,
+  renderSiteDataJs,
   renderLlmsTxt,
   renderRoleContextTxt,
   buildVaultExport,
@@ -176,6 +178,11 @@ const server = http.createServer(async (req, res) => {
 
     const data = loadAllSiteData();
 
+    if (pathname === '/site-data.js') {
+      res.writeHead(200, { 'Content-Type': 'application/javascript; charset=utf-8' });
+      res.end(renderSiteDataJs(data));
+      return;
+    }
     if (pathname === '/llms.txt') {
       res.writeHead(200, { 'Content-Type': 'text/plain; charset=utf-8' });
       res.end(renderLlmsTxt(data));
@@ -209,6 +216,7 @@ const server = http.createServer(async (req, res) => {
     if (pathname === '/') return sendHtml(res, renderHomePage(data));
     if (pathname === '/originals' || pathname === '/depot') return sendHtml(res, renderCatalogPage(data, 'originals'));
     if (pathname === '/originals/ai-coding') return sendHtml(res, renderAiCodingPage(data));
+    if (pathname === '/originals/code-video' || pathname === '/originals/motion-harness') return sendHtml(res, renderCodeVideoPage(data));
     if (pathname === '/creator') return sendHtml(res, renderCreatorPage(data));
     if (pathname === '/curated') return sendHtml(res, renderCatalogPage(data, 'curated'));
     if (pathname === '/products') return sendHtml(res, renderProductsPage(data));
@@ -217,7 +225,19 @@ const server = http.createServer(async (req, res) => {
     if (pathname === '/learning') return sendHtml(res, renderLearningPage(data));
 
     if (pathname.startsWith('/read/')) {
-      const article = data.bySlug.get(decodeURIComponent(pathname.slice('/read/'.length)));
+      const rawSlug = decodeURIComponent(pathname.slice('/read/'.length));
+      const legacyRedirects = {
+        'mh-zero-to-one-guide': '/read/ai-code-video-handbook',
+        'spec-video-design-md': '/read/cv-design-md-and-skins',
+        'spec-video-motion-md': '/read/cv-live-fx-atlas',
+        'spec-video-pipeline-sop': '/read/cv-springs-and-pipeline',
+      };
+      if (legacyRedirects[rawSlug]) {
+        res.writeHead(302, { Location: legacyRedirects[rawSlug] });
+        res.end();
+        return;
+      }
+      const article = data.bySlug.get(rawSlug);
       if (article) return sendHtml(res, renderReaderPage(data, article));
     }
 

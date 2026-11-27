@@ -2,9 +2,9 @@
 slug: thinking-prompt-precision
 kind: original
 portal: ai-coding
-section: practice
-category: 实践与思考 · 提示词方法论
-chapter: Practice 02
+section: guide
+category: 指南 01 · 提示词参数化
+chapter: 第 01 篇 · 提示词思考
 title: 怎么向 AI 准确描述代码与视觉提示词：把模糊的「做好看点」翻译成确定性参数
 subtitle: 模型越来越强，为什么很多人让 AI 写出来的网页和视频还是充满廉价感？核心差距不在模型，而在能不能把脑子里的「审美直觉」翻译成模型无法曲解的色值、比例、阻尼与流程门禁。
 access: free
