@@ -4575,6 +4575,53 @@ html[data-theme="dark"] .orbit-compass { color: rgba(255, 255, 255, 0.16); }
 .memo-done-toggle { padding: 8px 14px 4px; }
 .memo-done-toggle[aria-expanded="true"] { color: var(--ink-primary); }
 .memo-clear { margin: 0 14px 10px; color: var(--ink-muted); }
+.tool-shelf {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 8px;
+}
+.tool-card {
+  padding: 22px 22px 20px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 20px;
+  background: var(--bg-card);
+  box-shadow: var(--shadow-card);
+}
+.tool-card h2 {
+  margin: 0 0 8px;
+  font-size: 22px;
+  letter-spacing: -0.03em;
+}
+.tool-card p { margin: 0 0 14px; color: var(--ink-secondary); font-size: 14.5px; line-height: 1.65; }
+.tool-row { display: flex; gap: 10px; align-items: center; }
+.tool-row input,
+.tool-card textarea {
+  width: 100%;
+  min-width: 0;
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  background: var(--bg-shell);
+  color: var(--ink-primary);
+  font: inherit;
+  font-size: 14.5px;
+  line-height: 1.6;
+}
+.tool-row input { flex: 1; height: 44px; padding: 0 14px; }
+.tool-card textarea { display: block; padding: 12px 14px; resize: vertical; }
+.tool-card textarea[readonly] { color: var(--ink-secondary); }
+.tool-actions { display: flex; align-items: center; gap: 10px; margin: 12px 0; flex-wrap: wrap; }
+.tool-note { font-size: 13px; color: var(--ink-muted); }
+.tool-stat { margin: 12px 0 0; font-size: 15px; font-weight: 600; color: var(--ink-primary); }
+.tool-out { margin-top: 14px; padding: 14px; border-radius: 14px; background: var(--bg-shell); border: 1px solid var(--border-subtle); }
+.tool-out[hidden] { display: none; }
+.tool-out strong { display: block; font-size: 16px; letter-spacing: -0.02em; margin-bottom: 4px; }
+.tool-out p { margin: 0 0 6px; }
+.link-cover { display: block; width: min(100%, 320px); height: auto; margin-top: 10px; border-radius: 12px; }
+@media (max-width: 640px) {
+  .tool-row { flex-direction: column; align-items: stretch; }
+  .tool-card { padding: 18px 16px; }
+}
 .is-done-list { padding-bottom: 4px; }
 @media (hover: none) {
   .memo-x { opacity: 1; }

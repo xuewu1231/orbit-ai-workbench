@@ -5267,3 +5267,146 @@ document.querySelectorAll('[data-jargon-translator]').forEach((card) => {
     });
   });
 })();
+
+(function () {
+  const shelf = document.getElementById('tool-shelf');
+  if (!shelf) return;
+
+  const linkForm = document.getElementById('link-form');
+  const linkInput = document.getElementById('link-input');
+  const linkOut = document.getElementById('link-out');
+
+  function firstUrl(text) {
+    const match = String(text || '').match(/https?:\/\/[^\s]+/i);
+    if (!match) return '';
+    return match[0].replace(/[)）,。]+$/, '');
+  }
+
+  function identify(href) {
+    let url;
+    try { url = new URL(href); } catch (e) { return null; }
+    const host = url.hostname.replace(/^www\./, '').replace(/^m\./, '');
+    const path = url.pathname;
+    if (host === 'youtu.be' || host.endsWith('youtube.com')) {
+      const id = host === 'youtu.be'
+        ? path.split('/').filter(Boolean)[0]
+        : (url.searchParams.get('v') || (path.match(/\/(?:shorts|embed|live)\/([^/?]+)/) || [])[1] || '');
+      return { name: 'YouTube', id, ask: true };
+    }
+    if (host === 'x.com' || host === 'twitter.com' || host === 'mobile.twitter.com') {
+      const id = (path.match(/\/status\/(\d+)/) || [])[1] || '';
+      return { name: 'Twitter', id, ask: Boolean(id) };
+    }
+    if (host.includes('xiaohongshu.com') || host === 'xhslink.com') {
+      const id = (path.match(/\/(?:explore|discovery\/item|item)\/([^/?]+)/) || [])[1] || '';
+      return { name: '小红书', id: id || (host === 'xhslink.com' ? '短链' : ''), ask: false };
+    }
+    if (host.includes('douyin.com') || host.includes('iesdouyin.com')) {
+      const id = (path.match(/\/(?:video|note)\/(\d+)/) || [])[1] || '';
+      return { name: '抖音', id: id || (host.startsWith('v.') ? '短链' : ''), ask: false };
+    }
+    return { name: host, id: '', ask: true };
+  }
+
+  function showLink(lines, cover) {
+    linkOut.hidden = false;
+    linkOut.replaceChildren();
+    lines.forEach((line, i) => {
+      const el = document.createElement(i === 0 ? 'strong' : 'p');
+      el.textContent = line;
+      linkOut.appendChild(el);
+    });
+    if (cover && /^https:\/\//.test(cover)) {
+      const img = document.createElement('img');
+      img.className = 'link-cover';
+      img.alt = '';
+      img.referrerPolicy = 'no-referrer';
+      img.src = cover;
+      linkOut.appendChild(img);
+    }
+  }
+
+  linkForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const href = firstUrl(linkInput.value);
+    if (!href) {
+      showLink(['没找到链接。', '从 http 或 https 开始贴。']);
+      return;
+    }
+    const info = identify(href);
+    if (!info) {
+      showLink(['这不像一条完整链接。']);
+      return;
+    }
+    const head = info.id ? info.name + ' · ' + info.id : info.name;
+    if (!info.ask) {
+      showLink([
+        head,
+        '认出平台了。这个平台不让浏览器直接读页面，标题和视频文件都拿不到。',
+      ]);
+      return;
+    }
+    showLink([head, '正在读公开信息…']);
+    try {
+      const res = await fetch('https://noembed.com/embed?url=' + encodeURIComponent(href));
+      const data = await res.json();
+      if (!data || data.error || !data.title) {
+        showLink([head, '平台认出来了。公开标题这边没读到，视频文件也不会从这里下载。']);
+        return;
+      }
+      const who = data.author_name ? '作者 · ' + data.author_name : '';
+      showLink(
+        [data.title, who, info.name + (info.id ? ' · ' + info.id : ''), '封面可以看。视频文件留在原平台。'].filter(Boolean),
+        data.thumbnail_url
+      );
+    } catch (e) {
+      showLink([head, '平台认出来了。公开信息没连上，视频文件也不会从这里下载。']);
+    }
+  });
+
+  const speechInput = document.getElementById('speech-input');
+  const speechStat = document.getElementById('speech-stat');
+  const paintSpeech = () => {
+    const count = (speechInput.value || '').replace(/\s/g, '').length;
+    if (!count) {
+      speechStat.textContent = '0 字 · 还不用开口';
+      return;
+    }
+    const seconds = Math.max(1, Math.round((count / 240) * 60));
+    const min = Math.floor(seconds / 60);
+    const sec = seconds % 60;
+    const clock = min ? min + ' 分 ' + String(sec).padStart(2, '0') + ' 秒' : sec + ' 秒';
+    speechStat.textContent = count + ' 字 · 大约 ' + clock;
+  };
+  speechInput.addEventListener('input', paintSpeech);
+
+  const dirty = document.getElementById('prompt-dirty');
+  const clean = document.getElementById('prompt-clean');
+  const note = document.getElementById('prompt-note');
+  const cleanText = (raw) => String(raw || '')
+    .replace(/^#{1,6}\s+/gm, '')
+    .replace(/\*\*|__|\*|_|`/g, '')
+    .replace(/[ \t]+\n/g, '\n')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
+  document.getElementById('prompt-clean-btn').addEventListener('click', () => {
+    clean.value = cleanText(dirty.value);
+    note.textContent = clean.value ? '已经清掉。' : '没有可清的内容。';
+  });
+  document.getElementById('prompt-copy-btn').addEventListener('click', async () => {
+    const text = clean.value || cleanText(dirty.value);
+    clean.value = text;
+    if (!text) {
+      note.textContent = '没有可复制的内容。';
+      return;
+    }
+    try {
+      await navigator.clipboard.writeText(text);
+      note.textContent = '已复制。';
+    } catch (e) {
+      clean.focus();
+      clean.select();
+      note.textContent = '请手动复制下面这段。';
+    }
+  });
+})();
