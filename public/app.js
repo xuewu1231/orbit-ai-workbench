@@ -69,17 +69,26 @@
     }
   }
 
-  if (soundBtn) {
+  function paintSound() {
+    if (!soundBtn) return;
+    const en = htmlEl.getAttribute('data-lang') === 'en';
+    const label = soundEnabled
+      ? (en ? 'Sound is on. Click to mute' : '轻触音效开着，点击关掉')
+      : (en ? 'Sound is off. Click to turn on' : '轻触音效关着，点击打开');
     soundBtn.classList.toggle('is-muted', !soundEnabled);
+    soundBtn.title = label;
+    soundBtn.setAttribute('aria-label', label);
+    soundBtn.setAttribute('aria-pressed', soundEnabled ? 'true' : 'false');
+  }
+  if (soundBtn) {
+    paintSound();
     soundBtn.addEventListener('click', () => {
       soundEnabled = !soundEnabled;
-      soundBtn.classList.toggle('is-muted', !soundEnabled);
-      soundBtn.classList.remove('is-pop');
-      void soundBtn.offsetWidth;
-      soundBtn.classList.add('is-pop');
       try { localStorage.setItem('orbit-sound', soundEnabled ? 'on' : 'off'); } catch (e) {}
+      paintSound();
       if (soundEnabled) click(1400, 0.022);
-      toast(soundEnabled ? '♪ 轻触音效已开启' : '× 轻触音效已静音');
+      const en = htmlEl.getAttribute('data-lang') === 'en';
+      toast(soundEnabled ? (en ? 'Sound on' : '轻触音效已打开') : (en ? 'Sound off' : '轻触音效已关掉'));
     });
   }
 
@@ -87,31 +96,55 @@
      1. Theme / Language
      ------------------------------------------------------------------------- */
   const themeBtn = $('theme-toggle');
+  function paintTheme() {
+    if (!themeBtn) return;
+    const dark = htmlEl.getAttribute('data-theme') === 'dark';
+    const en = htmlEl.getAttribute('data-lang') === 'en';
+    const label = dark
+      ? (en ? 'Dark is on. Switch to light' : '现在是深色，点击换成浅色')
+      : (en ? 'Light is on. Switch to dark' : '现在是浅色，点击换成深色');
+    themeBtn.title = label;
+    themeBtn.setAttribute('aria-label', label);
+    themeBtn.setAttribute('aria-pressed', dark ? 'true' : 'false');
+  }
+  function paintLang() {
+    const current = htmlEl.getAttribute('data-lang') === 'en' ? 'en' : 'zh';
+    document.querySelectorAll('[data-set-lang]').forEach((btn) => {
+      btn.setAttribute('aria-pressed', btn.getAttribute('data-set-lang') === current ? 'true' : 'false');
+    });
+    const input = $('global-search-input');
+    if (input) {
+      input.placeholder = current === 'en'
+        ? 'Search archive, readings, journal, studio, products'
+        : '搜典藏、文选、手记、创作或产品';
+    }
+    paintTheme();
+    paintSound();
+  }
   if (themeBtn) {
+    paintTheme();
     themeBtn.addEventListener('click', () => {
       click(920);
-      themeBtn.classList.remove('is-spinning');
-      void themeBtn.offsetWidth;
-      themeBtn.classList.add('is-spinning');
       const next = htmlEl.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
       htmlEl.setAttribute('data-theme', next);
       try { localStorage.setItem('studio-theme', next); } catch (e) {}
-      toast(next === 'dark' ? '☾ 深色工作台' : '☀ 明亮工作台');
+      paintTheme();
+      const en = htmlEl.getAttribute('data-lang') === 'en';
+      toast(next === 'dark' ? (en ? 'Dark' : '已换成深色') : (en ? 'Light' : '已换成浅色'));
     });
   }
-  const langBtn = $('lang-toggle');
-  if (langBtn) {
-    langBtn.addEventListener('click', () => {
+  document.querySelectorAll('[data-set-lang]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const next = btn.getAttribute('data-set-lang') === 'en' ? 'en' : 'zh';
+      if (htmlEl.getAttribute('data-lang') === next) return;
       click(1080);
-      langBtn.classList.remove('is-flipping');
-      void langBtn.offsetWidth;
-      langBtn.classList.add('is-flipping');
-      const next = htmlEl.getAttribute('data-lang') === 'zh' ? 'en' : 'zh';
       htmlEl.setAttribute('data-lang', next);
       try { localStorage.setItem('studio-lang', next); } catch (e) {}
-      toast(next === 'zh' ? '已切换为中文' : 'Switched to English');
+      paintLang();
+      toast(next === 'zh' ? '已换成中文' : 'Switched to English');
     });
-  }
+  });
+  paintLang();
 
   /* ---------------------------------------------------------------------------
      2. Scroll progress, back-to-top, side dock with scroll-spy
@@ -1524,13 +1557,31 @@
   const searchModal = $('search-modal');
   const globalInput = $('global-search-input');
   const globalResults = $('global-search-results');
+  let hitIndex = -1;
+  function paintHit() {
+    if (!globalResults) return;
+    const hits = [...globalResults.querySelectorAll('a.search-hit')];
+    hits.forEach((hit, i) => {
+      const on = i === hitIndex;
+      hit.classList.toggle('is-active', on);
+      if (on) hit.setAttribute('aria-selected', 'true');
+      else hit.removeAttribute('aria-selected');
+    });
+    if (hits[hitIndex]) hits[hitIndex].scrollIntoView({ block: 'nearest' });
+  }
   function renderHits(q) {
     if (!globalResults || !window.__SEARCH_INDEX__) return;
+    hitIndex = -1;
     const kw = (q || '').trim().toLowerCase();
     const list = window.__SEARCH_INDEX__.filter((it) => !kw || (it.title + ' ' + it.desc + ' ' + it.type).toLowerCase().includes(kw)).slice(0, 10);
     globalResults.innerHTML = '';
     if (!list.length) {
-      globalResults.innerHTML = '<p style="padding:12px;color:var(--ink-muted);font-size:13px;">没找到，试试 Skimbly、地图、交接单、Prompt</p>';
+      const empty = document.createElement('p');
+      empty.className = 'search-empty';
+      empty.textContent = htmlEl.getAttribute('data-lang') === 'en'
+        ? 'Nothing matched. Try another word.'
+        : '没找到。换一个词，或者从上面五个栏目进去。';
+      globalResults.appendChild(empty);
       return;
     }
     list.forEach((it) => {
@@ -1547,6 +1598,22 @@
   if (globalInput) {
     renderHits('');
     globalInput.addEventListener('input', (e) => renderHits(e.target.value));
+    globalInput.addEventListener('keydown', (e) => {
+      const hits = [...(globalResults ? globalResults.querySelectorAll('a.search-hit') : [])];
+      if (!hits.length) return;
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        hitIndex = Math.min(hits.length - 1, hitIndex + 1);
+        paintHit();
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        hitIndex = Math.max(0, hitIndex - 1);
+        paintHit();
+      } else if (e.key === 'Enter' && hits[hitIndex]) {
+        e.preventDefault();
+        window.location.href = hits[hitIndex].href;
+      }
+    });
   }
   document.addEventListener('keydown', (e) => {
     if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
