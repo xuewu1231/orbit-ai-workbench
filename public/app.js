@@ -115,8 +115,8 @@
     const input = $('global-search-input');
     if (input) {
       input.placeholder = current === 'en'
-        ? 'Search collection, reading, studio, notes, products'
-        : '搜收藏、阅读、创作、笔记或产品';
+        ? 'Search collection, reading, studio, journal, products'
+        : '搜收藏、阅读、创作、沉淀或产品';
     }
     paintTheme();
     paintSound();
