@@ -2197,12 +2197,30 @@ html[data-theme="dark"] .vault-card[data-vault-kind="style"] .lane-pill { backgr
 .breadcrumb-muted {
   display: flex;
   align-items: center;
-  gap: 8px;
+  flex-wrap: wrap;
+  gap: 6px;
   font-size: 13px;
   color: var(--ink-muted);
   margin-bottom: 14px;
 }
-.breadcrumb-muted a:hover { color: var(--ink-primary); }
+.breadcrumb-muted a {
+  color: var(--ink-secondary);
+  text-decoration: none;
+  border-radius: 6px;
+  padding: 2px 6px;
+  margin: 0 -2px;
+  cursor: pointer;
+  transition: color 0.15s ease, background 0.15s ease;
+}
+.breadcrumb-muted a:hover {
+  color: var(--ink-primary);
+  background: var(--bg-subtle);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.breadcrumb-muted > span:last-child {
+  color: var(--ink-primary);
+}
 
 .inner-page-hero h1 {
   margin: 0 0 8px;
@@ -8671,6 +8689,59 @@ html[data-theme="dark"] .banned-chips span {
   display: flex;
   flex-direction: column;
   gap: 20px;
+}
+.series-shelf {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+.series-plate {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
+  min-height: 240px;
+  padding: 28px 28px 22px;
+  border-radius: 22px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 0.18s ease, background 0.18s ease;
+}
+.series-plate:hover {
+  border-color: var(--border-strong);
+  background: var(--bg-shell);
+}
+.series-kicker {
+  font-size: 12px;
+  font-weight: 650;
+  letter-spacing: 0.12em;
+  color: var(--blue);
+}
+.series-plate h2 {
+  margin: 0;
+  font-size: clamp(26px, 3vw, 34px);
+  letter-spacing: -0.03em;
+  line-height: 1.25;
+}
+.series-plate p {
+  margin: 0;
+  max-width: 28em;
+  font-size: 14.5px;
+  line-height: 1.7;
+  color: var(--ink-secondary);
+}
+.series-go {
+  margin-top: auto;
+  font-size: 13px;
+  font-weight: 650;
+  color: var(--ink-muted);
+}
+.series-plate:hover .series-go { color: var(--blue); }
+@media (max-width: 800px) {
+  .series-shelf { grid-template-columns: 1fr; }
+  .series-plate { min-height: 0; padding: 22px 20px; }
 }
 .depot-entry-card {
   padding: 32px 34px;
