@@ -5149,24 +5149,97 @@
   const clearBtn = board.querySelector('#memo-clear');
   let items = [];
   let doneOpen = false;
+  let dragId = '';
   try {
     const saved = JSON.parse(localStorage.getItem(KEY) || '[]');
-    if (Array.isArray(saved)) items = saved.filter((item) => item && typeof item.text === 'string');
+    if (Array.isArray(saved)) {
+      items = saved.filter((item) => item && typeof item.text === 'string').map((item) => {
+        const next = {
+          id: typeof item.id === 'string' && item.id ? item.id : (Date.now().toString(36) + Math.random().toString(36).slice(2, 6)),
+          text: item.text,
+          done: Boolean(item.done),
+        };
+        const level = Number(item.priority);
+        if (level === 1 || level === 2 || level === 3) next.priority = level;
+        return next;
+      });
+    }
   } catch (e) {}
 
   const save = () => {
     try { localStorage.setItem(KEY, JSON.stringify(items)); } catch (e) {}
   };
 
-  const row = (item) => {
+  const priorityOf = (item) => (item.priority === 1 || item.priority === 2 || item.priority === 3) ? item.priority : 0;
+  const priorityLabel = { 1: '低', 2: '中', 3: '高' };
+  const nextPriority = (level) => (level === 3 ? 2 : level === 2 ? 1 : level === 1 ? 0 : 3);
+
+  const move = (item, dir) => {
+    const group = items.filter((entry) => Boolean(entry.done) === Boolean(item.done));
+    const from = group.indexOf(item);
+    const to = from + dir;
+    if (from < 0 || to < 0 || to >= group.length) return;
+    const other = group[to];
+    const a = items.indexOf(item);
+    const b = items.indexOf(other);
+    items[a] = other;
+    items[b] = item;
+    save();
+    render();
+  };
+
+  const place = (id, targetId, after) => {
+    if (!id || id === targetId) return;
+    const item = items.find((entry) => entry.id === id);
+    const target = items.find((entry) => entry.id === targetId);
+    if (!item || !target || Boolean(item.done) !== Boolean(target.done)) return;
+    const rest = items.filter((entry) => entry !== item);
+    let idx = rest.indexOf(target);
+    if (after) idx += 1;
+    rest.splice(idx, 0, item);
+    items = rest;
+    save();
+    render();
+  };
+
+  const row = (item, index, total) => {
     const li = document.createElement('li');
     li.className = 'memo-item' + (item.done ? ' is-done' : '');
+    const grip = document.createElement('button');
+    grip.type = 'button';
+    grip.className = 'memo-grip';
+    grip.draggable = true;
+    grip.setAttribute('aria-label', '拖动调整顺序');
+    grip.addEventListener('dragstart', (event) => {
+      dragId = item.id;
+      event.dataTransfer.effectAllowed = 'move';
+      event.dataTransfer.setData('text/plain', item.id);
+      event.dataTransfer.setDragImage(li, 20, 18);
+      li.classList.add('is-dragging');
+    });
+    grip.addEventListener('dragend', () => {
+      dragId = '';
+      li.classList.remove('is-dragging');
+    });
     const check = document.createElement('button');
     check.type = 'button';
     check.className = 'memo-check';
     check.setAttribute('aria-label', item.done ? '还原这一条' : '划掉这一条');
     check.addEventListener('click', () => {
       item.done = !item.done;
+      save();
+      render();
+    });
+    const pri = document.createElement('button');
+    pri.type = 'button';
+    const level = priorityOf(item);
+    pri.className = 'memo-pri' + (level ? ' is-set is-' + level : '');
+    pri.textContent = priorityLabel[level] || '标';
+    pri.setAttribute('aria-label', level ? ('优先级' + priorityLabel[level] + '，点击更换') : '标优先级');
+    pri.addEventListener('click', () => {
+      const next = nextPriority(level);
+      if (next) item.priority = next;
+      else delete item.priority;
       save();
       render();
     });
@@ -5201,6 +5274,20 @@
       });
       field.addEventListener('blur', commit);
     });
+    const up = document.createElement('button');
+    up.type = 'button';
+    up.className = 'memo-move';
+    up.textContent = '↑';
+    up.disabled = index === 0;
+    up.setAttribute('aria-label', '上移');
+    up.addEventListener('click', () => move(item, -1));
+    const down = document.createElement('button');
+    down.type = 'button';
+    down.className = 'memo-move';
+    down.textContent = '↓';
+    down.disabled = index === total - 1;
+    down.setAttribute('aria-label', '下移');
+    down.addEventListener('click', () => move(item, 1));
     const remove = document.createElement('button');
     remove.type = 'button';
     remove.className = 'memo-x';
@@ -5211,16 +5298,35 @@
       save();
       render();
     });
-    li.append(check, text, remove);
+    li.addEventListener('dragover', (event) => {
+      if (!dragId || dragId === item.id) return;
+      event.preventDefault();
+      const after = event.clientY > li.getBoundingClientRect().top + li.offsetHeight / 2;
+      li.classList.toggle('is-drop-before', !after);
+      li.classList.toggle('is-drop-after', after);
+    });
+    li.addEventListener('dragleave', () => {
+      li.classList.remove('is-drop-before', 'is-drop-after');
+    });
+    li.addEventListener('drop', (event) => {
+      event.preventDefault();
+      const after = li.classList.contains('is-drop-after');
+      li.classList.remove('is-drop-before', 'is-drop-after');
+      place(dragId || event.dataTransfer.getData('text/plain'), item.id, after);
+    });
+    li.append(grip, check, pri, text, up, down, remove);
     return li;
   };
 
   const render = () => {
     const open = items.filter((item) => !item.done);
     const done = items.filter((item) => item.done);
-    openList.replaceChildren(...open.map(row));
-    doneList.replaceChildren(...done.map(row));
-    countEl.textContent = open.length ? `还剩 ${open.length} 件` : '今天清完了';
+    openList.replaceChildren(...open.map((item, index) => row(item, index, open.length)));
+    doneList.replaceChildren(...done.map((item, index) => row(item, index, done.length)));
+    const high = open.filter((item) => priorityOf(item) === 3).length;
+    countEl.textContent = open.length
+      ? (high ? `还剩 ${open.length} 件，${high} 件要先做` : `还剩 ${open.length} 件`)
+      : '今天清完了';
     doneWrap.hidden = done.length === 0;
     doneToggle.textContent = `已完成 ${done.length}`;
     doneToggle.setAttribute('aria-expanded', doneOpen ? 'true' : 'false');
