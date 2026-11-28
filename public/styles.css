@@ -4489,11 +4489,48 @@ html[data-theme="dark"] .orbit-compass { color: rgba(255, 255, 255, 0.16); }
 .memo-item {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
   min-height: 44px;
   padding: 6px 8px;
   border-radius: 12px;
 }
+.memo-grip {
+  width: 14px;
+  height: 28px;
+  flex: 0 0 14px;
+  border: 0;
+  padding: 0;
+  background-color: transparent;
+  background-image: radial-gradient(circle, var(--ink-muted) 1.1px, transparent 1.2px);
+  background-size: 5px 6px;
+  background-position: 1px 5px;
+  cursor: grab;
+  opacity: 0;
+}
+.memo-pri,
+.memo-move {
+  border: 0;
+  background: transparent;
+  color: var(--ink-muted);
+  font: inherit;
+  font-size: 12px;
+  line-height: 1;
+  cursor: pointer;
+}
+.memo-pri {
+  flex: 0 0 auto;
+  min-width: 28px;
+  height: 22px;
+  padding: 0 6px;
+  border-radius: 999px;
+  opacity: 0;
+}
+.memo-pri.is-set { opacity: 1; font-weight: 600; }
+.memo-pri.is-3 { color: var(--blue); background: color-mix(in srgb, var(--blue) 14%, transparent); }
+.memo-pri.is-2 { color: var(--ink-primary); }
+.memo-pri.is-1 { color: var(--ink-muted); font-weight: 500; }
+.memo-move { padding: 4px 2px; opacity: 0; }
+.memo-move:disabled { cursor: default; }
 .memo-item:hover { background: var(--bg-subtle); }
 .memo-check {
   width: 22px;
@@ -4542,7 +4579,16 @@ html[data-theme="dark"] .orbit-compass { color: rgba(255, 255, 255, 0.16); }
   opacity: 0;
 }
 .memo-item:hover .memo-x,
-.memo-item:focus-within .memo-x { opacity: 1; }
+.memo-item:focus-within .memo-x,
+.memo-item:hover .memo-grip,
+.memo-item:focus-within .memo-grip,
+.memo-item:hover .memo-pri,
+.memo-item:focus-within .memo-pri,
+.memo-item:hover .memo-move:not(:disabled),
+.memo-item:focus-within .memo-move:not(:disabled) { opacity: 1; }
+.memo-item.is-dragging { opacity: 0.4; }
+.memo-item.is-drop-before { box-shadow: inset 0 2px 0 var(--blue); }
+.memo-item.is-drop-after { box-shadow: inset 0 -2px 0 var(--blue); }
 .memo-form {
   display: flex;
   align-items: center;
@@ -4638,7 +4684,10 @@ html[data-theme="dark"] .orbit-compass { color: rgba(255, 255, 255, 0.16); }
 }
 .is-done-list { padding-bottom: 4px; }
 @media (hover: none) {
-  .memo-x { opacity: 1; }
+  .memo-x,
+  .memo-grip,
+  .memo-pri,
+  .memo-move:not(:disabled) { opacity: 1; }
 }
 .seen-learning { margin-top: 36px; }
 .seen-learning .lane-head { margin-bottom: 14px; }
