@@ -115,8 +115,8 @@
     const input = $('global-search-input');
     if (input) {
       input.placeholder = current === 'en'
-        ? 'Search archive, readings, journal, studio, products'
-        : '搜典藏、文选、手记、创作或产品';
+        ? 'Search collection, reading, studio, notes, products'
+        : '搜收藏、阅读、创作、笔记或产品';
     }
     paintTheme();
     paintSound();
@@ -1580,7 +1580,7 @@
       empty.className = 'search-empty';
       empty.textContent = htmlEl.getAttribute('data-lang') === 'en'
         ? 'Nothing matched. Try another word.'
-        : '没找到。换一个词，或者从上面五个栏目进去。';
+        : '没找到。换一个词，或者从上面五个系统进去。';
       globalResults.appendChild(empty);
       return;
     }

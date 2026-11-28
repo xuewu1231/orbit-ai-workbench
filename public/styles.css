@@ -504,13 +504,13 @@ html[data-theme="dark"] .orbit-toast {
   justify-content: center;
   flex: 0 1 auto;
   min-width: 0;
-  gap: 8px;
-  padding: 8px 12px 12px;
+  gap: 6px;
+  padding: 8px 8px 11px;
   border-radius: 8px;
-  font-family: "Songti SC", "Source Han Serif SC", "Noto Serif SC", "STSong", "PingFang SC", Georgia, serif;
-  font-size: 17px;
+  font-family: "Plus Jakarta Sans", "Inter", -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif;
+  font-size: 15px;
   font-weight: 500;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.02em;
   color: var(--ink-secondary);
   white-space: nowrap;
   transition: color 0.22s cubic-bezier(0.22, 1, 0.36, 1);
@@ -519,8 +519,8 @@ html[data-theme="dark"] .orbit-toast {
 .nav-links a::after {
   content: "";
   position: absolute;
-  left: 36px;
-  right: 12px;
+  left: 34px;
+  right: 8px;
   bottom: 5px;
   height: 1.5px;
   border-radius: 2px;
@@ -2804,14 +2804,14 @@ html[data-theme="dark"] .vault-card[data-vault-kind="style"] .lane-pill { backgr
   .cmdk-btn { width: 34px; padding: 0; justify-content: center; }
   .nav-links {
     grid-area: nav;
-    justify-content: flex-start;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    justify-content: stretch;
     overflow: visible;
-    row-gap: 0;
+    gap: 0 8px;
     padding-bottom: 2px;
   }
-  .nav-links { gap: 0; justify-content: space-between; }
-  .nav-links a { flex: 0 0 auto; min-width: max-content; padding: 6px 4px 10px; font-size: 14.5px; gap: 5px; letter-spacing: 0.02em; }
+  .nav-links a { justify-content: flex-start; min-width: 0; padding: 6px 2px 10px; font-size: 14px; gap: 4px; letter-spacing: 0; }
 }
 
 
@@ -5109,7 +5109,7 @@ html[data-theme="dark"] .theme-icon-btn { color: var(--ink-primary); }
   .sound-toggle-btn { display: none; }
   .nav-ico,
   .nav-ico svg { width: 16px; height: 16px; }
-  .nav-links a::after { left: 25px; right: 4px; bottom: 4px; }
+  .nav-links a::after { left: 22px; right: 2px; bottom: 4px; }
 }
 
 /* Collect & Search Hover Micro-Motion */
