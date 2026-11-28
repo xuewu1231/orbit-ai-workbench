@@ -5138,6 +5138,7 @@
   const board = document.getElementById('memo-board');
   if (!board) return;
   const KEY = 'orbit-memos';
+  const IMAGE_CAP = 6;
   const openList = board.querySelector('#memo-open');
   const doneList = board.querySelector('#memo-done');
   const form = board.querySelector('#memo-form');
@@ -5147,9 +5148,18 @@
   const doneToggle = board.querySelector('#memo-done-toggle');
   const donePanel = board.querySelector('#memo-done-panel');
   const clearBtn = board.querySelector('#memo-clear');
+  const dayEl = board.querySelector('#memo-day');
+  const findEl = board.querySelector('#memo-find');
+  const fileInput = board.querySelector('#memo-file');
   let items = [];
   let doneOpen = false;
   let dragId = '';
+  let view = 'hand';
+  let query = '';
+  let expandedId = '';
+  let fileTargetId = '';
+  let shotNote = '';
+  const urls = new Map();
   try {
     const saved = JSON.parse(localStorage.getItem(KEY) || '[]');
     if (Array.isArray(saved)) {
@@ -5161,6 +5171,12 @@
         };
         const level = Number(item.priority);
         if (level === 1 || level === 2 || level === 3) next.priority = level;
+        if (typeof item.note === 'string' && item.note.trim()) next.note = item.note.slice(0, 4000);
+        if (typeof item.day === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(item.day)) next.day = item.day;
+        if (Array.isArray(item.images)) {
+          const images = item.images.filter((id) => typeof id === 'string' && id).slice(0, 6);
+          if (images.length) next.images = images;
+        }
         return next;
       });
     }
@@ -5170,12 +5186,153 @@
     try { localStorage.setItem(KEY, JSON.stringify(items)); } catch (e) {}
   };
 
+  const newId = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+  const todayStamp = (offset = 0) => {
+    const date = new Date();
+    date.setDate(date.getDate() + offset);
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return date.getFullYear() + '-' + month + '-' + day;
+  };
+  const dayLabel = (stamp) => {
+    if (!stamp) return '';
+    if (stamp === todayStamp(0)) return '今天';
+    if (stamp === todayStamp(1)) return '明天';
+    if (stamp === todayStamp(-1)) return '昨天';
+    const parts = stamp.split('-').map(Number);
+    if (parts[0] === new Date().getFullYear()) return parts[1] + '月' + parts[2] + '日';
+    return parts[0] + '年' + parts[1] + '月' + parts[2] + '日';
+  };
+  let dbPromise = null;
+  const db = () => {
+    if (!dbPromise) {
+      dbPromise = new Promise((resolve, reject) => {
+        const req = indexedDB.open('orbit-memo', 1);
+        req.onupgradeneeded = () => {
+          if (!req.result.objectStoreNames.contains('images')) req.result.createObjectStore('images');
+        };
+        req.onsuccess = () => resolve(req.result);
+        req.onerror = () => reject(req.error);
+      }).catch((err) => {
+        dbPromise = null;
+        throw err;
+      });
+    }
+    return dbPromise;
+  };
+  const idbPut = async (id, blob) => {
+    const base = await db();
+    await new Promise((resolve, reject) => {
+      const tx = base.transaction('images', 'readwrite');
+      tx.objectStore('images').put(blob, id);
+      tx.oncomplete = () => resolve();
+      tx.onerror = () => reject(tx.error);
+    });
+  };
+  const idbGet = async (ids) => {
+    if (!ids.length) return [];
+    const base = await db();
+    return new Promise((resolve, reject) => {
+      const tx = base.transaction('images', 'readonly');
+      const store = tx.objectStore('images');
+      const out = [];
+      ids.forEach((id) => {
+        const req = store.get(id);
+        req.onsuccess = () => { if (req.result) out.push([id, req.result]); };
+      });
+      tx.oncomplete = () => resolve(out);
+      tx.onerror = () => reject(tx.error);
+    });
+  };
+  const forgetImages = async (ids) => {
+    ids.forEach((id) => {
+      const url = urls.get(id);
+      if (url) URL.revokeObjectURL(url);
+      urls.delete(id);
+    });
+    if (!ids.length) return;
+    try {
+      const base = await db();
+      await new Promise((resolve, reject) => {
+        const tx = base.transaction('images', 'readwrite');
+        ids.forEach((id) => tx.objectStore('images').delete(id));
+        tx.oncomplete = () => resolve();
+        tx.onerror = () => reject(tx.error);
+      });
+    } catch (e) {}
+  };
+  const compressImage = (file) => new Promise((resolve, reject) => {
+    const local = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = () => {
+      const scale = Math.min(1, 1600 / Math.max(img.width, img.height));
+      const canvas = document.createElement('canvas');
+      canvas.width = Math.max(1, Math.round(img.width * scale));
+      canvas.height = Math.max(1, Math.round(img.height * scale));
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      canvas.toBlob((blob) => {
+        URL.revokeObjectURL(local);
+        if (blob) resolve(blob);
+        else reject(new Error('empty'));
+      }, 'image/jpeg', 0.82);
+    };
+    img.onerror = () => {
+      URL.revokeObjectURL(local);
+      reject(new Error('read'));
+    };
+    img.src = local;
+  });
+  const addImages = async (item, files) => {
+    const list = item.images ? item.images.slice() : [];
+    const batch = [...files].filter((file) => file && file.type && file.type.startsWith('image/')).slice(0, IMAGE_CAP - list.length);
+    if (!batch.length) {
+      shotNote = list.length >= IMAGE_CAP ? '一条最多 6 张截图。' : '这张图读不了。';
+      render();
+      return;
+    }
+    let stored = 0;
+    for (const file of batch) {
+      try {
+        const blob = await compressImage(file);
+        const id = 'img-' + newId();
+        await idbPut(id, blob);
+        urls.set(id, URL.createObjectURL(blob));
+        list.push(id);
+        stored += 1;
+      } catch (e) {}
+    }
+    if (stored) {
+      item.images = list;
+      shotNote = '';
+      save();
+    } else shotNote = '这张图没存下。';
+    render();
+  };
+  const light = document.createElement('div');
+  light.className = 'memo-light';
+  light.hidden = true;
+  const lightImg = document.createElement('img');
+  lightImg.alt = '';
+  light.appendChild(lightImg);
+  light.addEventListener('click', () => { light.hidden = true; });
+  document.body.appendChild(light);
+  const openLight = (url) => {
+    if (!url) return;
+    lightImg.src = url;
+    light.hidden = false;
+  };
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && !light.hidden) light.hidden = true;
+  });
+
   const priorityOf = (item) => (item.priority === 1 || item.priority === 2 || item.priority === 3) ? item.priority : 0;
   const priorityLabel = { 1: '低', 2: '中', 3: '高' };
   const nextPriority = (level) => (level === 3 ? 2 : level === 2 ? 1 : level === 1 ? 0 : 3);
 
-  const move = (item, dir) => {
-    const group = items.filter((entry) => Boolean(entry.done) === Boolean(item.done));
+  const move = (item, dir, group) => {
     const from = group.indexOf(item);
     const to = from + dir;
     if (from < 0 || to < 0 || to >= group.length) return;
@@ -5202,9 +5359,11 @@
     render();
   };
 
-  const row = (item, index, total) => {
+  const row = (item, index, group) => {
     const li = document.createElement('li');
-    li.className = 'memo-item' + (item.done ? ' is-done' : '');
+    const openHere = expandedId === item.id;
+    const hasBody = Boolean(item.note || (item.images && item.images.length) || item.day || openHere);
+    li.className = 'memo-item' + (item.done ? ' is-done' : '') + (hasBody ? ' is-rich' : '');
     const grip = document.createElement('button');
     grip.type = 'button';
     grip.className = 'memo-grip';
@@ -5280,23 +5439,26 @@
     up.textContent = '↑';
     up.disabled = index === 0;
     up.setAttribute('aria-label', '上移');
-    up.addEventListener('click', () => move(item, -1));
+    up.addEventListener('click', () => move(item, -1, group));
     const down = document.createElement('button');
     down.type = 'button';
     down.className = 'memo-move';
     down.textContent = '↓';
-    down.disabled = index === total - 1;
+    down.disabled = index === group.length - 1;
     down.setAttribute('aria-label', '下移');
-    down.addEventListener('click', () => move(item, 1));
+    down.addEventListener('click', () => move(item, 1, group));
     const remove = document.createElement('button');
     remove.type = 'button';
     remove.className = 'memo-x';
     remove.setAttribute('aria-label', '删掉这一条');
     remove.textContent = '×';
     remove.addEventListener('click', () => {
+      const gone = item.images ? item.images.slice() : [];
       items = items.filter((entry) => entry.id !== item.id);
+      if (expandedId === item.id) expandedId = '';
       save();
       render();
+      forgetImages(gone);
     });
     li.addEventListener('dragover', (event) => {
       if (!dragId || dragId === item.id) return;
@@ -5314,30 +5476,231 @@
       li.classList.remove('is-drop-before', 'is-drop-after');
       place(dragId || event.dataTransfer.getData('text/plain'), item.id, after);
     });
-    li.append(grip, check, pri, text, up, down, remove);
+    const main = document.createElement('div');
+    main.className = 'memo-main';
+    main.appendChild(text);
+    if (item.note && !openHere) {
+      const preview = document.createElement('p');
+      preview.className = 'memo-preview';
+      preview.textContent = item.note.replace(/\s+/g, ' ').trim();
+      preview.addEventListener('click', () => {
+        expandedId = item.id;
+        render();
+      });
+      main.appendChild(preview);
+    }
+    if (item.images && item.images.length && !openHere) {
+      const mini = document.createElement('div');
+      mini.className = 'memo-mini';
+      item.images.forEach((id) => {
+        const img = document.createElement('img');
+        img.alt = '';
+        img.setAttribute('data-shot', id);
+        if (urls.has(id)) img.src = urls.get(id);
+        img.addEventListener('click', () => openLight(urls.get(id)));
+        mini.appendChild(img);
+      });
+      main.appendChild(mini);
+    }
+    const more = document.createElement('button');
+    more.type = 'button';
+    more.className = 'memo-more' + (hasBody ? ' is-set' : '');
+    more.textContent = openHere ? '收起' : '记下';
+    more.setAttribute('aria-expanded', openHere ? 'true' : 'false');
+    more.addEventListener('click', () => {
+      expandedId = openHere ? '' : item.id;
+      shotNote = '';
+      render();
+    });
+    let when = null;
+    if (item.day) {
+      when = document.createElement('button');
+      when.type = 'button';
+      when.className = 'memo-when' + (!item.done && item.day < todayStamp() ? ' is-late' : '');
+      when.textContent = dayLabel(item.day);
+      when.addEventListener('click', () => {
+        expandedId = item.id;
+        render();
+      });
+    }
+    const bits = [grip, check, pri, main];
+    if (when) bits.push(when);
+    bits.push(more, up, down, remove);
+    li.append(...bits);
+    if (openHere) li.appendChild(buildPanel(item));
     return li;
   };
 
-  const render = () => {
-    const open = items.filter((item) => !item.done);
-    const done = items.filter((item) => item.done);
-    openList.replaceChildren(...open.map((item, index) => row(item, index, open.length)));
-    doneList.replaceChildren(...done.map((item, index) => row(item, index, done.length)));
-    const high = open.filter((item) => priorityOf(item) === 3).length;
-    countEl.textContent = open.length
-      ? (high ? `还剩 ${open.length} 件，${high} 件要先做` : `还剩 ${open.length} 件`)
-      : '今天清完了';
-    doneWrap.hidden = done.length === 0;
-    doneToggle.textContent = `已完成 ${done.length}`;
-    doneToggle.setAttribute('aria-expanded', doneOpen ? 'true' : 'false');
-    donePanel.hidden = !doneOpen || done.length === 0;
+  const buildPanel = (item) => {
+    const panel = document.createElement('div');
+    panel.className = 'memo-panel';
+    const note = document.createElement('textarea');
+    note.className = 'memo-note';
+    note.maxLength = 4000;
+    note.placeholder = '把想法写在这里';
+    note.setAttribute('aria-label', '这一条的备忘');
+    note.value = item.note || '';
+    let noteTimer = 0;
+    const commitNote = () => {
+      const value = note.value.replace(/[ \t]+\n/g, '\n').replace(/\n{3,}/g, '\n\n');
+      if (value.trim()) item.note = value.slice(0, 4000);
+      else delete item.note;
+      save();
+    };
+    note.addEventListener('input', () => {
+      window.clearTimeout(noteTimer);
+      noteTimer = window.setTimeout(commitNote, 250);
+    });
+    note.addEventListener('blur', () => {
+      window.clearTimeout(noteTimer);
+      commitNote();
+    });
+    const rowLine = document.createElement('div');
+    rowLine.className = 'memo-panel-row';
+    const setDay = (day) => {
+      if (day) item.day = day;
+      else delete item.day;
+      save();
+      render();
+    };
+    [['今天', todayStamp(0)], ['明天', todayStamp(1)]].forEach(([label, day]) => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'memo-chip' + (item.day === day ? ' is-on' : '');
+      btn.textContent = label;
+      btn.addEventListener('click', () => setDay(item.day === day ? '' : day));
+      rowLine.appendChild(btn);
+    });
+    const date = document.createElement('input');
+    date.type = 'date';
+    date.className = 'memo-date';
+    date.value = item.day || '';
+    date.setAttribute('aria-label', '选一天');
+    date.addEventListener('change', () => setDay(date.value));
+    rowLine.appendChild(date);
+    if (item.day) {
+      const clearDay = document.createElement('button');
+      clearDay.type = 'button';
+      clearDay.className = 'memo-chip';
+      clearDay.textContent = '不设日子';
+      clearDay.addEventListener('click', () => setDay(''));
+      rowLine.appendChild(clearDay);
+    }
+    const addShot = document.createElement('button');
+    addShot.type = 'button';
+    addShot.className = 'memo-chip';
+    addShot.textContent = '加截图';
+    addShot.addEventListener('click', () => {
+      fileTargetId = item.id;
+      if (fileInput) fileInput.click();
+    });
+    rowLine.appendChild(addShot);
+    panel.append(note, rowLine);
+    if (item.images && item.images.length) {
+      const strip = document.createElement('div');
+      strip.className = 'memo-shots';
+      item.images.forEach((id) => {
+        const fig = document.createElement('figure');
+        const img = document.createElement('img');
+        img.alt = '';
+        img.setAttribute('data-shot', id);
+        if (urls.has(id)) img.src = urls.get(id);
+        img.addEventListener('click', () => openLight(urls.get(id)));
+        const x = document.createElement('button');
+        x.type = 'button';
+        x.className = 'memo-shot-x';
+        x.textContent = '×';
+        x.setAttribute('aria-label', '去掉这张截图');
+        x.addEventListener('click', () => {
+          item.images = item.images.filter((entry) => entry !== id);
+          if (!item.images.length) delete item.images;
+          save();
+          render();
+          forgetImages([id]);
+        });
+        fig.append(img, x);
+        strip.appendChild(fig);
+      });
+      panel.appendChild(strip);
+    }
+    if (shotNote && expandedId === item.id) {
+      const noteLine = document.createElement('p');
+      noteLine.className = 'memo-shot-note';
+      noteLine.textContent = shotNote;
+      panel.appendChild(noteLine);
+    }
+    return panel;
   };
+
+  const matches = (item) => {
+    if (!query) return true;
+    return (item.text + ' ' + (item.note || '')).toLowerCase().includes(query);
+  };
+  const inView = (item) => {
+    const today = todayStamp();
+    if (view === 'today') return item.day === today;
+    if (view === 'later') return Boolean(item.day && item.day > today);
+    return true;
+  };
+
+  const render = () => {
+    const token = ++renderToken;
+    const open = items.filter((item) => !item.done && inView(item) && matches(item));
+    const done = items.filter((item) => item.done && matches(item));
+    const openAll = items.filter((item) => !item.done);
+    if (open.length) openList.replaceChildren(...open.map((item, index) => row(item, index, open)));
+    else {
+      const empty = document.createElement('li');
+      empty.className = 'memo-empty';
+      if (query) empty.textContent = '没有对上的。';
+      else if (view === 'today') empty.textContent = '今天还空着。';
+      else if (view === 'later') empty.textContent = '还没有排到后面的。';
+      else empty.textContent = openAll.length ? '' : '';
+      openList.replaceChildren(...(empty.textContent ? [empty] : []));
+    }
+    doneList.replaceChildren(...done.map((item, index) => row(item, index, done)));
+    const high = open.filter((item) => priorityOf(item) === 3).length;
+    if (query) countEl.textContent = '找到 ' + (open.length + done.length) + ' 条';
+    else if (view === 'today') countEl.textContent = open.length ? '今天 ' + open.length + ' 件' : '今天还空着';
+    else if (view === 'later') countEl.textContent = open.length ? '之后 ' + open.length + ' 件' : '还没往后排';
+    else countEl.textContent = openAll.length
+      ? (high ? '还剩 ' + openAll.length + ' 件，' + high + ' 件要先做' : '还剩 ' + openAll.length + ' 件')
+      : '今天清完了';
+    if (dayEl) {
+      const now = new Date();
+      dayEl.textContent = (now.getMonth() + 1) + '月' + now.getDate() + '日 周' + '日一二三四五六'[now.getDay()];
+    }
+    board.querySelectorAll('[data-memo-view]').forEach((btn) => {
+      btn.classList.toggle('is-on', btn.getAttribute('data-memo-view') === view);
+    });
+    const doneAll = items.filter((item) => item.done);
+    doneWrap.hidden = doneAll.length === 0;
+    doneToggle.textContent = '已完成 ' + doneAll.length;
+    doneToggle.setAttribute('aria-expanded', (doneOpen || (query && done.length > 0)) ? 'true' : 'false');
+    donePanel.hidden = !(doneOpen || (query && done.length > 0)) || done.length === 0;
+    const missing = items.flatMap((item) => item.images || []).filter((id) => !urls.has(id));
+    if (!missing.length) return;
+    idbGet(missing).then((found) => {
+      if (token !== renderToken) return;
+      found.forEach(([id, blob]) => {
+        if (!urls.has(id)) urls.set(id, URL.createObjectURL(blob));
+      });
+      board.querySelectorAll('img[data-shot]').forEach((img) => {
+        const id = img.getAttribute('data-shot');
+        if (id && urls.has(id) && !img.getAttribute('src')) img.src = urls.get(id);
+      });
+    }).catch(() => {});
+  };
+  let renderToken = 0;
 
   form.addEventListener('submit', (e) => {
     e.preventDefault();
     const text = input.value.trim();
     if (!text) return;
-    items.unshift({ id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6), text, done: false });
+    const created = { id: newId(), text, done: false };
+    if (view === 'today') created.day = todayStamp();
+    if (view === 'later') created.day = todayStamp(1);
+    items.unshift(created);
     input.value = '';
     save();
     render();
@@ -5347,10 +5710,49 @@
     render();
   });
   clearBtn.addEventListener('click', () => {
+    const gone = items.filter((item) => item.done).flatMap((item) => item.images || []);
     items = items.filter((item) => !item.done);
     doneOpen = false;
     save();
     render();
+    forgetImages(gone);
+  });
+  board.querySelectorAll('[data-memo-view]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      view = btn.getAttribute('data-memo-view') || 'hand';
+      render();
+    });
+  });
+  if (findEl) {
+    findEl.addEventListener('input', () => {
+      query = findEl.value.trim().toLowerCase();
+      render();
+    });
+  }
+  if (fileInput) {
+    fileInput.addEventListener('change', () => {
+      const item = items.find((entry) => entry.id === fileTargetId);
+      const files = [...fileInput.files];
+      fileInput.value = '';
+      if (item && files.length) addImages(item, files);
+    });
+  }
+  board.addEventListener('paste', (event) => {
+    const files = [...(event.clipboardData ? event.clipboardData.files : [])].filter((file) => file.type && file.type.startsWith('image/'));
+    if (!files.length) return;
+    event.preventDefault();
+    const current = items.find((entry) => entry.id === expandedId);
+    if (current) {
+      addImages(current, files);
+      return;
+    }
+    const created = { id: newId(), text: input.value.trim() || '截图', done: false };
+    if (view === 'today') created.day = todayStamp();
+    if (view === 'later') created.day = todayStamp(1);
+    items.unshift(created);
+    input.value = '';
+    expandedId = created.id;
+    addImages(created, files);
   });
   render();
 })();
