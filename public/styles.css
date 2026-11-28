@@ -4608,6 +4608,8 @@ html[data-theme="dark"] .orbit-compass { color: rgba(255, 255, 255, 0.16); }
   line-height: 1.6;
 }
 .tool-row input { flex: 1; height: 44px; padding: 0 14px; }
+.tool-row textarea { flex: 1; min-height: 76px; }
+.tool-row .solid-pill-btn { align-self: flex-end; white-space: nowrap; }
 .tool-card textarea { display: block; padding: 12px 14px; resize: vertical; }
 .tool-card textarea[readonly] { color: var(--ink-secondary); }
 .tool-actions { display: flex; align-items: center; gap: 10px; margin: 12px 0; flex-wrap: wrap; }
@@ -4615,12 +4617,24 @@ html[data-theme="dark"] .orbit-compass { color: rgba(255, 255, 255, 0.16); }
 .tool-stat { margin: 12px 0 0; font-size: 15px; font-weight: 600; color: var(--ink-primary); }
 .tool-out { margin-top: 14px; padding: 14px; border-radius: 14px; background: var(--bg-shell); border: 1px solid var(--border-subtle); }
 .tool-out[hidden] { display: none; }
-.tool-out strong { display: block; font-size: 16px; letter-spacing: -0.02em; margin-bottom: 4px; }
-.tool-out p { margin: 0 0 6px; }
-.link-cover { display: block; width: min(100%, 320px); height: auto; margin-top: 10px; border-radius: 12px; }
+.link-result { display: grid; grid-template-columns: 180px minmax(0, 1fr); gap: 14px; align-items: start; }
+.link-result.is-plain { grid-template-columns: minmax(0, 1fr); }
+.link-cover { display: block; width: 100%; height: auto; margin: 0; aspect-ratio: 16 / 10; object-fit: cover; border-radius: 12px; background: var(--bg-subtle); }
+.link-kicker { margin: 0 0 4px; font-size: 12px; letter-spacing: 0.06em; color: var(--ink-muted); }
+.link-title { margin: 0 0 8px; font-size: 16px; font-weight: 600; letter-spacing: -0.02em; line-height: 1.45; }
+.link-rows { margin: 0 0 8px; }
+.link-rows div { display: flex; gap: 8px; margin: 0 0 3px; font-size: 13.5px; }
+.link-rows dt { color: var(--ink-muted); }
+.link-rows dd { margin: 0; color: var(--ink-secondary); word-break: break-all; }
+.link-open { display: flex; align-items: center; gap: 8px; }
+.link-open a { min-width: 0; color: var(--blue); font-size: 13px; word-break: break-all; }
+.link-open .soft-pill-btn { flex: none; padding: 6px 12px; font-size: 12.5px; }
+.tool-card .link-note { margin: 8px 0 0; color: var(--ink-muted); font-size: 13px; line-height: 1.5; }
+.tool-out > .link-note { margin: 0; }
 @media (max-width: 640px) {
   .tool-row { flex-direction: column; align-items: stretch; }
   .tool-card { padding: 18px 16px; }
+  .link-result { grid-template-columns: 1fr; }
 }
 .is-done-list { padding-bottom: 4px; }
 @media (hover: none) {

@@ -5276,91 +5276,276 @@ document.querySelectorAll('[data-jargon-translator]').forEach((card) => {
   const linkInput = document.getElementById('link-input');
   const linkOut = document.getElementById('link-out');
 
-  function firstUrl(text) {
-    const match = String(text || '').match(/https?:\/\/[^\s]+/i);
-    if (!match) return '';
-    return match[0].replace(/[)）,。]+$/, '');
+  // LINK_PARSE_START
+  function trimUrl(raw) {
+    const cut = raw.match(/^[A-Za-z0-9:/?#\[\]@!$&'()*+,;=%._~-]+/);
+    if (!cut) return '';
+    return cut[0].replace(/[),.;]+$/g, '');
+  }
+
+  function allUrls(text) {
+    const out = [];
+    const seen = new Set();
+    const push = (raw, href) => {
+      if (!raw || seen.has(href)) return;
+      seen.add(href);
+      out.push({ raw, href });
+    };
+    const re = /https?:\/\/\S+/gi;
+    let m;
+    while ((m = re.exec(text))) {
+      const raw = trimUrl(m[0]);
+      push(raw, raw);
+    }
+    if (out.length) return out;
+    const bareRe = /(?:v\.douyin\.com|xhslink\.com|xhslink\.cn|youtu\.be|(?:[\w.-]+\.)?(?:youtube(?:-nocookie)?|xiaohongshu|rednote|douyin|iesdouyin|twitter)\.com|x\.com)\/\S+/gi;
+    while ((m = bareRe.exec(text))) {
+      const raw = trimUrl(m[0]);
+      push(raw, 'https://' + raw);
+    }
+    return out;
+  }
+
+  function readCaption(platform, before) {
+    const compact = before.replace(/\s+/g, ' ').trim();
+    let title = '';
+    let author = '';
+    if (platform === '抖音') {
+      const work = compact.match(/【([^】]{1,40})的作品】\s*(.*)$/);
+      if (work) {
+        author = work[1].trim();
+        title = work[2].trim();
+      }
+    }
+    if (platform === '小红书') {
+      const note = compact.match(/【([^】]{1,80}?)\s*[-–—]\s*小红书】\s*$/);
+      if (note) title = note[1].trim();
+      const who = compact.match(/(\S{1,30})发布了一篇小红书笔记/);
+      if (who) author = who[1].replace(/^\d+/g, '').trim();
+      if (!title) {
+        const plain = compact.match(/【([^】]{1,80})】\s*$/);
+        if (plain && !/小红书|复制|打开/.test(plain[1])) title = plain[1].trim();
+      }
+    }
+    title = title.replace(/^[\s,，:：]+|[\s,，。!！]+$/g, '').trim();
+    return { title, author };
   }
 
   function identify(href) {
     let url;
     try { url = new URL(href); } catch (e) { return null; }
-    const host = url.hostname.replace(/^www\./, '').replace(/^m\./, '');
+    const host = url.hostname.replace(/^www\./, '').replace(/^m\./, '').toLowerCase();
     const path = url.pathname;
-    if (host === 'youtu.be' || host.endsWith('youtube.com')) {
-      const id = host === 'youtu.be'
-        ? path.split('/').filter(Boolean)[0]
-        : (url.searchParams.get('v') || (path.match(/\/(?:shorts|embed|live)\/([^/?]+)/) || [])[1] || '');
-      return { name: 'YouTube', id, ask: true };
+
+    if (host === 'youtu.be' || host === 'music.youtube.com' || host.endsWith('youtube.com') || host.endsWith('youtube-nocookie.com')) {
+      let id = '';
+      let kind = '视频';
+      if (host === 'youtu.be') id = (path.split('/').filter(Boolean)[0] || '');
+      else {
+        const sm = path.match(/\/(?:shorts|embed|live|v)\/([^/?]+)/);
+        if (sm) {
+          id = sm[1];
+          if (path.includes('/shorts/')) kind = '短视频';
+          else if (path.includes('/live/')) kind = '直播';
+        } else id = url.searchParams.get('v') || '';
+      }
+      id = decodeURIComponent(id).split('&')[0];
+      if (!/^[\w-]{11}$/.test(id)) return { ok: false, message: '这是 YouTube 的链接，里面没有视频编号。' };
+      const clean = kind === '短视频'
+        ? 'https://www.youtube.com/shorts/' + id
+        : 'https://www.youtube.com/watch?v=' + id;
+      return { ok: true, platform: 'YouTube', kind, id, url: clean, cover: 'https://i.ytimg.com/vi/' + id + '/hqdefault.jpg', remote: true, note: '' };
     }
+
     if (host === 'x.com' || host === 'twitter.com' || host === 'mobile.twitter.com') {
       const id = (path.match(/\/status\/(\d+)/) || [])[1] || '';
-      return { name: 'Twitter', id, ask: Boolean(id) };
+      if (!id) return { ok: false, message: '这是 Twitter 的链接，里面没有帖子编号。' };
+      const user = (path.match(/^\/([^/]+)\/status\//) || [])[1] || '';
+      const handle = user && user !== 'i' ? user : '';
+      const clean = handle ? 'https://x.com/' + handle + '/status/' + id : 'https://x.com/i/web/status/' + id;
+      return { ok: true, platform: 'Twitter', kind: '帖子', id, url: clean, cover: '', remote: true, note: '' };
     }
-    if (host.includes('xiaohongshu.com') || host === 'xhslink.com') {
-      const id = (path.match(/\/(?:explore|discovery\/item|item)\/([^/?]+)/) || [])[1] || '';
-      return { name: '小红书', id: id || (host === 'xhslink.com' ? '短链' : ''), ask: false };
+
+    if (host.endsWith('xiaohongshu.com') || host === 'xhslink.com' || host === 'xhslink.cn' || host.endsWith('rednote.com')) {
+      const note = path.match(/\/(?:explore|discovery\/item|item)\/([0-9a-fA-F]{16,32})/);
+      if (note) {
+        return { ok: true, platform: '小红书', kind: '笔记', id: note[1], url: 'https://www.xiaohongshu.com/explore/' + note[1], cover: '', remote: false, note: '' };
+      }
+      const profile = path.match(/\/user\/profile\/([^/?]+)/);
+      if (profile) {
+        return { ok: true, platform: '小红书', kind: '主页', id: profile[1], url: 'https://www.xiaohongshu.com/user/profile/' + profile[1], cover: '', remote: false, note: '' };
+      }
+      if (host === 'xhslink.com' || host === 'xhslink.cn') {
+        const code = path.replace(/\/+$/, '');
+        if (!code || code === '/') return { ok: false, message: '这是小红书的短链，短码不完整。' };
+        return { ok: true, platform: '小红书', kind: '短链', id: '', url: 'https://' + host + code, cover: '', remote: false, note: '短链每次分享都不一样，笔记编号要打开原页面才看得到。' };
+      }
+      return { ok: false, message: '这是小红书的链接，里面没有笔记编号。' };
     }
-    if (host.includes('douyin.com') || host.includes('iesdouyin.com')) {
-      const id = (path.match(/\/(?:video|note)\/(\d+)/) || [])[1] || '';
-      return { name: '抖音', id: id || (host.startsWith('v.') ? '短链' : ''), ask: false };
+
+    if (host === 'v.douyin.com' || host.endsWith('douyin.com') || host.endsWith('iesdouyin.com')) {
+      const pathHit = path.match(/\/(?:share\/)?(?:video|note|slides|shipin|lvdetail|vsdetail)\/(\d{6,})/);
+      const qId = ['modal_id', 'aweme_id', 'vid'].map((key) => url.searchParams.get(key)).find((value) => value && /^\d{6,}$/.test(value));
+      const id = (pathHit && pathHit[1]) || qId || '';
+      let kind = '视频';
+      if (path.includes('/note')) kind = '图文';
+      else if (path.includes('/slides')) kind = '图集';
+      if (id) {
+        const base = kind === '图文' ? 'note' : 'video';
+        return { ok: true, platform: '抖音', kind, id, url: 'https://www.douyin.com/' + base + '/' + id, cover: '', remote: false, note: '' };
+      }
+      if (host === 'v.douyin.com') {
+        const code = (path.split('/').filter(Boolean)[0] || '');
+        if (!code) return { ok: false, message: '这是抖音的短链，短码不完整。' };
+        return { ok: true, platform: '抖音', kind: '短链', id: '', url: 'https://v.douyin.com/' + code + '/', cover: '', remote: false, note: '短链每次分享都不一样，视频编号要打开原页面才看得到。' };
+      }
+      if (path.includes('/user/')) {
+        const who = path.split('/').filter(Boolean).pop();
+        return { ok: true, platform: '抖音', kind: '主页', id: who, url: 'https://www.douyin.com' + path.replace(/\/+$/, ''), cover: '', remote: false, note: '' };
+      }
+      return { ok: false, message: '这是抖音的链接，里面没有作品编号。' };
     }
-    return { name: host, id: '', ask: true };
+
+    return null;
   }
 
-  function showLink(lines, cover) {
+  function parseShare(text) {
+    const clean = String(text || '').replace(/[\u200b\ufeff]/g, '');
+    const urls = allUrls(clean);
+    if (!urls.length) return { ok: false, message: '这段里没有链接。整段分享文案可以直接贴，或贴一条 http 开头的地址。' };
+    let fallback = null;
+    for (const item of urls) {
+      const info = identify(item.href);
+      if (!info) continue;
+      if (!info.ok) { fallback = fallback || info; continue; }
+      const at = clean.indexOf(item.raw);
+      const before = at >= 0 ? clean.slice(0, at) : '';
+      const cap = readCaption(info.platform, before);
+      return Object.assign({}, info, { title: cap.title, author: cap.author });
+    }
+    return fallback || { ok: false, message: '目前只认小红书、抖音、YouTube 和 Twitter。' };
+  }
+  // LINK_PARSE_END
+
+  function renderLink(info) {
     linkOut.hidden = false;
     linkOut.replaceChildren();
-    lines.forEach((line, i) => {
-      const el = document.createElement(i === 0 ? 'strong' : 'p');
-      el.textContent = line;
-      linkOut.appendChild(el);
-    });
-    if (cover && /^https:\/\//.test(cover)) {
+    if (!info.ok) {
+      const note = document.createElement('p');
+      note.className = 'link-note';
+      note.textContent = info.message;
+      linkOut.appendChild(note);
+      return null;
+    }
+    const card = document.createElement('div');
+    card.className = 'link-result' + (info.cover ? '' : ' is-plain');
+    if (info.cover) {
       const img = document.createElement('img');
       img.className = 'link-cover';
       img.alt = '';
       img.referrerPolicy = 'no-referrer';
-      img.src = cover;
-      linkOut.appendChild(img);
+      img.src = info.cover;
+      img.addEventListener('error', () => {
+        img.remove();
+        card.classList.add('is-plain');
+      });
+      card.appendChild(img);
     }
+    const body = document.createElement('div');
+    const kicker = document.createElement('p');
+    kicker.className = 'link-kicker';
+    kicker.textContent = info.platform + ' · ' + info.kind;
+    const titleEl = document.createElement('h3');
+    titleEl.className = 'link-title';
+    titleEl.textContent = info.title || (info.remote ? '正在读标题…' : '分享文案里没有标题');
+    const rows = document.createElement('dl');
+    rows.className = 'link-rows';
+    const addRow = (label, value) => {
+      if (!value) return null;
+      const line = document.createElement('div');
+      const dt = document.createElement('dt');
+      dt.textContent = label;
+      const dd = document.createElement('dd');
+      dd.textContent = value;
+      line.append(dt, dd);
+      rows.appendChild(line);
+      return dd;
+    };
+    const authorDd = addRow('作者', info.author);
+    addRow('编号', info.id);
+    const open = document.createElement('div');
+    open.className = 'link-open';
+    const anchor = document.createElement('a');
+    anchor.href = info.url;
+    anchor.target = '_blank';
+    anchor.rel = 'noopener noreferrer';
+    anchor.textContent = info.url;
+    const copyBtn = document.createElement('button');
+    copyBtn.type = 'button';
+    copyBtn.className = 'soft-pill-btn';
+    copyBtn.textContent = '复制链接';
+    copyBtn.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(info.url);
+        copyBtn.textContent = '已复制';
+      } catch (err) {
+        copyBtn.textContent = '请手动复制';
+      }
+    });
+    open.append(anchor, copyBtn);
+    body.append(kicker, titleEl, rows, open);
+    if (info.note) {
+      const note = document.createElement('p');
+      note.className = 'link-note';
+      note.textContent = info.note;
+      body.appendChild(note);
+    }
+    card.appendChild(body);
+    linkOut.appendChild(card);
+    return {
+      titleEl,
+      addAuthor(name) {
+        if (!name || authorDd) return;
+        const line = document.createElement('div');
+        const dt = document.createElement('dt');
+        dt.textContent = '作者';
+        const dd = document.createElement('dd');
+        dd.textContent = name;
+        line.append(dt, dd);
+        rows.prepend(line);
+      },
+    };
   }
 
+  let linkTicket = 0;
+  linkInput.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter' && !event.shiftKey) {
+      event.preventDefault();
+      linkForm.requestSubmit();
+    }
+  });
   linkForm.addEventListener('submit', async (event) => {
     event.preventDefault();
-    const href = firstUrl(linkInput.value);
-    if (!href) {
-      showLink(['没找到链接。', '从 http 或 https 开始贴。']);
-      return;
-    }
-    const info = identify(href);
-    if (!info) {
-      showLink(['这不像一条完整链接。']);
-      return;
-    }
-    const head = info.id ? info.name + ' · ' + info.id : info.name;
-    if (!info.ask) {
-      showLink([
-        head,
-        '认出平台了。这个平台不让浏览器直接读页面，标题和视频文件都拿不到。',
-      ]);
-      return;
-    }
-    showLink([head, '正在读公开信息…']);
+    const mine = ++linkTicket;
+    const info = parseShare(linkInput.value);
+    const view = renderLink(info);
+    if (!info.ok || !info.remote || !view) return;
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), 4000);
     try {
-      const res = await fetch('https://noembed.com/embed?url=' + encodeURIComponent(href));
+      const res = await fetch('https://noembed.com/embed?url=' + encodeURIComponent(info.url), { signal: ctrl.signal });
       const data = await res.json();
-      if (!data || data.error || !data.title) {
-        showLink([head, '平台认出来了。公开标题这边没读到，视频文件也不会从这里下载。']);
-        return;
-      }
-      const who = data.author_name ? '作者 · ' + data.author_name : '';
-      showLink(
-        [data.title, who, info.name + (info.id ? ' · ' + info.id : ''), '封面可以看。视频文件留在原平台。'].filter(Boolean),
-        data.thumbnail_url
-      );
-    } catch (e) {
-      showLink([head, '平台认出来了。公开信息没连上，视频文件也不会从这里下载。']);
+      if (mine !== linkTicket) return;
+      const title = data && !data.error && typeof data.title === 'string' ? data.title.trim() : '';
+      const author = data && typeof data.author_name === 'string' ? data.author_name.trim() : '';
+      if (title) view.titleEl.textContent = title;
+      else if (!info.title) view.titleEl.textContent = '公开标题没读到，链接已经整理好';
+      if (author) view.addAuthor(author);
+    } catch (err) {
+      if (mine !== linkTicket) return;
+      if (!info.title) view.titleEl.textContent = '公开标题没读到，链接已经整理好';
+    } finally {
+      clearTimeout(timer);
     }
   });
 
